@@ -106,6 +106,24 @@ defmodule PhiaDemo.FakeData do
     ]
   end
 
+  def top_products do
+    [
+      %{name: "Plano Enterprise", revenue: "R$ 11.988", orders: 12, pct: 100},
+      %{name: "Plano Pro", revenue: "R$ 8.970", orders: 30, pct: 75},
+      %{name: "Plano Starter", revenue: "R$ 2.970", orders: 30, pct: 25},
+      %{name: "Add-on Analytics", revenue: "R$ 1.490", orders: 15, pct: 12},
+      %{name: "Suporte Premium", revenue: "R$ 990", orders: 9, pct: 8}
+    ]
+  end
+
+  def order_summary do
+    %{
+      total_revenue: "R$ 26.418",
+      avg_ticket: "R$ 359,00",
+      paid_amount: "R$ 22.278"
+    }
+  end
+
   def analytics_stats do
     [
       %{title: "Visitantes Únicos", value: "98.421", trend: :up, trend_value: "+14,3%", description: "vs. mês anterior"},

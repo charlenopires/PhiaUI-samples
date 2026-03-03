@@ -21,7 +21,7 @@ Before running the sample, ensure you have the following installed:
 - Erlang/OTP
 - Node.js (optional, for some asset processing)
 
-The sample relies on the `PhiaUI` library. By default, it expects the `phiaui` directory to be located alongside this repository (e.g., `../phiaui`). Ensure you have cloned the `PhiaUI` repository or update the `mix.exs` dependencies accordingly.
+The sample relies on the `PhiaUI` library, which is included as a standard dependency. No local clone is required unless you plan to modify `PhiaUI` directly by overriding the path in `mix.exs`.
 
 ## Getting Started
 

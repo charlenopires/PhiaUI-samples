@@ -124,6 +124,7 @@
 @source "../css";
 @source "../js";
 @source "../../lib/phia_demo_web";
+@source "../../deps/phia_ui/lib";
 
 /* A Tailwind plugin that makes "hero-#{ICON}" classes available.
    The heroicons installation itself is managed by your mix.exs */

@@ -6,10 +6,15 @@ defmodule PhiaDemoWeb.DashboardLive.Users do
 
   @impl true
   def mount(_params, _session, socket) do
+    users = FakeData.users()
+
     {:ok,
      socket
      |> assign(:page_title, "Usuários")
-     |> assign(:users, FakeData.users())}
+     |> assign(:users, users)
+     |> assign(:ativos, Enum.count(users, &(&1.status == :ativo)))
+     |> assign(:inativos, Enum.count(users, &(&1.status == :inativo)))
+     |> assign(:pendentes, Enum.count(users, &(&1.status == :pendente)))}
   end
 
   @impl true
@@ -26,6 +31,39 @@ defmodule PhiaDemoWeb.DashboardLive.Users do
             + Novo Usuário
           </.button>
         </div>
+
+        <.metric_grid cols={3}>
+          <.stat_card
+            title="Ativos"
+            value={to_string(@ativos)}
+            trend={:up}
+            trend_value="+2 este mês"
+            description="usuários ativos"
+          />
+          <.stat_card
+            title="Inativos"
+            value={to_string(@inativos)}
+            trend={:neutral}
+            trend_value="sem mudança"
+            description="usuários inativos"
+          />
+          <.stat_card
+            title="Pendentes"
+            value={to_string(@pendentes)}
+            trend={:neutral}
+            trend_value="aguardando"
+            description="aprovação pendente"
+          />
+        </.metric_grid>
+
+        <%= if @pendentes > 0 do %>
+          <.alert variant={:warning}>
+            <.alert_title>Usuários aguardando aprovação</.alert_title>
+            <.alert_description>
+              {@pendentes} {if @pendentes == 1, do: "usuário precisa", else: "usuários precisam"} de revisão antes de acessar a plataforma.
+            </.alert_description>
+          </.alert>
+        <% end %>
 
         <.card>
           <.card_content class="p-0">
@@ -45,7 +83,7 @@ defmodule PhiaDemoWeb.DashboardLive.Users do
                   <.table_cell>
                     <div class="flex items-center gap-3">
                       <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
-                        {String.first(u.nome)}
+                        {initials(u.nome)}
                       </div>
                       <span class="font-medium text-foreground">{u.nome}</span>
                     </div>
@@ -76,6 +114,22 @@ defmodule PhiaDemoWeb.DashboardLive.Users do
       </div>
     </DashboardLayout.layout>
     """
+  end
+
+  defp initials(nome) do
+    parts = String.split(nome, " ", trim: true)
+
+    case parts do
+      [first | rest] when rest != [] ->
+        last = List.last(rest)
+        String.first(first) <> String.first(last)
+
+      [first] ->
+        String.slice(first, 0, 2)
+
+      [] ->
+        "?"
+    end
   end
 
   defp role_variant("Admin"), do: :default

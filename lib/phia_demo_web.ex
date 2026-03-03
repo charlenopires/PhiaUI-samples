@@ -91,6 +91,7 @@ defmodule PhiaDemoWeb do
       import PhiaUi.Components.Badge
       import PhiaUi.Components.Button
       import PhiaUi.Components.Table
+      import PhiaUi.Components.Alert
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS

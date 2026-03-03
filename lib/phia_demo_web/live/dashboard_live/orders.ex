@@ -6,10 +6,17 @@ defmodule PhiaDemoWeb.DashboardLive.Orders do
 
   @impl true
   def mount(_params, _session, socket) do
+    orders = FakeData.recent_orders()
+    summary = FakeData.order_summary()
+
     {:ok,
      socket
      |> assign(:page_title, "Pedidos")
-     |> assign(:orders, FakeData.recent_orders())}
+     |> assign(:orders, orders)
+     |> assign(:pagos, Enum.count(orders, &(&1.status == :pago)))
+     |> assign(:pendentes, Enum.count(orders, &(&1.status == :pendente)))
+     |> assign(:cancelados, Enum.count(orders, &(&1.status == :cancelado)))
+     |> assign(:summary, summary)}
   end
 
   @impl true
@@ -28,32 +35,36 @@ defmodule PhiaDemoWeb.DashboardLive.Orders do
           </div>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-3">
-          <.card>
-            <.card_content class="pt-6">
-              <div class="text-2xl font-bold text-foreground">
-                {Enum.count(@orders, &(&1.status == :pago))}
-              </div>
-              <p class="text-sm text-muted-foreground">Pagos</p>
-            </.card_content>
-          </.card>
-          <.card>
-            <.card_content class="pt-6">
-              <div class="text-2xl font-bold text-foreground">
-                {Enum.count(@orders, &(&1.status == :pendente))}
-              </div>
-              <p class="text-sm text-muted-foreground">Pendentes</p>
-            </.card_content>
-          </.card>
-          <.card>
-            <.card_content class="pt-6">
-              <div class="text-2xl font-bold text-foreground">
-                {Enum.count(@orders, &(&1.status == :cancelado))}
-              </div>
-              <p class="text-sm text-muted-foreground">Cancelados</p>
-            </.card_content>
-          </.card>
-        </div>
+        <.metric_grid cols={4}>
+          <.stat_card
+            title="Pagos"
+            value={to_string(@pagos)}
+            trend={:up}
+            trend_value="+3 hoje"
+            description="pedidos pagos"
+          />
+          <.stat_card
+            title="Pendentes"
+            value={to_string(@pendentes)}
+            trend={:neutral}
+            trend_value="em aberto"
+            description="aguardando pagamento"
+          />
+          <.stat_card
+            title="Cancelados"
+            value={to_string(@cancelados)}
+            trend={:down}
+            trend_value="-1 vs ontem"
+            description="pedidos cancelados"
+          />
+          <.stat_card
+            title="Receita Total"
+            value={@summary.total_revenue}
+            trend={:up}
+            trend_value="+8,4%"
+            description="ticket médio #{@summary.avg_ticket}"
+          />
+        </.metric_grid>
 
         <.card>
           <.card_header>
@@ -74,7 +85,7 @@ defmodule PhiaDemoWeb.DashboardLive.Orders do
                 </.table_row>
               </.table_header>
               <.table_body>
-                <.table_row :for={o <- @orders}>
+                <.table_row :for={o <- @orders} class={row_class(o.status)}>
                   <.table_cell class="font-mono text-xs font-medium">{o.id}</.table_cell>
                   <.table_cell class="font-medium">{o.cliente}</.table_cell>
                   <.table_cell class="text-muted-foreground">{o.produto}</.table_cell>
@@ -97,6 +108,10 @@ defmodule PhiaDemoWeb.DashboardLive.Orders do
     </DashboardLayout.layout>
     """
   end
+
+  defp row_class(:pago), do: "border-l-2 border-l-primary"
+  defp row_class(:pendente), do: "border-l-2 border-l-muted-foreground"
+  defp row_class(:cancelado), do: "border-l-2 border-l-destructive"
 
   defp status_variant(:pago), do: :default
   defp status_variant(:pendente), do: :secondary
