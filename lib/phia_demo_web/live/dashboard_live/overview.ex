@@ -12,7 +12,8 @@ defmodule PhiaDemoWeb.DashboardLive.Overview do
      |> assign(:stats, FakeData.stats())
      |> assign(:orders, FakeData.recent_orders())
      |> assign(:revenue, FakeData.revenue_by_month())
-     |> assign(:top_products, FakeData.top_products())}
+     |> assign(:top_products, FakeData.top_products())
+     |> assign(:activity, FakeData.activity_log())}
   end
 
   @impl true
@@ -20,6 +21,18 @@ defmodule PhiaDemoWeb.DashboardLive.Overview do
     ~H"""
     <DashboardLayout.layout current_path="/">
       <div class="p-6 space-y-6">
+        <.breadcrumb>
+          <.breadcrumb_list>
+            <.breadcrumb_item>
+              <.breadcrumb_link href="/">Dashboard</.breadcrumb_link>
+            </.breadcrumb_item>
+            <.breadcrumb_separator />
+            <.breadcrumb_item>
+              <.breadcrumb_page>Visão Geral</.breadcrumb_page>
+            </.breadcrumb_item>
+          </.breadcrumb_list>
+        </.breadcrumb>
+
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-2xl font-semibold text-foreground">Visão Geral</h1>
@@ -145,6 +158,68 @@ defmodule PhiaDemoWeb.DashboardLive.Overview do
             </.card_content>
           </.card>
         </div>
+
+        <%!-- Skeleton loading state demo --%>
+        <.card>
+          <.card_header>
+            <.card_title>Carregando Dados</.card_title>
+            <.card_description>Demonstração do componente Skeleton para estados de carregamento</.card_description>
+          </.card_header>
+          <.card_content>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="flex items-center gap-3">
+                <.skeleton shape={:circle} width="40px" height="40px" />
+                <div class="flex-1 space-y-2">
+                  <.skeleton class="h-4 w-3/4" />
+                  <.skeleton class="h-3 w-1/2" />
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <.skeleton shape={:circle} width="40px" height="40px" />
+                <div class="flex-1 space-y-2">
+                  <.skeleton class="h-4 w-3/4" />
+                  <.skeleton class="h-3 w-1/2" />
+                </div>
+              </div>
+              <div class="sm:col-span-2">
+                <.skeleton_text lines={3} />
+              </div>
+            </div>
+          </.card_content>
+        </.card>
+
+        <%!-- Accordion: Atividade Recente --%>
+        <.card>
+          <.card_header>
+            <.card_title>Atividade Recente</.card_title>
+            <.card_description>Últimos eventos da plataforma</.card_description>
+          </.card_header>
+          <.card_content>
+            <.accordion id="activity-accordion" type={:single}>
+              <%= for {a, i} <- Enum.with_index(@activity) do %>
+                <.accordion_item
+                  value={"act-#{i}"}
+                  type={:single}
+                  accordion_id="activity-accordion"
+                >
+                  <.accordion_trigger
+                    value={"act-#{i}"}
+                    type={:single}
+                    accordion_id="activity-accordion"
+                  >
+                    {a.title}
+                  </.accordion_trigger>
+                  <.accordion_content value={"act-#{i}"}>
+                    <div class="flex items-center justify-between text-sm pb-2">
+                      <span class="text-muted-foreground">{a.desc}</span>
+                      <.badge variant={:outline}>{a.date}</.badge>
+                    </div>
+                  </.accordion_content>
+                </.accordion_item>
+              <% end %>
+            </.accordion>
+          </.card_content>
+        </.card>
       </div>
     </DashboardLayout.layout>
     """

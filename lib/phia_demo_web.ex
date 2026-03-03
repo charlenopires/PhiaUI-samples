@@ -92,6 +92,20 @@ defmodule PhiaDemoWeb do
       import PhiaUi.Components.Button
       import PhiaUi.Components.Table
       import PhiaUi.Components.Alert
+      import PhiaUi.Components.Skeleton
+      import PhiaUi.Components.Breadcrumb
+      import PhiaUi.Components.Pagination
+      import PhiaUi.Components.DarkModeToggle
+      import PhiaUi.Components.Accordion
+      import PhiaUi.Components.Tooltip
+      import PhiaUi.Components.Dialog
+      import PhiaUi.Components.DropdownMenu
+      import PhiaUi.Components.Toast
+      import PhiaUi.Components.Avatar
+      import PhiaUi.Components.AlertDialog
+      import PhiaUi.Components.Collapsible
+      import PhiaUi.Components.ButtonGroup
+      import PhiaUi.Components.EmptyState
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS

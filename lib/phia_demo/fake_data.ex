@@ -131,4 +131,20 @@ defmodule PhiaDemo.FakeData do
       %{title: "Taxa de Rejeição", value: "32,1%", trend: :down, trend_value: "-2,1%", description: "vs. mês anterior"}
     ]
   end
+
+  def activity_log do
+    [
+      %{title: "Venda Enterprise", desc: "Carla Souza — R$ 999,00", date: "28/02"},
+      %{title: "Novo usuário", desc: "Fábio Nunes — Plano Starter", date: "27/02"},
+      %{title: "Cancelamento", desc: "João Ribeiro — Plano Enterprise", date: "25/02"},
+      %{title: "Upgrade de plano", desc: "Diego Melo → Pro", date: "24/02"}
+    ]
+  end
+
+  def notifications do
+    [
+      %{title: "Pedido confirmado", description: "Pedido #4521 foi pago com sucesso.", variant: :default},
+      %{title: "Usuário removido", description: "Conta de Hugo Alves foi desativada.", variant: :destructive}
+    ]
+  end
 end

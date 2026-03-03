@@ -7,6 +7,15 @@
     <.live_title default="PhiaDemo" suffix=" · Phoenix Framework">
       {assigns[:page_title]}
     </.live_title>
+    <%!-- Anti-FOUC: apply .dark class before stylesheet to avoid theme flash --%>
+    <script>
+      (function() {
+        var t = localStorage.getItem('phia-theme');
+        if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
     </script>
@@ -25,12 +34,13 @@
           setTheme(localStorage.getItem("phx:theme") || "system");
         }
         window.addEventListener("storage", (e) => e.key === "phx:theme" && setTheme(e.newValue || "system"));
-        
+
         window.addEventListener("phx:set-theme", (e) => setTheme(e.target.dataset.phxTheme));
       })();
     </script>
   </head>
   <body>
+    <.toast id="phia-toast-viewport" />
     {@inner_content}
   </body>
 </html>

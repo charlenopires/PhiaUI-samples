@@ -35,3 +35,8 @@ phia_demo-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# AI assistant files and directories.
+.claude/
+.cwa/
+CLAUDE.md
+AGENTS.md

@@ -19,6 +19,18 @@ defmodule PhiaDemoWeb.DashboardLive.Analytics do
     ~H"""
     <DashboardLayout.layout current_path="/analytics">
       <div class="p-6 space-y-6">
+        <.breadcrumb>
+          <.breadcrumb_list>
+            <.breadcrumb_item>
+              <.breadcrumb_link href="/">Dashboard</.breadcrumb_link>
+            </.breadcrumb_item>
+            <.breadcrumb_separator />
+            <.breadcrumb_item>
+              <.breadcrumb_page>Analytics</.breadcrumb_page>
+            </.breadcrumb_item>
+          </.breadcrumb_list>
+        </.breadcrumb>
+
         <div>
           <h1 class="text-2xl font-semibold text-foreground">Analytics</h1>
           <p class="text-sm text-muted-foreground mt-1">Métricas de tráfego e engajamento</p>
@@ -28,6 +40,26 @@ defmodule PhiaDemoWeb.DashboardLive.Analytics do
           <.alert_title>Dados atualizados</.alert_title>
           <.alert_description>Última sincronização: 03/03/2026 às 08:00</.alert_description>
         </.alert>
+
+        <%!-- Collapsible filters --%>
+        <.collapsible id="analytics-filters">
+          <.collapsible_trigger collapsible_id="analytics-filters" class="flex w-full items-center justify-between rounded-lg border bg-card px-4 py-3 text-sm font-medium shadow-sm hover:bg-accent/50 transition-colors">
+            <span>Filtros de Período</span>
+            <svg class="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </.collapsible_trigger>
+          <.collapsible_content id="analytics-filters-content">
+            <div class="mt-2 rounded-lg border bg-card px-4 py-3 shadow-sm">
+              <div class="flex flex-wrap gap-2">
+                <.button variant={:default} size={:sm}>Últimos 7 dias</.button>
+                <.button variant={:outline} size={:sm}>Últimos 30 dias</.button>
+                <.button variant={:outline} size={:sm}>Últimos 90 dias</.button>
+                <.button variant={:outline} size={:sm}>Este ano</.button>
+              </div>
+            </div>
+          </.collapsible_content>
+        </.collapsible>
 
         <.metric_grid cols={3}>
           <.stat_card
@@ -166,6 +198,42 @@ defmodule PhiaDemoWeb.DashboardLive.Analytics do
                 </div>
               <% end %>
             </div>
+          </.card_content>
+        </.card>
+
+        <%!-- Empty state demo --%>
+        <.card>
+          <.card_header>
+            <.card_title>Dados por Canal</.card_title>
+            <.card_description>Detalhamento do canal selecionado nos filtros</.card_description>
+          </.card_header>
+          <.card_content>
+            <.empty>
+              <:icon>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                  <svg
+                    class="h-6 w-6 text-muted-foreground"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+                    />
+                  </svg>
+                </div>
+              </:icon>
+              <:title>Sem dados para exibir</:title>
+              <:description>
+                Selecione um canal nos filtros de período acima para visualizar o detalhamento.
+              </:description>
+              <:action>
+                <.button variant={:outline} size={:sm}>Abrir Filtros</.button>
+              </:action>
+            </.empty>
           </.card_content>
         </.card>
       </div>
