@@ -10,9 +10,9 @@ Three independent **Phoenix LiveView** demo apps in a single repo, each showcasi
 |---|---|
 | **Repository** | [github.com/charlenopires/PhiaUI-samples](https://github.com/charlenopires/PhiaUI-samples) |
 | **Framework** | Phoenix `~> 1.8.3` + LiveView `~> 1.1.0` |
-| **UI Library** | [PhiaUI](https://hex.pm/packages/phia_ui) `~> 0.1.3` |
+| **UI Library** | [PhiaUI](https://hex.pm/packages/phia_ui) `v0.1.5` |
 | **CSS** | Tailwind CSS v4 (`@theme` directive, OKLCH colors) |
-| **Theme** | Violet — light + dark mode |
+| **Themes** | Violet, Blue, Green, Rose, Amber, Slate — light + dark mode |
 | **Language** | Elixir `~> 1.15` |
 | **Data** | Hardcoded via `PhiaDemo.FakeData` + `PhiaDemo.ChatStore` (no Ecto) |
 
@@ -27,7 +27,17 @@ mix setup
 mix phx.server
 ```
 
-Open **http://localhost:4000** — redirects automatically to the Dashboard.
+Open **http://localhost:4000** — renders the home page with a live theme picker and links to all three demos.
+
+---
+
+## Home Page `/`
+
+Landing page (`HomeLive`) with:
+
+- **Live theme picker** — switch between Violet, Blue, Green, Rose, Amber, Slate; changes apply instantly via CSS custom properties and persist across pages via `localStorage`
+- **Component preview** — buttons and badges update in real-time as you pick a theme
+- **Project cards** — direct links to Dashboard, Showcase, and Chat demos
 
 ---
 
@@ -60,10 +70,11 @@ Full component library reference — every PhiaUI component with a live demo.
 | Route | Components |
 |-------|------------|
 | `/showcase` | Landing — category cards overview |
-| `/showcase/inputs` | Input, Textarea, Combobox, DateRangePicker, Select, TagsInput (demo), Checkbox, RadioGroup |
+| `/showcase/inputs` | Input, Textarea, Combobox, DateRangePicker, Select, TagsInput, Checkbox, RadioGroup |
 | `/showcase/display` | Badge, Avatar, Card, Skeleton, Accordion, Table, Pagination, EmptyState |
 | `/showcase/feedback` | Alert (4 variants), Toast, Dialog, AlertDialog, Tooltip, Popover, DropdownMenu, Drawer, Progress |
 | `/showcase/charts` | StatCard + MetricGrid, Area chart, Bar chart, Donut chart, ChartShell |
+| `/showcase/calendar` | Calendar (monthly, weekly, range), DateStrip, event markers |
 
 ---
 
@@ -86,7 +97,7 @@ Routes: `/chat`, `/chat/:room_id` (general, random, announcements, design, engin
 
 ## Theme
 
-Custom violet theme defined in `assets/css/app.css` using Tailwind v4 `@theme` and OKLCH color tokens. Dark mode is toggled via the `.dark` class on `<html>` — no page reload required.
+Custom themes defined in `assets/css/app.css` using Tailwind v4 `@theme` and OKLCH color tokens. The active theme is set via a CSS class on `<html>` (e.g. `.theme-violet`) — no page reload required. Dark mode uses the `.dark` class.
 
 | Token | Light | Dark |
 |-------|-------|------|
@@ -112,6 +123,13 @@ PhiaUI interactive components require lightweight vanilla-JS hooks registered in
 | `PhiaDrawer` | Drawer |
 | `PhiaPopover` | Popover |
 | `PhiaContextMenu` | ContextMenu |
+| `PhiaBackTop` | BackTop (scroll-to-top button) |
+| `PhiaHoverCard` | HoverCard (open/close delay, smart positioning) |
+| `PhiaCopyButton` | CopyButton (clipboard copy with feedback) |
+| `PhiaResizable` | Resizable panels |
+| `PhiaSonner` | Sonner toast notifications |
+| `PhiaDataGrid` | DataGrid (client-side sort/filter) |
+| `PhiaCalendar` | Calendar (month/week/range navigation) |
 
 ```js
 import PhiaHooks from './phia_hooks'
@@ -135,7 +153,10 @@ lib/
 └── phia_demo_web/
     ├── phia_demo_web.ex            # Global PhiaUI imports
     ├── router.ex                   # All routes for 3 demo projects
+    ├── components/
+    │   └── project_nav.ex          # Shared top nav bar (logo, project switcher, dark mode)
     └── live/
+        ├── home_live.ex            # Landing — theme picker + project cards
         ├── dashboard/
         │   ├── layout.ex           # Sidebar shell for Dashboard
         │   ├── overview.ex
@@ -149,25 +170,33 @@ lib/
         │   ├── inputs_live.ex
         │   ├── display_live.ex
         │   ├── feedback_live.ex
-        │   └── charts_live.ex
+        │   ├── charts_live.ex
+        │   └── calendar_live.ex    # Calendar, WeekCalendar, RangeCalendar demos
         └── chat/
             ├── layout.ex           # Channels + members sidebar
             └── room_live.ex        # Full-featured chat room
 
 priv/static/icons/
-└── lucide-sprite.svg               # 69 Lucide icons (SVG sprite, no npm)
+└── lucide-sprite.svg               # Lucide icons (SVG sprite, no npm)
 
 assets/
-├── css/app.css                     # Violet OKLCH theme
+├── css/app.css                     # OKLCH themes (violet, blue, green, rose, amber, slate)
 └── js/phia_hooks/
     ├── index.js
+    ├── back_top.js
+    ├── calendar.js
     ├── carousel.js
     ├── context_menu.js
+    ├── copy_button.js
     ├── dark_mode.js
+    ├── data_grid.js
     ├── dialog.js
     ├── drawer.js
     ├── dropdown_menu.js
+    ├── hover_card.js
     ├── popover.js
+    ├── resizable.js
+    ├── sonner.js
     ├── toast.js
     └── tooltip.js
 ```
@@ -178,9 +207,11 @@ assets/
 
 - **No Ecto, no Mailer** — all data in `PhiaDemo.FakeData`; chat state in `PhiaDemo.ChatStore`
 - **3 independent layouts** — each demo has its own `Layout` module under `live/{project}/layout.ex`
+- **Shared top nav** — `PhiaDemoWeb.ProjectNav` renders the cross-project navigation bar (logo, switcher tabs, dark mode toggle) used in all layouts and the home page
 - **Global component imports** — all PhiaUI components imported once in `phia_demo_web.ex`; `Icon` overrides `CoreComponents.icon` (Lucide sprites instead of Heroicons)
 - **Lucide icons** — SVG sprite at `priv/static/icons/lucide-sprite.svg`, no npm required; add new icons by downloading the SVG from `lucide-icons/lucide` and appending a `<symbol>` entry
 - **SVG charts** — inline SVG computed server-side with `Enum.with_index`; no JS chart library
+- **Multi-theme** — CSS custom properties swap on `<html>` class change; active theme persists via `localStorage`; implemented in `HomeLive` via `push_event("phx:set-color-theme", ...)`
 - **Toast** — `push_event(socket, "phia-toast", %{title: ..., variant: ..., duration_ms: ...})`
 - **Combobox** — requires 3 event handlers: `on_toggle`, `on_search`, `on_change`; state on server
 - **Drawer** — `<.drawer_content>` at page root; any element with `data-drawer-trigger={id}` opens it

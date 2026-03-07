@@ -4,14 +4,16 @@ defmodule PhiaDemoWeb.Demo.Showcase.IndexLive do
   alias PhiaDemoWeb.Demo.Showcase.Layout
 
   @categories [
-    %{name: "Inputs", href: "/showcase/inputs", icon: "keyboard", count: 9,
-      description: "Input, Textarea, Select, Combobox, TagsInput, DateRangePicker, RichTextEditor and more"},
-    %{name: "Display", href: "/showcase/display", icon: "eye", count: 8,
-      description: "Badge, Avatar, Card, Skeleton, Accordion, Table, Pagination, EmptyState"},
-    %{name: "Feedback", href: "/showcase/feedback", icon: "bell", count: 9,
-      description: "Alert, Toast, Dialog, AlertDialog, Popover, Tooltip, Drawer, DropdownMenu, ContextMenu"},
-    %{name: "Charts", href: "/showcase/charts", icon: "chart-bar", count: 5,
-      description: "StatCard, MetricGrid, Area chart, Bar chart, Donut chart, Line chart, ChartShell"},
+    %{name: "Inputs", href: "/showcase/inputs", icon: "keyboard", count: 27,
+      description: "Button, ButtonGroup, Switch, Slider, Rating, Toggle, Chip, Input, Textarea, PasswordInput, ColorPicker, OTP, InputAddon, MultiSelect, Combobox, Checkbox, RadioGroup, DatePicker, TagsInput, FileUpload, CopyButton e mais"},
+    %{name: "Display", href: "/showcase/display", icon: "eye", count: 31,
+      description: "Badge, Separator, Kbd, Tabs, TabsNav, Avatar, AvatarGroup, Card, SelectableCard, Timeline, ActivityFeed, Breadcrumb, Accordion, Skeleton, Table, Pagination, EmptyState, Icon, Tree, Direction, QrCode, ScrollArea, AspectRatio e mais"},
+    %{name: "Feedback", href: "/showcase/feedback", icon: "bell", count: 22,
+      description: "Spinner, Progress, CircularProgress, StepTracker, Alert, Toast, Snackbar, Sheet, Dialog, AlertDialog, Drawer, Command, HoverCard, Tooltip, Popover, DropdownMenu, ContextMenu, Carousel, BackTop, FloatButton, DarkModeToggle, Sonner"},
+    %{name: "Data & Charts", href: "/showcase/charts", icon: "chart-bar", count: 17,
+      description: "StatCard, MetricGrid, ChartShell, AreaChart, BarChart, DonutChart, SparklineCard, GaugeChart, UptimeBar, FilterBar, DataGrid, Resizable"},
+    %{name: "Calendar", href: "/showcase/calendar", icon: "calendar", count: 22,
+      description: "Calendar, BigCalendar, EventCalendar, HeatmapCalendar, WeekCalendar, RangeCalendar, MultiSelectCalendar, BadgeCalendar, StreakCalendar, BookingCalendar, DateRangePresets, DateCard, DateStrip, CountdownTimer, TimePicker, DateField, DateTimePicker, MonthPicker, YearPicker, WeekPicker, WeekDayPicker e mais"},
   ]
 
   @impl true
@@ -37,11 +39,11 @@ defmodule PhiaDemoWeb.Demo.Showcase.IndexLive do
             Every PhiaUI component — live demos, fully interactive, dark-mode ready.
           </p>
           <div class="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <.badge variant={:secondary}>v0.1.3</.badge>
+            <.badge variant={:secondary}>v0.1.5</.badge>
             <span>·</span>
-            <span>31 components</span>
+            <span>119 componentes</span>
             <span>·</span>
-            <span>4 categories</span>
+            <span>5 categorias</span>
           </div>
         </div>
 

@@ -165,3 +165,100 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+/* ── Color Themes — override primary palette via [data-theme] on <html> ──── */
+
+[data-theme="blue"] {
+  --color-primary:              oklch(0.55 0.20 240);
+  --color-primary-foreground:   oklch(0.985 0 0);
+  --color-secondary:            oklch(0.94 0.05 240);
+  --color-secondary-foreground: oklch(0.38 0.10 240);
+  --color-accent:               oklch(0.94 0.05 240);
+  --color-accent-foreground:    oklch(0.38 0.10 240);
+  --color-ring:                 oklch(0.55 0.20 240);
+}
+.dark[data-theme="blue"] {
+  --color-primary:              oklch(0.71 0.18 240);
+  --color-primary-foreground:   oklch(0.145 0.028 240);
+  --color-secondary:            oklch(0.255 0.035 240);
+  --color-secondary-foreground: oklch(0.96 0.005 240);
+  --color-accent:               oklch(0.255 0.035 240);
+  --color-accent-foreground:    oklch(0.96 0.005 240);
+  --color-ring:                 oklch(0.56 0.022 240);
+}
+
+[data-theme="green"] {
+  --color-primary:              oklch(0.53 0.17 145);
+  --color-primary-foreground:   oklch(0.985 0 0);
+  --color-secondary:            oklch(0.93 0.05 145);
+  --color-secondary-foreground: oklch(0.35 0.10 145);
+  --color-accent:               oklch(0.93 0.05 145);
+  --color-accent-foreground:    oklch(0.35 0.10 145);
+  --color-ring:                 oklch(0.53 0.17 145);
+}
+.dark[data-theme="green"] {
+  --color-primary:              oklch(0.68 0.17 145);
+  --color-primary-foreground:   oklch(0.145 0.028 145);
+  --color-secondary:            oklch(0.255 0.04 145);
+  --color-secondary-foreground: oklch(0.96 0.005 145);
+  --color-accent:               oklch(0.255 0.04 145);
+  --color-accent-foreground:    oklch(0.96 0.005 145);
+  --color-ring:                 oklch(0.56 0.022 145);
+}
+
+[data-theme="rose"] {
+  --color-primary:              oklch(0.60 0.22 15);
+  --color-primary-foreground:   oklch(0.985 0 0);
+  --color-secondary:            oklch(0.95 0.04 15);
+  --color-secondary-foreground: oklch(0.40 0.10 15);
+  --color-accent:               oklch(0.95 0.04 15);
+  --color-accent-foreground:    oklch(0.40 0.10 15);
+  --color-ring:                 oklch(0.60 0.22 15);
+}
+.dark[data-theme="rose"] {
+  --color-primary:              oklch(0.72 0.20 15);
+  --color-primary-foreground:   oklch(0.145 0.028 15);
+  --color-secondary:            oklch(0.255 0.04 15);
+  --color-secondary-foreground: oklch(0.96 0.005 15);
+  --color-accent:               oklch(0.255 0.04 15);
+  --color-accent-foreground:    oklch(0.96 0.005 15);
+  --color-ring:                 oklch(0.56 0.022 15);
+}
+
+[data-theme="amber"] {
+  --color-primary:              oklch(0.65 0.18 55);
+  --color-primary-foreground:   oklch(0.985 0 0);
+  --color-secondary:            oklch(0.95 0.05 55);
+  --color-secondary-foreground: oklch(0.40 0.10 55);
+  --color-accent:               oklch(0.95 0.05 55);
+  --color-accent-foreground:    oklch(0.40 0.10 55);
+  --color-ring:                 oklch(0.65 0.18 55);
+}
+.dark[data-theme="amber"] {
+  --color-primary:              oklch(0.78 0.17 55);
+  --color-primary-foreground:   oklch(0.145 0.028 55);
+  --color-secondary:            oklch(0.255 0.04 55);
+  --color-secondary-foreground: oklch(0.96 0.005 55);
+  --color-accent:               oklch(0.255 0.04 55);
+  --color-accent-foreground:    oklch(0.96 0.005 55);
+  --color-ring:                 oklch(0.56 0.022 55);
+}
+
+[data-theme="slate"] {
+  --color-primary:              oklch(0.42 0.03 250);
+  --color-primary-foreground:   oklch(0.985 0 0);
+  --color-secondary:            oklch(0.94 0.01 250);
+  --color-secondary-foreground: oklch(0.38 0.02 250);
+  --color-accent:               oklch(0.94 0.01 250);
+  --color-accent-foreground:    oklch(0.38 0.02 250);
+  --color-ring:                 oklch(0.42 0.03 250);
+}
+.dark[data-theme="slate"] {
+  --color-primary:              oklch(0.65 0.03 250);
+  --color-primary-foreground:   oklch(0.145 0.028 250);
+  --color-secondary:            oklch(0.255 0.03 250);
+  --color-secondary-foreground: oklch(0.96 0.005 250);
+  --color-accent:               oklch(0.255 0.03 250);
+  --color-accent-foreground:    oklch(0.96 0.005 250);
+  --color-ring:                 oklch(0.56 0.022 250);
+}

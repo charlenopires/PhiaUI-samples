@@ -46,16 +46,31 @@ const PhiaDropdownMenu = {
   },
 
   _position() {
-    const rect = this._trigger.getBoundingClientRect();
-    let top = rect.bottom + window.scrollY;
-    const left = rect.left + window.scrollX;
-    this._content.style.top = `${top}px`;
-    this._content.style.left = `${left}px`;
-    const contentRect = this._content.getBoundingClientRect();
-    if (contentRect.bottom > window.innerHeight - 20) {
-      top = rect.top + window.scrollY - this._content.offsetHeight;
-      this._content.style.top = `${top}px`;
-    }
+    // The content is `position: absolute` inside a `position: relative` parent.
+    // Use percentage-based offsets (relative to parent) rather than page coords.
+    Object.assign(this._content.style, { top: "", bottom: "", left: "", right: "" });
+
+    // Default: open below the trigger, left-aligned
+    this._content.style.top = "calc(100% + 4px)";
+    this._content.style.left = "0";
+
+    // After the browser has painted, check viewport overflow and flip if needed
+    requestAnimationFrame(() => {
+      if (!this._content) return;
+      const rect = this._content.getBoundingClientRect();
+
+      // Flip to above if bottom would overflow
+      if (rect.bottom > window.innerHeight - 8) {
+        this._content.style.top = "auto";
+        this._content.style.bottom = "calc(100% + 4px)";
+      }
+
+      // Align to right edge if right side would overflow
+      if (rect.right > window.innerWidth - 8) {
+        this._content.style.left = "auto";
+        this._content.style.right = "0";
+      }
+    });
   },
 
   _onClickOutside(e) {

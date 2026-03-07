@@ -4,13 +4,21 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
   alias PhiaDemo.{FakeData, ChatStore}
   alias PhiaDemoWeb.Demo.Chat.Layout
 
-  @current_user_id "admin"
+  @current_user_id "you"
+
+  @room_agents %{
+    "products" => "sofia",
+    "order" => "marcos",
+    "survey" => "sofia"
+  }
+
+  @quick_emojis ["👍", "❤️", "😂", "🎉", "😮", "🙏"]
 
   @impl true
   def mount(params, _session, socket) do
     rooms = FakeData.chat_rooms()
     users = FakeData.chat_users()
-    room_id = Map.get(params, "room_id", "general")
+    room_id = Map.get(params, "room_id", "products")
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(PhiaDemo.PubSub, "chat:room:#{room_id}")
@@ -18,26 +26,27 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
     messages = ChatStore.get_messages(room_id)
     typing = ChatStore.get_typing(room_id)
+    current_user = Enum.find(users, &(&1.id == @current_user_id))
 
     {:ok,
      socket
-     |> assign(:page_title, "##{room_id}")
+     |> assign(:page_title, room_label(rooms, room_id))
      |> assign(:rooms, rooms)
      |> assign(:users, users)
      |> assign(:room_id, room_id)
      |> assign(:messages, messages)
      |> assign(:typing, typing)
      |> assign(:input_text, "")
-     |> assign(:poll_open, false)
-     |> assign(:poll_question, "")
-     |> assign(:poll_options, ["", ""])
+     |> assign(:reply_to, nil)
+     |> assign(:email_input, "")
+     |> assign(:quick_emojis, @quick_emojis)
      |> assign(:current_user_id, @current_user_id)
-     |> assign(:current_user, Enum.find(users, &(&1.id == @current_user_id)))}
+     |> assign(:current_user, current_user)}
   end
 
   @impl true
   def handle_params(params, _uri, socket) do
-    room_id = Map.get(params, "room_id", "general")
+    room_id = Map.get(params, "room_id", "products")
 
     if connected?(socket) and room_id != socket.assigns[:room_id] do
       old_room = socket.assigns[:room_id]
@@ -54,7 +63,9 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
      |> assign(:room_id, room_id)
      |> assign(:messages, messages)
      |> assign(:typing, typing)
-     |> assign(:page_title, "##{room_id}")}
+     |> assign(:reply_to, nil)
+     |> assign(:email_input, "")
+     |> assign(:page_title, room_label(socket.assigns.rooms, room_id))}
   end
 
   # ── Events ────────────────────────────────────────────────────────────────
@@ -76,6 +87,8 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
     text = String.trim(text)
 
     if text != "" do
+      reply_to = socket.assigns.reply_to
+
       msg = %{
         id: "msg_#{:erlang.unique_integer([:positive])}",
         user_id: @current_user_id,
@@ -83,14 +96,15 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
         timestamp: format_time(),
         reactions: %{},
         type: :text,
-        reply_to: nil
+        reply_to: if(reply_to, do: reply_to.id, else: nil),
+        read: false
       }
 
       ChatStore.set_typing(socket.assigns.room_id, @current_user_id, false)
       ChatStore.add_message(socket.assigns.room_id, msg)
     end
 
-    {:noreply, assign(socket, :input_text, "")}
+    {:noreply, socket |> assign(:input_text, "") |> assign(:reply_to, nil)}
   end
 
   def handle_event("react", %{"msg_id" => msg_id, "emoji" => emoji}, socket) do
@@ -99,62 +113,114 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
   end
 
   def handle_event("vote_poll", %{"msg_id" => msg_id, "option_idx" => idx_str}, socket) do
-    idx = String.to_integer(idx_str)
-    ChatStore.vote_poll(socket.assigns.room_id, msg_id, idx, @current_user_id)
+    ChatStore.vote_poll(socket.assigns.room_id, msg_id, String.to_integer(idx_str), @current_user_id)
     {:noreply, socket}
   end
 
-  def handle_event("toggle_poll_dialog", _, socket) do
-    {:noreply, update(socket, :poll_open, &(!&1))}
+  def handle_event("quick_reply", %{"msg_id" => msg_id, "value" => value}, socket) do
+    room_id = socket.assigns.room_id
+    ChatStore.update_message(room_id, msg_id, %{answered: true, answer: value})
+
+    agent_id = Map.get(@room_agents, room_id, "sofia")
+
+    response =
+      if value == "yes" do
+        "Great choice! I'll send you more details about this product. Would you prefer to complete the order online or would you like me to help you right now?"
+      else
+        "No problem! We have many other options. Would you like to see more models with different prices and configurations?"
+      end
+
+    schedule_agent_response(room_id, agent_id, response, 2000)
+    {:noreply, socket}
   end
 
-  def handle_event("poll_question_change", %{"value" => q}, socket) do
-    {:noreply, assign(socket, :poll_question, q)}
+  def handle_event("update_email_input", %{"value" => val}, socket) do
+    {:noreply, assign(socket, :email_input, val)}
   end
 
-  def handle_event("poll_option_change", %{"index" => idx_str, "value" => v}, socket) do
-    idx = String.to_integer(idx_str)
-    options = List.replace_at(socket.assigns.poll_options, idx, v)
-    {:noreply, assign(socket, :poll_options, options)}
-  end
+  def handle_event("submit_email", %{"msg_id" => msg_id}, socket) do
+    email = String.trim(socket.assigns.email_input)
 
-  def handle_event("poll_add_option", _, socket) do
-    if length(socket.assigns.poll_options) < 4 do
-      {:noreply, update(socket, :poll_options, &(&1 ++ [""]))}
+    if email != "" and String.contains?(email, "@") do
+      room_id = socket.assigns.room_id
+      ChatStore.update_message(room_id, msg_id, %{answered: true, email: email})
+      agent_id = Map.get(@room_agents, room_id, "marcos")
+
+      schedule_agent_response(
+        room_id,
+        agent_id,
+        "Email received! Our sales team will contact #{email} within 24 hours with your personalized proposal.",
+        1500
+      )
+
+      {:noreply, assign(socket, :email_input, "")}
     else
       {:noreply, socket}
     end
   end
 
-  def handle_event("create_poll", _, socket) do
-    question = String.trim(socket.assigns.poll_question)
-    options = socket.assigns.poll_options |> Enum.map(&String.trim/1) |> Enum.reject(&(&1 == ""))
+  def handle_event("select_day", %{"msg_id" => msg_id, "day" => day}, socket) do
+    room_id = socket.assigns.room_id
+    ChatStore.update_message(room_id, msg_id, %{answered: true, selected_day: day})
+    agent_id = Map.get(@room_agents, room_id, "marcos")
 
-    if question != "" and length(options) >= 2 do
-      poll = %{
-        id: "poll_#{:erlang.unique_integer([:positive])}",
-        question: question,
-        options: Enum.map(options, &%{text: &1, votes: []}),
-        created_by: @current_user_id,
-        created_at: format_time()
-      }
+    schedule_agent_response(
+      room_id,
+      agent_id,
+      "Demo scheduled for #{day}! You'll receive an email with all the details. See you soon!",
+      1500
+    )
 
-      ChatStore.add_poll(socket.assigns.room_id, poll)
+    {:noreply, socket}
+  end
 
-      {:noreply,
-       socket
-       |> assign(:poll_open, false)
-       |> assign(:poll_question, "")
-       |> assign(:poll_options, ["", ""])}
+  def handle_event("nps_score", %{"msg_id" => msg_id, "score" => score_str}, socket) do
+    score = String.to_integer(score_str)
+    room_id = socket.assigns.room_id
+    ChatStore.update_message(room_id, msg_id, %{answered: true, selected_score: score})
+    agent_id = Map.get(@room_agents, room_id, "sofia")
+
+    response =
+      cond do
+        score >= 9 ->
+          "Amazing! Thanks for the #{score}/10! It's so rewarding to know you'd recommend us. Your support means a lot!"
+
+        score >= 7 ->
+          "Thanks for the #{score}/10! We'll keep working to make your experience even better."
+
+        true ->
+          "Thanks for your honesty. A score of #{score} shows us there's room to improve. Could you share what we could do better?"
+      end
+
+    schedule_agent_response(room_id, agent_id, response, 1800)
+    {:noreply, socket}
+  end
+
+  def handle_event("reply_to_msg", %{"msg_id" => msg_id}, socket) do
+    msg = Enum.find(socket.assigns.messages, &(&1.id == msg_id))
+
+    if msg do
+      user = Enum.find(socket.assigns.users, &(&1.id == msg.user_id))
+      reply = %{id: msg_id, text: preview_text(msg), user_name: if(user, do: user.name, else: msg.user_id)}
+      {:noreply, assign(socket, :reply_to, reply)}
     else
       {:noreply, socket}
     end
+  end
+
+  def handle_event("cancel_reply", _, socket) do
+    {:noreply, assign(socket, :reply_to, nil)}
   end
 
   # ── PubSub handlers ────────────────────────────────────────────────────────
 
   @impl true
   def handle_info({:new_message, _msg}, socket) do
+    messages = ChatStore.get_messages(socket.assigns.room_id)
+    {:noreply, assign(socket, :messages, messages)}
+  end
+
+  def handle_info({:message_updated, _msg}, socket) do
     messages = ChatStore.get_messages(socket.assigns.room_id)
     {:noreply, assign(socket, :messages, messages)}
   end
@@ -173,207 +239,542 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
     {:noreply, assign(socket, :messages, messages)}
   end
 
+  def handle_info({:agent_typing_start, room_id, agent_id}, socket) do
+    if room_id == socket.assigns.room_id do
+      ChatStore.set_typing(room_id, agent_id, true)
+    end
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:auto_respond, room_id, agent_id, text}, socket) do
+    if room_id == socket.assigns.room_id do
+      ChatStore.set_typing(room_id, agent_id, false)
+
+      msg = %{
+        id: "auto_#{:erlang.unique_integer([:positive])}",
+        user_id: agent_id,
+        text: text,
+        timestamp: format_time(),
+        reactions: %{},
+        type: :text,
+        reply_to: nil,
+        read: true
+      }
+
+      ChatStore.add_message(room_id, msg)
+    end
+
+    {:noreply, socket}
+  end
+
   # ── Render ─────────────────────────────────────────────────────────────────
 
   @impl true
   def render(assigns) do
     ~H"""
     <Layout.layout rooms={@rooms} current_room_id={@room_id} users={@users}>
+      <% agent = room_agent(@users, @room_id) %>
 
       <%!-- Topbar --%>
       <div class="flex items-center gap-3 px-4 h-14 border-b border-border/60 bg-background shrink-0">
-        <div class="flex items-center gap-2">
-          <.icon name="hash" size={:sm} class="text-muted-foreground" />
-          <span class="font-semibold text-foreground">{@room_id}</span>
+        <div class="flex items-center gap-2.5">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+            <.icon name={room_icon(@room_id)} size={:xs} />
+          </div>
+          <div>
+            <span class="font-semibold text-foreground text-sm">{room_label(@rooms, @room_id)}</span>
+            <%= if agent do %>
+              <p class="text-[10px] text-muted-foreground leading-none mt-0.5 flex items-center gap-1">
+                <span class="inline-block h-1.5 w-1.5 rounded-full bg-success" />
+                {agent.name} · online agora
+              </p>
+            <% end %>
+          </div>
         </div>
+
         <div class="ml-auto flex items-center gap-2">
           <.dark_mode_toggle id="chat-theme-toggle" />
-          <div class="hidden sm:flex items-center gap-2 text-sm">
+          <div class="hidden sm:flex items-center gap-2 border-l border-border/60 pl-3 ml-1">
             <.avatar size="sm" class="ring-2 ring-primary/20">
               <.avatar_fallback name={@current_user.name} class="bg-primary/10 text-primary text-xs font-semibold" />
             </.avatar>
-            <span class="font-medium text-foreground">{@current_user.name}</span>
+            <span class="text-sm font-medium text-foreground">{@current_user.name}</span>
           </div>
         </div>
       </div>
 
       <%!-- Messages area --%>
-      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4" phx-update="replace">
+      <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3" phx-update="replace">
         <%= for msg <- @messages do %>
           <% user = Enum.find(@users, &(&1.id == msg.user_id)) %>
           <% is_me = msg.user_id == @current_user_id %>
-          <div id={"msg-#{msg.id}"} class={["flex gap-3 group", if(is_me, do: "flex-row-reverse", else: "")]}>
-            <%!-- Avatar --%>
-            <.avatar size="sm" class="shrink-0 mt-0.5">
-              <.avatar_fallback name={if user, do: user.name, else: "?"} class="bg-primary/10 text-primary text-xs font-semibold" />
-            </.avatar>
 
-            <%!-- Bubble --%>
-            <div class={["max-w-[70%] space-y-1", if(is_me, do: "items-end", else: "items-start"), "flex flex-col"]}>
-              <div class={["flex items-baseline gap-2", if(is_me, do: "flex-row-reverse", else: "")]}>
-                <span class="text-xs font-semibold text-foreground">{if user, do: user.name, else: msg.user_id}</span>
-                <span class="text-[10px] text-muted-foreground">{msg.timestamp}</span>
+          <%= if msg.type == :system do %>
+            <%!-- System message --%>
+            <div class="flex items-center justify-center py-1">
+              <span class="px-3 py-1 rounded-full bg-muted text-[10px] text-muted-foreground font-medium">
+                {msg.text}
+              </span>
+            </div>
+          <% else %>
+            <div id={"msg-#{msg.id}"} class={["flex gap-2.5 group", if(is_me, do: "flex-row-reverse", else: "")]}>
+
+              <%!-- Avatar with online dot --%>
+              <div class="shrink-0 mt-0.5 relative">
+                <.avatar size="sm">
+                  <.avatar_fallback
+                    name={if user, do: user.name, else: "?"}
+                    class="bg-primary/10 text-primary text-xs font-semibold"
+                  />
+                </.avatar>
+                <%= if user && user.status == :online do %>
+                  <span class="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-success ring-1 ring-background" />
+                <% end %>
               </div>
 
-              <%= if msg.type == :poll and Map.has_key?(msg, :poll) do %>
-                <%!-- Poll message --%>
-                <div class="rounded-xl border border-border bg-card p-4 space-y-3 w-64">
-                  <div class="flex items-center gap-2">
-                    <.icon name="chart-bar" size={:xs} class="text-primary" />
-                    <span class="text-xs font-semibold text-primary uppercase tracking-wide">Poll</span>
+              <div class={["max-w-[75%] flex flex-col gap-1", if(is_me, do: "items-end", else: "items-start")]}>
+
+                <%!-- Sender name + time --%>
+                <div class={["flex items-baseline gap-2", if(is_me, do: "flex-row-reverse", else: "")]}>
+                  <span class="text-xs font-semibold text-foreground">
+                    {if user, do: user.name, else: msg.user_id}
+                  </span>
+                  <span class="text-[10px] text-muted-foreground">{msg.timestamp}</span>
+                </div>
+
+                <%!-- Reply preview --%>
+                <%= if Map.get(msg, :reply_to) do %>
+                  <% replied = Enum.find(@messages, &(&1.id == msg.reply_to)) %>
+                  <%= if replied do %>
+                    <% replied_user = Enum.find(@users, &(&1.id == replied.user_id)) %>
+                    <div class="px-2.5 py-1.5 rounded-lg border-l-2 border-primary/40 bg-muted/60 text-xs text-muted-foreground max-w-full">
+                      <span class="font-semibold text-foreground">
+                        {if replied_user, do: replied_user.name, else: replied.user_id}:
+                      </span>
+                      {preview_text(replied)}
+                    </div>
+                  <% end %>
+                <% end %>
+
+                <%!-- Message content --%>
+                <%= case msg.type do %>
+                  <% :product_card -> %>
+                    <.product_card_bubble msg={msg} />
+                  <% :email_form -> %>
+                    <.email_form_bubble msg={msg} email_input={@email_input} />
+                  <% :booking -> %>
+                    <.booking_bubble msg={msg} />
+                  <% :nps -> %>
+                    <.nps_bubble msg={msg} />
+                  <% :poll -> %>
+                    <.poll_bubble msg={msg} current_user_id={@current_user_id} />
+                  <% _ -> %>
+                    <div class={[
+                      "rounded-2xl px-3.5 py-2 text-sm leading-relaxed",
+                      if(is_me,
+                        do: "bg-primary text-primary-foreground rounded-tr-sm",
+                        else: "bg-muted text-foreground rounded-tl-sm"
+                      )
+                    ]}>
+                      {msg.text}
+                    </div>
+                <% end %>
+
+                <%!-- Reactions --%>
+                <%= if Map.get(msg, :reactions, %{}) != %{} do %>
+                  <div class="flex flex-wrap gap-1 mt-0.5">
+                    <%= for {emoji, user_ids} <- msg.reactions do %>
+                      <button
+                        type="button"
+                        phx-click="react"
+                        phx-value-msg_id={msg.id}
+                        phx-value-emoji={emoji}
+                        class={[
+                          "inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-xs transition-colors",
+                          if(@current_user_id in user_ids,
+                            do: "bg-primary/10 border-primary/30 text-primary",
+                            else: "bg-background border-border text-muted-foreground hover:bg-muted"
+                          )
+                        ]}
+                      >
+                        {emoji}
+                        <span class="font-medium">{length(user_ids)}</span>
+                      </button>
+                    <% end %>
                   </div>
-                  <p class="text-sm font-semibold text-foreground">{msg.poll.question}</p>
-                  <% total_votes = Enum.sum(Enum.map(msg.poll.options, &length(&1.votes))) %>
-                  <%= for {opt, idx} <- Enum.with_index(msg.poll.options) do %>
-                    <% pct = if total_votes > 0, do: Float.round(length(opt.votes) / total_votes * 100, 0), else: 0 %>
-                    <% voted = @current_user_id in opt.votes %>
-                    <button type="button" phx-click="vote_poll" phx-value-msg_id={msg.id} phx-value-option_idx={idx}
-                      class={["w-full text-left space-y-1 rounded-lg p-2 transition-colors", if(voted, do: "bg-primary/10", else: "hover:bg-muted/50")]}>
-                      <div class="flex justify-between text-xs">
-                        <span class={["font-medium", if(voted, do: "text-primary", else: "text-foreground")]}>{opt.text}</span>
-                        <span class="text-muted-foreground">{trunc(pct)}%</span>
-                      </div>
-                      <div class="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                        <div class={["h-1.5 rounded-full transition-all", if(voted, do: "bg-primary", else: "bg-muted-foreground")]}
-                          style={"width: #{pct}%"} />
-                      </div>
-                    </button>
-                  <% end %>
-                  <p class="text-[10px] text-muted-foreground">{total_votes} vote(s) · click to vote</p>
-                </div>
-              <% else %>
-                <%!-- Text message --%>
+                <% end %>
+
+                <%!-- Hover actions: emoji quick-react + reply --%>
                 <div class={[
-                  "rounded-2xl px-3.5 py-2 text-sm leading-relaxed",
-                  if(is_me,
-                    do: "bg-primary text-primary-foreground rounded-tr-sm",
-                    else: "bg-muted text-foreground rounded-tl-sm"
-                  )
+                  "hidden group-hover:flex items-center gap-0.5 bg-background border border-border shadow-sm rounded-full px-1.5 py-1",
+                  if(is_me, do: "flex-row-reverse", else: "")
                 ]}>
-                  {msg.text}
-                </div>
-              <% end %>
-
-              <%!-- Reactions --%>
-              <%= if map_size(msg.reactions) > 0 do %>
-                <div class="flex flex-wrap gap-1">
-                  <%= for {emoji, user_ids} <- msg.reactions do %>
-                    <button type="button" phx-click="react" phx-value-msg_id={msg.id} phx-value-emoji={emoji}
-                      class={[
-                        "inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-xs transition-colors",
-                        if(@current_user_id in user_ids, do: "bg-primary/10 border-primary/30 text-primary", else: "bg-muted border-border text-muted-foreground hover:bg-accent")
-                      ]}>
-                      {emoji} <span class="font-medium">{length(user_ids)}</span>
+                  <%= for emoji <- @quick_emojis do %>
+                    <button
+                      type="button"
+                      phx-click="react"
+                      phx-value-msg_id={msg.id}
+                      phx-value-emoji={emoji}
+                      class="h-6 w-6 flex items-center justify-center rounded-full hover:bg-muted text-sm transition-colors"
+                    >
+                      {emoji}
                     </button>
                   <% end %>
-                </div>
-              <% end %>
-
-              <%!-- Quick reaction buttons (show on hover) --%>
-              <div class="hidden group-hover:flex items-center gap-1">
-                <%= for emoji <- ["👍", "❤️", "😂", "🎉"] do %>
-                  <button type="button" phx-click="react" phx-value-msg_id={msg.id} phx-value-emoji={emoji}
-                    class="text-xs h-6 w-6 flex items-center justify-center rounded-full hover:bg-muted transition-colors">
-                    {emoji}
+                  <div class="w-px h-4 bg-border mx-0.5" />
+                  <button
+                    type="button"
+                    phx-click="reply_to_msg"
+                    phx-value-msg_id={msg.id}
+                    class="h-6 w-6 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                    title="Reply"
+                  >
+                    <.icon name="reply" size={:xs} />
                   </button>
+                </div>
+
+                <%!-- Read receipt for own messages --%>
+                <%= if is_me do %>
+                  <div class="flex items-center gap-0.5 text-[9px] text-muted-foreground/50 mt-0.5">
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    <svg class="h-3 w-3 -ml-1.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    <span>Entregue</span>
+                  </div>
                 <% end %>
               </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
 
         <%!-- Typing indicator --%>
-        <%= if @typing != [] and @typing != [@current_user_id] do %>
-          <% typers = Enum.reject(@typing, &(&1 == @current_user_id)) %>
-          <%= if typers != [] do %>
-            <% names = typers |> Enum.map(fn id -> (Enum.find(@users, &(&1.id == id)) || %{name: id}).name end) |> Enum.join(", ") %>
-            <div class="flex items-center gap-2 text-xs text-muted-foreground italic px-2">
-              <div class="flex gap-0.5">
-                <span class="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-bounce" style="animation-delay: 0ms" />
-                <span class="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-bounce" style="animation-delay: 150ms" />
-                <span class="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-bounce" style="animation-delay: 300ms" />
-              </div>
-              {names} {if length(typers) == 1, do: "is", else: "are"} typing...
+        <% typers = Enum.reject(@typing, &(&1 == @current_user_id)) %>
+        <%= if typers != [] do %>
+          <% names = typers |> Enum.map(fn id -> (Enum.find(@users, &(&1.id == id)) || %{name: id}).name end) |> Enum.join(", ") %>
+          <div class="flex items-center gap-2 px-1">
+            <div class="flex gap-0.5 items-center">
+              <span class="h-2 w-2 rounded-full bg-muted-foreground/50 animate-bounce" style="animation-delay: 0ms" />
+              <span class="h-2 w-2 rounded-full bg-muted-foreground/50 animate-bounce" style="animation-delay: 150ms" />
+              <span class="h-2 w-2 rounded-full bg-muted-foreground/50 animate-bounce" style="animation-delay: 300ms" />
             </div>
-          <% end %>
+            <span class="text-xs text-muted-foreground italic">{names} esta digitando...</span>
+          </div>
         <% end %>
       </div>
 
-      <%!-- Input bar --%>
-      <div class="shrink-0 border-t border-border/60 bg-background px-4 py-3">
-        <div class="flex items-center gap-2">
-          <%!-- Poll button --%>
-          <button type="button" phx-click="toggle_poll_dialog"
-            class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
-            <.icon name="chart-bar" size={:sm} />
+      <%!-- Reply preview bar --%>
+      <%= if @reply_to do %>
+        <div class="flex items-center gap-2 px-4 py-2 bg-muted/40 border-t border-border/40 shrink-0">
+          <.icon name="reply" size={:xs} class="text-primary shrink-0" />
+          <div class="flex-1 min-w-0">
+            <span class="text-xs font-semibold text-primary">{@reply_to.user_name}</span>
+            <p class="text-xs text-muted-foreground truncate">{@reply_to.text}</p>
+          </div>
+          <button
+            type="button"
+            phx-click="cancel_reply"
+            class="h-5 w-5 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground shrink-0"
+          >
+            <.icon name="x" size={:xs} />
           </button>
-
-          <%!-- Text input --%>
-          <form phx-submit="send_message" class="flex-1 flex items-center gap-2">
-            <input
-              type="text"
-              name="text"
-              value={@input_text}
-              placeholder={"Message ##{@room_id}"}
-              phx-keyup="typing"
-              phx-debounce="100"
-              autocomplete="off"
-              class="flex-1 h-9 rounded-xl border border-input bg-muted/40 px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
-            />
-            <button type="submit"
-              class="h-9 w-9 flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shrink-0">
-              <.icon name="send" size={:xs} />
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <%!-- Poll creation dialog (simple inline dropdown-style) --%>
-      <%= if @poll_open do %>
-        <div class="fixed inset-0 bg-background/80 backdrop-blur-sm z-40" phx-click="toggle_poll_dialog" />
-        <div class="fixed inset-x-4 bottom-20 md:inset-auto md:bottom-20 md:left-1/2 md:-translate-x-1/2 md:w-96 z-50 rounded-xl border border-border bg-card shadow-xl p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="font-semibold text-foreground">Create a Poll</h3>
-            <button type="button" phx-click="toggle_poll_dialog" class="h-7 w-7 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground">
-              <.icon name="x" size={:xs} />
-            </button>
-          </div>
-
-          <div class="space-y-1.5">
-            <label class="text-xs font-medium text-foreground">Question</label>
-            <input type="text" value={@poll_question} phx-keyup="poll_question_change" phx-value-value="" placeholder="Ask a question..."
-              class="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-xs font-medium text-foreground">Options</label>
-            <%= for {opt, idx} <- Enum.with_index(@poll_options) do %>
-              <input type="text" value={opt} phx-keyup="poll_option_change" phx-value-index={idx} phx-value-value="" placeholder={"Option #{idx + 1}"}
-                class="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-            <% end %>
-            <%= if length(@poll_options) < 4 do %>
-              <button type="button" phx-click="poll_add_option"
-                class="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium transition-colors">
-                <.icon name="plus" size={:xs} /> Add option
-              </button>
-            <% end %>
-          </div>
-
-          <div class="flex gap-2 pt-1">
-            <button type="button" phx-click="toggle_poll_dialog"
-              class="flex-1 h-9 rounded-md border border-input bg-background text-sm font-medium hover:bg-accent transition-colors">
-              Cancel
-            </button>
-            <button type="button" phx-click="create_poll"
-              class="flex-1 h-9 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-              Create Poll
-            </button>
-          </div>
         </div>
       <% end %>
 
+      <%!-- Input bar --%>
+      <div class="shrink-0 border-t border-border/60 bg-background px-4 py-3">
+        <form phx-submit="send_message" class="flex items-center gap-2">
+          <button
+            type="button"
+            class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors shrink-0"
+            title="Anexar arquivo"
+          >
+            <.icon name="paperclip" size={:sm} />
+          </button>
+
+          <input
+            type="text"
+            name="text"
+            value={@input_text}
+            placeholder={"Message — #{room_label(@rooms, @room_id)}..."}
+            phx-keyup="typing"
+            phx-debounce="100"
+            autocomplete="off"
+            class="flex-1 h-9 rounded-xl border border-input bg-muted/40 px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
+          />
+
+          <button
+            type="button"
+            class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors shrink-0"
+            title="Emoji"
+          >
+            <.icon name="smile" size={:sm} />
+          </button>
+
+          <button
+            type="submit"
+            class="h-9 w-9 flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shrink-0 disabled:opacity-50"
+          >
+            <.icon name="send" size={:xs} />
+          </button>
+        </form>
+      </div>
+
     </Layout.layout>
     """
+  end
+
+  # ── Private components ─────────────────────────────────────────────────────
+
+  defp product_card_bubble(assigns) do
+    ~H"""
+    <div class="rounded-2xl border border-border bg-card overflow-hidden w-64 shadow-sm rounded-tl-sm">
+      <%!-- Product image area --%>
+      <div class="h-28 flex flex-col items-center justify-center gap-1" style={product_card_style(@msg.product.gradient)}>
+        <span class="text-4xl">{product_emoji(@msg.product.icon)}</span>
+        <span class="text-[10px] font-semibold text-white/80 px-2 py-0.5 rounded-full bg-white/20">
+          {@msg.product.badge}
+        </span>
+      </div>
+      <%!-- Product info --%>
+      <div class="p-3.5 space-y-2">
+        <div class="flex items-start justify-between gap-2">
+          <h4 class="font-bold text-sm text-foreground leading-tight">{@msg.product.name}</h4>
+          <span class="text-sm font-bold text-primary shrink-0">{@msg.product.price}</span>
+        </div>
+        <p class="text-xs text-muted-foreground">{@msg.product.description}</p>
+        <%!-- Quick replies --%>
+        <%= if @msg.answered do %>
+          <div class="flex items-center gap-1.5 pt-0.5 text-xs">
+            <.icon name="circle-check" size={:xs} class="text-success shrink-0" />
+            <span class="text-muted-foreground">
+              {if @msg.answer == "yes", do: "Interest confirmed!", else: "Not interested right now"}
+            </span>
+          </div>
+        <% else %>
+          <div class="flex gap-2 pt-1">
+            <%= for qr <- @msg.quick_replies do %>
+              <button
+                type="button"
+                phx-click="quick_reply"
+                phx-value-msg_id={@msg.id}
+                phx-value-value={qr.value}
+                class="flex-1 text-xs py-2 rounded-lg border border-border bg-background hover:border-primary/50 hover:bg-primary/5 transition-colors font-medium text-center"
+              >
+                {qr.label}
+              </button>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    """
+  end
+
+  defp email_form_bubble(assigns) do
+    ~H"""
+    <div class="rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <.icon name="inbox" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">Email Capture</span>
+      </div>
+      <p class="text-sm text-foreground">{@msg.text}</p>
+      <%= if @msg.answered do %>
+        <div class="flex items-center gap-2 p-2.5 rounded-lg bg-success/10 border border-success/20">
+          <.icon name="circle-check" size={:xs} class="text-success shrink-0" />
+          <span class="text-xs text-success font-medium">Submitted: {@msg.email}</span>
+        </div>
+      <% else %>
+        <div class="flex gap-2">
+          <input
+            type="email"
+            placeholder="your@email.com"
+            value={@email_input}
+            phx-keyup="update_email_input"
+            phx-debounce="100"
+            class="flex-1 h-8 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
+          />
+          <button
+            type="button"
+            phx-click="submit_email"
+            phx-value-msg_id={@msg.id}
+            class="h-8 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors shrink-0"
+          >
+            Send
+          </button>
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp booking_bubble(assigns) do
+    ~H"""
+    <div class="rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <.icon name="calendar" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">Schedule a Demo</span>
+      </div>
+      <p class="text-sm text-foreground">{@msg.text}</p>
+      <%= if @msg.answered do %>
+        <div class="flex items-center gap-2 p-2.5 rounded-lg bg-primary/10 border border-primary/20">
+          <.icon name="circle-check" size={:xs} class="text-primary shrink-0" />
+          <span class="text-xs text-primary font-medium">Confirmed for {@msg.selected_day}</span>
+        </div>
+      <% else %>
+        <div class="grid grid-cols-3 gap-1.5">
+          <%= for day <- @msg.days do %>
+            <button
+              type="button"
+              phx-click="select_day"
+              phx-value-msg_id={@msg.id}
+              phx-value-day={day}
+              class="py-2.5 rounded-lg border border-border text-xs font-medium text-foreground hover:border-primary/60 hover:bg-primary/5 hover:text-primary transition-all"
+            >
+              {day}
+            </button>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp nps_bubble(assigns) do
+    ~H"""
+    <div class="rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <.icon name="zap" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">NPS · Satisfaction</span>
+      </div>
+      <p class="text-sm text-foreground">{@msg.text}</p>
+      <%= if @msg.answered do %>
+        <div class="flex items-center gap-2 p-2.5 rounded-lg bg-primary/10 border border-primary/20">
+          <.icon name="check" size={:xs} class="text-primary shrink-0" />
+          <span class="text-xs text-primary font-medium">Your score: {@msg.selected_score}/10</span>
+        </div>
+      <% else %>
+        <div>
+          <div class="flex justify-between text-[9px] text-muted-foreground mb-2 px-0.5">
+            <span>Improvavel</span>
+            <span>Muito provavel</span>
+          </div>
+          <div class="flex gap-1">
+            <%= for score <- 0..10 do %>
+              <button
+                type="button"
+                phx-click="nps_score"
+                phx-value-msg_id={@msg.id}
+                phx-value-score={score}
+                class={["flex-1 py-2 rounded-md text-[10px] font-bold transition-colors", nps_color(score)]}
+              >
+                {score}
+              </button>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp poll_bubble(assigns) do
+    ~H"""
+    <div class="rounded-2xl border border-border bg-card p-4 space-y-2.5 w-72 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <.icon name="chart-bar" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">Poll</span>
+      </div>
+      <p class="text-sm font-semibold text-foreground leading-snug">{@msg.poll.question}</p>
+      <% total_votes = Enum.sum(Enum.map(@msg.poll.options, &length(&1.votes))) %>
+      <%= for {opt, idx} <- Enum.with_index(@msg.poll.options) do %>
+        <% pct = if total_votes > 0, do: Float.round(length(opt.votes) / total_votes * 100, 0), else: 0 %>
+        <% voted = @current_user_id in opt.votes %>
+        <button
+          type="button"
+          phx-click="vote_poll"
+          phx-value-msg_id={@msg.id}
+          phx-value-option_idx={idx}
+          class={["w-full text-left rounded-lg p-2.5 transition-all space-y-1.5", if(voted, do: "bg-primary/10 ring-1 ring-primary/20", else: "hover:bg-muted/60")]}
+        >
+          <div class="flex justify-between text-xs">
+            <span class={["font-medium", if(voted, do: "text-primary", else: "text-foreground")]}>{opt.text}</span>
+            <span class="text-muted-foreground">{trunc(pct)}%</span>
+          </div>
+          <div class="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+            <div
+              class={["h-1.5 rounded-full transition-all duration-500", if(voted, do: "bg-primary", else: "bg-muted-foreground/40")]}
+              style={"width: #{pct}%"}
+            />
+          </div>
+        </button>
+      <% end %>
+      <p class="text-[10px] text-muted-foreground">{total_votes} vote(s) · click to vote</p>
+    </div>
+    """
+  end
+
+  # ── Helpers ────────────────────────────────────────────────────────────────
+
+  defp room_agent(users, room_id) do
+    agent_id = Map.get(@room_agents, room_id)
+    if agent_id, do: Enum.find(users, &(&1.id == agent_id)), else: nil
+  end
+
+  defp room_label(rooms, room_id) do
+    room = Enum.find(rooms, &(&1.id == room_id))
+    if room, do: room.name, else: room_id
+  end
+
+  defp room_icon("products"), do: "package"
+  defp room_icon("order"), do: "inbox"
+  defp room_icon("survey"), do: "chart-bar"
+  defp room_icon(_), do: "message-circle"
+
+  defp product_emoji("smartphone"), do: "📱"
+  defp product_emoji("laptop"), do: "💻"
+  defp product_emoji("watch"), do: "⌚"
+  defp product_emoji("headphones"), do: "🎧"
+  defp product_emoji(_), do: "📦"
+
+  defp product_card_style("slate"),
+    do: "background: linear-gradient(135deg, #334155, #0f172a)"
+
+  defp product_card_style("violet"),
+    do: "background: linear-gradient(135deg, #7c3aed, #581c87)"
+
+  defp product_card_style("blue"),
+    do: "background: linear-gradient(135deg, #2563eb, #1e3a8a)"
+
+  defp product_card_style("green"),
+    do: "background: linear-gradient(135deg, #16a34a, #14532d)"
+
+  defp product_card_style(_),
+    do: "background: linear-gradient(135deg, #6366f1, #4338ca)"
+
+  defp nps_color(score) when score <= 6,
+    do: "bg-destructive/10 text-destructive hover:bg-destructive/20"
+
+  defp nps_color(score) when score <= 8,
+    do: "bg-warning/10 text-warning hover:bg-warning/20"
+
+  defp nps_color(_),
+    do: "bg-success/10 text-success hover:bg-success/20"
+
+  defp preview_text(%{type: :product_card} = msg), do: msg.product.name
+  defp preview_text(%{type: :email_form}), do: "Email form"
+  defp preview_text(%{type: :booking}), do: "Schedule a demo"
+  defp preview_text(%{type: :nps}), do: "NPS survey"
+  defp preview_text(%{type: :poll, poll: poll}), do: poll.question
+  defp preview_text(%{text: text}) when is_binary(text), do: String.slice(text, 0, 60)
+  defp preview_text(_), do: "Message"
+
+  defp schedule_agent_response(room_id, agent_id, text, delay) do
+    me = self()
+    Process.send_after(me, {:agent_typing_start, room_id, agent_id}, 300)
+    Process.send_after(me, {:auto_respond, room_id, agent_id, text}, delay)
   end
 
   defp format_time do

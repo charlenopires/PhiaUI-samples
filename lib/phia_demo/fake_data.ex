@@ -32,11 +32,11 @@ defmodule PhiaDemo.FakeData do
       %{id: "#4519", customer: "Carla Souza", product: "Enterprise Plan", amount: "$999.00", status: :paid, date: "Feb 28, 2026"},
       %{id: "#4518", customer: "Diego Melo", product: "Pro Plan", amount: "$299.00", status: :cancelled, date: "Feb 28, 2026"},
       %{id: "#4517", customer: "Elena Rocha", product: "Starter Plan", amount: "$99.00", status: :paid, date: "Feb 27, 2026"},
-      %{id: "#4516", customer: "Fábio Nunes", product: "Pro Plan", amount: "$299.00", status: :paid, date: "Feb 27, 2026"},
+      %{id: "#4516", customer: "Fabio Nunes", product: "Pro Plan", amount: "$299.00", status: :paid, date: "Feb 27, 2026"},
       %{id: "#4515", customer: "Gabi Torres", product: "Enterprise Plan", amount: "$999.00", status: :pending, date: "Feb 26, 2026"},
       %{id: "#4514", customer: "Hugo Alves", product: "Starter Plan", amount: "$99.00", status: :paid, date: "Feb 26, 2026"},
-      %{id: "#4513", customer: "Ísis Ferreira", product: "Pro Plan", amount: "$299.00", status: :paid, date: "Feb 25, 2026"},
-      %{id: "#4512", customer: "João Ribeiro", product: "Enterprise Plan", amount: "$999.00", status: :cancelled, date: "Feb 25, 2026"}
+      %{id: "#4513", customer: "Isis Ferreira", product: "Pro Plan", amount: "$299.00", status: :paid, date: "Feb 25, 2026"},
+      %{id: "#4512", customer: "Joao Ribeiro", product: "Enterprise Plan", amount: "$999.00", status: :cancelled, date: "Feb 25, 2026"}
     ]
   end
 
@@ -49,7 +49,7 @@ defmodule PhiaDemo.FakeData do
       %{id: 3, name: "Carla Souza", email: "carla@acme.com", role: "Viewer", status: :inactive, joined: "Jun 2024"},
       %{id: 4, name: "Diego Melo", email: "diego@acme.com", role: "Editor", status: :active, joined: "Aug 2024"},
       %{id: 5, name: "Elena Rocha", email: "elena@acme.com", role: "Admin", status: :active, joined: "Sep 2024"},
-      %{id: 6, name: "Fábio Nunes", email: "fabio@acme.com", role: "Viewer", status: :pending, joined: "Nov 2024"},
+      %{id: 6, name: "Fabio Nunes", email: "fabio@acme.com", role: "Viewer", status: :pending, joined: "Nov 2024"},
       %{id: 7, name: "Gabi Torres", email: "gabi@acme.com", role: "Editor", status: :active, joined: "Dec 2024"},
       %{id: 8, name: "Hugo Alves", email: "hugo@acme.com", role: "Viewer", status: :inactive, joined: "Feb 2025"}
     ]
@@ -153,8 +153,8 @@ defmodule PhiaDemo.FakeData do
   def activity_log do
     [
       %{title: "Enterprise Sale — Carla Souza", desc: "Enterprise Plan activated — $999.00", date: "Feb 28", icon: "circle-check", color: "text-success"},
-      %{title: "New User — Fábio Nunes", desc: "Account approved — Starter Plan", date: "Feb 27", icon: "user-plus", color: "text-primary"},
-      %{title: "Cancellation — João Ribeiro", desc: "Enterprise Plan terminated at customer request", date: "Feb 25", icon: "circle-x", color: "text-destructive"},
+      %{title: "New User — Fabio Nunes", desc: "Account approved — Starter Plan", date: "Feb 27", icon: "user-plus", color: "text-primary"},
+      %{title: "Cancellation — Joao Ribeiro", desc: "Enterprise Plan terminated at customer request", date: "Feb 25", icon: "circle-x", color: "text-destructive"},
       %{title: "Plan Upgrade — Diego Melo", desc: "Starter → Pro — prorated charge applied", date: "Feb 24", icon: "circle-arrow-up", color: "text-warning"},
       %{title: "NPS Collected — Q1 2026", desc: "Score: 72 — 183 responses received", date: "Feb 20", icon: "star", color: "text-primary"}
     ]
@@ -171,52 +171,212 @@ defmodule PhiaDemo.FakeData do
 
   def chat_rooms do
     [
-      %{id: "general", name: "general", description: "General discussion", icon: "hash"},
-      %{id: "random", name: "random", description: "Off-topic fun", icon: "hash"},
-      %{id: "announcements", name: "announcements", description: "Important updates", icon: "hash"},
-      %{id: "design", name: "design", description: "Design and UI/UX", icon: "hash"},
-      %{id: "engineering", name: "engineering", description: "Technical discussions", icon: "hash"}
+      %{id: "products", name: "Products", description: "Featured product showcase", icon: "package"},
+      %{id: "order", name: "Order", description: "Sales proposal and scheduling", icon: "inbox"},
+      %{id: "survey", name: "Survey", description: "Customer satisfaction survey", icon: "chart-bar"}
     ]
   end
 
   def chat_users do
     [
-      %{id: "alice", name: "Alice", initials: "AL", status: :online, color: "bg-primary"},
-      %{id: "bob", name: "Bob", initials: "BO", status: :online, color: "bg-success"},
-      %{id: "carol", name: "Carol", initials: "CA", status: :away, color: "bg-warning"},
-      %{id: "david", name: "David", initials: "DA", status: :offline, color: "bg-muted-foreground"},
-      %{id: "admin", name: "Admin User", initials: "AU", status: :online, color: "bg-primary"}
+      %{id: "sofia", name: "Sofia", initials: "SF", status: :online, color: "bg-primary", role: "Sales Consultant"},
+      %{id: "marcos", name: "Marcos", initials: "MK", status: :online, color: "bg-success", role: "Account Executive"},
+      %{id: "you", name: "You", initials: "YO", status: :online, color: "bg-violet-500", role: "Customer"}
     ]
   end
 
-  def chat_seed_messages("general") do
+  def chat_seed_messages("products") do
     [
-      %{id: "m1", user_id: "alice", text: "Hey everyone! How's the sprint going?", timestamp: "09:00", reactions: %{}, type: :text, reply_to: nil},
-      %{id: "m2", user_id: "bob", text: "Good morning! Finished the auth module yesterday 🎉", timestamp: "09:01", reactions: %{"👋" => ["carol"]}, type: :text, reply_to: nil},
-      %{id: "m3", user_id: "carol", text: "Nice! I'm working on the dashboard redesign today.", timestamp: "09:02", reactions: %{}, type: :text, reply_to: nil},
-      %{id: "m4", user_id: "david", text: "Can someone review my PR when they have a moment?", timestamp: "09:05", reactions: %{"👍" => ["alice", "bob"]}, type: :text, reply_to: nil}
+      %{
+        id: "p_sys1",
+        user_id: "system",
+        text: "Sofia joined the conversation",
+        timestamp: "09:58",
+        reactions: %{},
+        type: :system,
+        reply_to: nil
+      },
+      %{
+        id: "p1",
+        user_id: "sofia",
+        text: "Hi! Welcome to our store! I'm Sofia, your sales consultant. Can I show you some of our featured products today?",
+        timestamp: "09:58",
+        reactions: %{"❤️" => ["sofia"]},
+        type: :text,
+        reply_to: nil,
+        read: true
+      },
+      %{
+        id: "p2",
+        user_id: "sofia",
+        text: "Check out our best-selling product this month:",
+        timestamp: "09:59",
+        reactions: %{},
+        type: :product_card,
+        reply_to: nil,
+        read: true,
+        product: %{
+          name: "iPhone 15 Pro",
+          price: "$999",
+          badge: "Best Seller",
+          description: "A17 Pro chip · 48MP camera · Titanium",
+          gradient: "slate",
+          icon: "smartphone"
+        },
+        quick_replies: [
+          %{label: "Yes, tell me more", value: "yes"},
+          %{label: "No, thanks", value: "no"}
+        ],
+        answered: false,
+        answer: nil
+      },
+      %{
+        id: "p3",
+        user_id: "sofia",
+        text: "We also have an exclusive deal on this laptop:",
+        timestamp: "10:00",
+        reactions: %{},
+        type: :product_card,
+        reply_to: nil,
+        read: true,
+        product: %{
+          name: "MacBook Air M3",
+          price: "$1,299",
+          badge: "10% OFF",
+          description: "M3 chip · 8GB RAM · 18h battery life",
+          gradient: "violet",
+          icon: "laptop"
+        },
+        quick_replies: [
+          %{label: "I'm interested", value: "yes"},
+          %{label: "Maybe later", value: "no"}
+        ],
+        answered: false,
+        answer: nil
+      }
     ]
   end
 
-  def chat_seed_messages("design") do
+  def chat_seed_messages("order") do
     [
-      %{id: "d1", user_id: "carol", text: "Figma file updated — check the new component library!", timestamp: "08:30", reactions: %{"🎨" => ["alice"]}, type: :text, reply_to: nil},
-      %{id: "d2", user_id: "alice", text: "Love the new color palette. Much cleaner.", timestamp: "08:35", reactions: %{}, type: :text, reply_to: nil},
-      %{id: "d3", user_id: "carol", text: "Let me know if the dark mode tokens need adjustment.", timestamp: "08:40", reactions: %{}, type: :text, reply_to: nil}
+      %{
+        id: "ped_sys1",
+        user_id: "system",
+        text: "Marcos joined the conversation",
+        timestamp: "10:05",
+        reactions: %{},
+        type: :system,
+        reply_to: nil
+      },
+      %{
+        id: "ped1",
+        user_id: "marcos",
+        text: "Hi! I heard you're interested in the Enterprise plan. Let me put together a custom proposal for you!",
+        timestamp: "10:05",
+        reactions: %{},
+        type: :text,
+        reply_to: nil,
+        read: true
+      },
+      %{
+        id: "ped2",
+        user_id: "marcos",
+        text: "To send you the proposal, I'll need your best email address:",
+        timestamp: "10:06",
+        reactions: %{},
+        type: :email_form,
+        reply_to: nil,
+        read: true,
+        answered: false,
+        email: nil
+      },
+      %{
+        id: "ped3",
+        user_id: "marcos",
+        text: "Our consultant can run a live demo for you. Which day of the week works best?",
+        timestamp: "10:07",
+        reactions: %{},
+        type: :booking,
+        reply_to: nil,
+        read: true,
+        days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        answered: false,
+        selected_day: nil
+      }
     ]
   end
 
-  def chat_seed_messages("engineering") do
+  def chat_seed_messages("survey") do
     [
-      %{id: "e1", user_id: "david", text: "Upgraded to Phoenix 1.8 — all tests passing ✅", timestamp: "08:00", reactions: %{"🚀" => ["bob", "alice"]}, type: :text, reply_to: nil},
-      %{id: "e2", user_id: "bob", text: "Nice! Did you run into any issues with the new layouts?", timestamp: "08:05", reactions: %{}, type: :text, reply_to: nil},
-      %{id: "e3", user_id: "david", text: "Just a minor CSS tweak needed for the sidebar. Fixed in 10 min.", timestamp: "08:08", reactions: %{}, type: :text, reply_to: nil}
+      %{
+        id: "enq_sys1",
+        user_id: "system",
+        text: "Sofia joined the conversation",
+        timestamp: "10:15",
+        reactions: %{},
+        type: :system,
+        reply_to: nil
+      },
+      %{
+        id: "enq1",
+        user_id: "sofia",
+        text: "Hi! We're running a quick survey about our customers' preferences. It takes less than 1 minute!",
+        timestamp: "10:15",
+        reactions: %{"👍" => ["marcos"]},
+        type: :text,
+        reply_to: nil,
+        read: true
+      },
+      %{
+        id: "enq2",
+        user_id: "sofia",
+        text: nil,
+        timestamp: "10:16",
+        reactions: %{},
+        type: :poll,
+        reply_to: nil,
+        read: true,
+        poll: %{
+          id: "poll_seed1",
+          question: "Which product categories interest you the most?",
+          options: [
+            %{text: "Smartphones & Tablets", votes: ["sofia"]},
+            %{text: "Laptops & Computers", votes: []},
+            %{text: "Gaming & Accessories", votes: ["marcos"]},
+            %{text: "Cameras & Photography", votes: []}
+          ],
+          created_by: "sofia",
+          created_at: "10:16"
+        }
+      },
+      %{
+        id: "enq3",
+        user_id: "sofia",
+        text: "Thanks for your answers! One last question:",
+        timestamp: "10:17",
+        reactions: %{},
+        type: :text,
+        reply_to: nil,
+        read: true
+      },
+      %{
+        id: "enq4",
+        user_id: "sofia",
+        text: "On a scale from 0 to 10, how likely are you to recommend our store to a friend?",
+        timestamp: "10:17",
+        reactions: %{},
+        type: :nps,
+        reply_to: nil,
+        read: true,
+        answered: false,
+        selected_score: nil
+      }
     ]
   end
 
   def chat_seed_messages(_room_id) do
     [
-      %{id: "generic1", user_id: "alice", text: "Welcome to this channel!", timestamp: "09:00", reactions: %{}, type: :text, reply_to: nil}
+      %{id: "generic1", user_id: "sofia", text: "Welcome! How can I help you today?", timestamp: "09:00", reactions: %{}, type: :text, reply_to: nil, read: true}
     ]
   end
 end

@@ -5,7 +5,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.Layout do
 
   import PhiaUi.Components.Shell
   import PhiaUi.Components.Icon
-  import PhiaUi.Components.DarkModeToggle
+  import PhiaDemoWeb.ProjectNav
 
   attr :current_path, :string, required: true
   slot :inner_block, required: true
@@ -15,9 +15,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.Layout do
     <.shell>
       <:topbar>
         <.mobile_sidebar_toggle />
-        <div class="ml-auto flex items-center gap-3">
-          <.dark_mode_toggle id="showcase-theme-toggle" />
-        </div>
+        <.project_topbar current_project={:showcase} dark_mode_id="showcase-dm" />
       </:topbar>
       <:sidebar>
         <.sidebar>
@@ -38,11 +36,8 @@ defmodule PhiaDemoWeb.Demo.Showcase.Layout do
               <.nav_item current_path={@current_path} href="/showcase/inputs" icon="keyboard" label="Inputs" />
               <.nav_item current_path={@current_path} href="/showcase/display" icon="eye" label="Display" />
               <.nav_item current_path={@current_path} href="/showcase/feedback" icon="bell" label="Feedback" />
-              <.nav_item current_path={@current_path} href="/showcase/charts" icon="chart-bar" label="Charts" />
-            </.nav_section>
-            <.nav_section label="Projects">
-              <.nav_item current_path={@current_path} href="/dashboard" icon="layout-dashboard" label="Dashboard" />
-              <.nav_item current_path={@current_path} href="/chat" icon="message-circle" label="Chat" />
+              <.nav_item current_path={@current_path} href="/showcase/charts" icon="chart-bar" label="Data & Charts" />
+              <.nav_item current_path={@current_path} href="/showcase/calendar" icon="calendar" label="Calendar" />
             </.nav_section>
           </:nav_items>
           <:footer_items>

@@ -17,8 +17,8 @@ defmodule PhiaDemoWeb.Router do
   scope "/", PhiaDemoWeb do
     pipe_through :browser
 
-    # Root redirects to Dashboard
-    get "/", PageController, :home
+    # Home — theme picker + project selector
+    live "/", HomeLive
 
     # Dashboard demo
     live "/dashboard",            Demo.Dashboard.Overview,  :index
@@ -32,7 +32,8 @@ defmodule PhiaDemoWeb.Router do
     live "/showcase/inputs",      Demo.Showcase.InputsLive,   :index
     live "/showcase/display",     Demo.Showcase.DisplayLive,  :index
     live "/showcase/feedback",    Demo.Showcase.FeedbackLive, :index
-    live "/showcase/charts",      Demo.Showcase.ChartsLive,   :index
+    live "/showcase/charts",      Demo.Showcase.ChartsLive,    :index
+    live "/showcase/calendar",    Demo.Showcase.CalendarLive,  :index
 
     # Chat demo
     live "/chat",                 Demo.Chat.RoomLive, :index

@@ -40,6 +40,17 @@ topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", _info => topbar.show(300))
 window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 
+// Theme switcher — set data-theme on <html> and persist to localStorage
+window.addEventListener("phx:set-color-theme", (e) => {
+  const theme = e.detail.theme
+  if (theme && theme !== "violet") {
+    document.documentElement.setAttribute("data-theme", theme)
+  } else {
+    document.documentElement.removeAttribute("data-theme")
+  }
+  localStorage.setItem("phia-color-theme", theme)
+})
+
 // connect if there are any LiveViews on the page
 liveSocket.connect()
 

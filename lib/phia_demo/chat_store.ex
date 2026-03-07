@@ -33,6 +33,23 @@ defmodule PhiaDemo.ChatStore do
     Phoenix.PubSub.broadcast(PhiaDemo.PubSub, "chat:room:#{room_id}", {:new_message, msg})
   end
 
+  # ── Update message ─────────────────────────────────────────────────────────
+
+  def update_message(room_id, msg_id, updates) do
+    Agent.update(__MODULE__, fn state ->
+      update_in(state, [:messages, room_id], fn msgs ->
+        Enum.map(msgs, fn msg ->
+          if msg.id == msg_id, do: Map.merge(msg, updates), else: msg
+        end)
+      end)
+    end)
+
+    updated_msg = Enum.find(get_messages(room_id), &(&1.id == msg_id))
+    if updated_msg do
+      Phoenix.PubSub.broadcast(PhiaDemo.PubSub, "chat:room:#{room_id}", {:message_updated, updated_msg})
+    end
+  end
+
   # ── Reactions ──────────────────────────────────────────────────────────────
 
   def add_reaction(room_id, msg_id, emoji, user_id) do

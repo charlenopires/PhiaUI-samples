@@ -110,6 +110,24 @@ defmodule PhiaDemoWeb do
       # PhiaUI — Form Inputs
       import PhiaUi.Components.TagsInput
       import PhiaUi.Components.DateRangePicker
+      import PhiaUi.Components.Switch
+      import PhiaUi.Components.Slider
+      import PhiaUi.Components.Rating
+      import PhiaUi.Components.SegmentedControl
+      import PhiaUi.Components.InputOtp
+      import PhiaUi.Components.NumberInput
+      import PhiaUi.Components.PasswordInput
+      import PhiaUi.Components.ColorPicker
+      import PhiaUi.Components.Chip
+      import PhiaUi.Components.MultiSelect
+      import PhiaUi.Components.Checkbox
+      import PhiaUi.Components.RadioGroup
+      import PhiaUi.Components.InputAddon
+
+      # PhiaUI — Buttons
+      import PhiaUi.Components.Toggle
+      import PhiaUi.Components.ToggleGroup
+      import PhiaUi.Components.CopyButton
 
       # PhiaUI — Interactive
       import PhiaUi.Components.Tooltip
@@ -121,11 +139,88 @@ defmodule PhiaDemoWeb do
       import PhiaUi.Components.ContextMenu
       import PhiaUi.Components.Carousel
       import PhiaUi.Components.Drawer
+      import PhiaUi.Components.Sheet
       import PhiaUi.Components.Combobox
+      import PhiaUi.Components.HoverCard
+      import PhiaUi.Components.Snackbar
+      import PhiaUi.Components.FloatButton
+      import PhiaUi.Components.BackTop
+      import PhiaUi.Components.FileUpload
+      import PhiaUi.Components.DatePicker
+      import PhiaUi.Components.Command
+
+      # PhiaUI — Feedback
+      import PhiaUi.Components.Spinner
+      import PhiaUi.Components.CircularProgress
+      import PhiaUi.Components.StepTracker
+      import PhiaUi.Components.Progress
+
+      # PhiaUI — Display
+      import PhiaUi.Components.Timeline
+      import PhiaUi.Components.ActivityFeed
+      import PhiaUi.Components.AvatarGroup
+      import PhiaUi.Components.Kbd
+      import PhiaUi.Components.Direction
+
+      # PhiaUI — Navigation
+      import PhiaUi.Components.Tabs
+      import PhiaUi.Components.TabsNav
+      import PhiaUi.Components.Separator
+
+      # PhiaUI — Data
+      import PhiaUi.Components.Tree
+      import PhiaUi.Components.BulkActionBar
+      import PhiaUi.Components.SparklineCard
+      import PhiaUi.Components.GaugeChart
+      import PhiaUi.Components.UptimeBar
+
+      # PhiaUI — Cards
+      import PhiaUi.Components.SelectableCard
+      import PhiaUi.Components.ReceiptCard
+
+      # PhiaUI — Media
+      import PhiaUi.Components.QrCode
 
       # PhiaUI — Utilities
       import PhiaUi.Components.Toast
       import PhiaUi.Components.DarkModeToggle
+      import PhiaUi.Components.Sonner
+
+      # PhiaUI — Additional Inputs
+      import PhiaUi.Components.ImageUpload
+
+      # PhiaUI — Layout
+      import PhiaUi.Components.ScrollArea
+      import PhiaUi.Components.AspectRatio
+      import PhiaUi.Components.Resizable
+
+      # PhiaUI — Data
+      import PhiaUi.Components.FilterBar
+      import PhiaUi.Components.DataGrid
+
+      # PhiaUI — Calendar
+      import PhiaUi.Components.Calendar
+      import PhiaUi.Components.BigCalendar
+      import PhiaUi.Components.HeatmapCalendar
+      import PhiaUi.Components.CountdownTimer
+      import PhiaUi.Components.TimePicker
+      import PhiaUi.Components.DateCard
+      import PhiaUi.Components.DateStrip
+      import PhiaUi.Components.WeekCalendar
+      import PhiaUi.Components.MonthPicker
+      import PhiaUi.Components.YearPicker
+      import PhiaUi.Components.WeekPicker
+      import PhiaUi.Components.RangeCalendar
+      import PhiaUi.Components.BadgeCalendar
+      import PhiaUi.Components.StreakCalendar
+      import PhiaUi.Components.BookingCalendar
+      import PhiaUi.Components.DateRangePresets
+      import PhiaUi.Components.EventCalendar
+      import PhiaUi.Components.ScheduleEventCard
+      import PhiaUi.Components.MultiSelectCalendar
+      import PhiaUi.Components.WeekDayPicker
+      import PhiaUi.Components.DateField
+      import PhiaUi.Components.DateTimePicker
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS
