@@ -24,6 +24,10 @@ defmodule PhiaDemoWeb.Demo.Showcase.IndexLive do
       description: "ImageUpload, FileUpload, CopyButton, DropZone — all file upload patterns including drag-and-drop and progress indicators"},
     %{name: "Media", href: "/showcase/media", icon: "image", count: 7,
       description: "Carousel, QrCode, AspectRatio, ScrollArea, Resizable, Direction — media display and layout utilities"},
+    %{name: "Animation", href: "/showcase/animation", icon: "sparkles", count: 22,
+      description: "marquee, orbit, aurora, meteor_shower, shimmer_text, typewriter, word_rotate, text_scramble, fade_in, float, spotlight, tilt_card, number_ticker, typing_indicator, wave_loader, animated_border, pulse_ring, confetti_burst, particle_bg e mais"},
+    %{name: "Visual Effects", href: "/showcase/visual", icon: "eye", count: 20,
+      description: "gradient_mesh, retro_grid, wave_bg, hex_pattern, bokeh_bg, flicker_grid, flowing_lines, beam_bg — plus glass_card, glass_panel, acrylic_surface, liquid_glass, neon_glow_card, border_beam, shine_border, magic_card, card_spotlight, moving_border"},
   ]
 
   @impl true
@@ -53,7 +57,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.IndexLive do
             <span>·</span>
             <span>534 components</span>
             <span>·</span>
-            <span>10 categories</span>
+            <span>12 categories</span>
           </div>
         </div>
 

@@ -251,7 +251,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
                 </div>
               </:icon>
               <p class="text-sm font-semibold text-foreground">Deployment completed</p>
-              <p class="text-xs text-muted-foreground mt-0.5">v0.1.3 is live in production</p>
+              <p class="text-xs text-muted-foreground mt-0.5">v0.1.11 is live in production</p>
             </.timeline_item>
             <.timeline_item timestamp="2 hours ago">
               <:icon>
@@ -424,7 +424,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
                 Is it production-ready?
               </.accordion_trigger>
               <.accordion_content value="a3">
-                PhiaUI is actively developed. v0.1.3 is suitable for demos and prototypes. Production apps should pin the version and test thoroughly.
+                PhiaUI is actively developed. v0.1.11 is suitable for demos and prototypes. Production apps should pin the version and test thoroughly.
               </.accordion_content>
             </.accordion_item>
           </.accordion>

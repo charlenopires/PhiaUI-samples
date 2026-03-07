@@ -27,7 +27,7 @@
   --color-sidebar-background: oklch(0.961 0.014 241.67);
 }
 
-.dark [data-phia-theme="blue"] {
+.dark[data-phia-theme="blue"] {
   --color-accent: oklch(0.268 0.031 243.034);
   --color-accent-foreground: oklch(0.985 0 0);
   --color-background: oklch(0.145 0.01 237.938);
@@ -74,7 +74,7 @@
   --color-sidebar-background: oklch(0.962 0.032 155.37);
 }
 
-.dark [data-phia-theme="green"] {
+.dark[data-phia-theme="green"] {
   --color-accent: oklch(0.27 0.059 144.54);
   --color-accent-foreground: oklch(0.985 0 0);
   --color-background: oklch(0.147 0.037 135.965);
@@ -121,7 +121,7 @@
   --color-sidebar-background: oklch(0.97 0 0);
 }
 
-.dark [data-phia-theme="neutral"] {
+.dark[data-phia-theme="neutral"] {
   --color-accent: oklch(0.269 0 0);
   --color-accent-foreground: oklch(0.985 0 0);
   --color-background: oklch(0.145 0 0);
@@ -168,7 +168,7 @@
   --color-sidebar-background: oklch(0.966 0.019 49.315);
 }
 
-.dark [data-phia-theme="orange"] {
+.dark[data-phia-theme="orange"] {
   --color-accent: oklch(0.272 0.028 37.25);
   --color-accent-foreground: oklch(0.985 0 0);
   --color-background: oklch(0.145 0.012 38.87);
@@ -215,7 +215,7 @@
   --color-sidebar-background: oklch(0.969 0.015 12.422);
 }
 
-.dark [data-phia-theme="rose"] {
+.dark[data-phia-theme="rose"] {
   --color-accent: oklch(0.272 0.035 11.44);
   --color-accent-foreground: oklch(0.985 0 0);
   --color-background: oklch(0.141 0.019 13.69);
@@ -262,7 +262,7 @@
   --color-sidebar-background: oklch(0.984 0.003 247.858);
 }
 
-.dark [data-phia-theme="slate"] {
+.dark[data-phia-theme="slate"] {
   --color-accent: oklch(0.279 0.041 260.031);
   --color-accent-foreground: oklch(0.984 0.003 247.858);
   --color-background: oklch(0.13 0.028 261.692);
@@ -309,7 +309,7 @@
   --color-sidebar-background: oklch(0.965 0.022 296.58);
 }
 
-.dark [data-phia-theme="violet"] {
+.dark[data-phia-theme="violet"] {
   --color-accent: oklch(0.271 0.033 293.28);
   --color-accent-foreground: oklch(0.985 0 0);
   --color-background: oklch(0.141 0.017 293.28);
@@ -356,7 +356,7 @@
   --color-sidebar-background: oklch(0.985 0.001 286.38);
 }
 
-.dark [data-phia-theme="zinc"] {
+.dark[data-phia-theme="zinc"] {
   --color-accent: oklch(0.279 0.007 285.82);
   --color-accent-foreground: oklch(0.985 0 0);
   --color-background: oklch(0.141 0.004 285.82);

@@ -18,6 +18,19 @@ import PhiaDataGrid from './data_grid.js'
 import PhiaCalendar from './calendar.js'
 import PhiaTheme from './theme.js'
 import PhiaNumberTicker from './number_ticker.js'
+import PhiaMarquee from './marquee.js'
+import PhiaTypewriter from './typewriter.js'
+import PhiaWordRotate from './word_rotate.js'
+import PhiaTextScramble from './text_scramble.js'
+import PhiaScrollReveal from './scroll_reveal.js'
+import PhiaSpotlight from './spotlight.js'
+import PhiaTiltCard from './tilt_card.js'
+import PhiaConfetti from './confetti.js'
+import PhiaParticleBg from './particle_bg.js'
+import PhiaMeshBg from './mesh_bg.js'
+import PhiaFlickerGrid from './flicker_grid.js'
+import PhiaMagicCard from './magic_card.js'
+import PhiaCardSpotlight from './card_spotlight.js'
 
 const PhiaHooks = {
   PhiaDialog,
@@ -38,6 +51,19 @@ const PhiaHooks = {
   PhiaCalendar,
   PhiaTheme,
   PhiaNumberTicker,
+  PhiaMarquee,
+  PhiaTypewriter,
+  PhiaWordRotate,
+  PhiaTextScramble,
+  PhiaScrollReveal,
+  PhiaSpotlight,
+  PhiaTiltCard,
+  PhiaConfetti,
+  PhiaParticleBg,
+  PhiaMeshBg,
+  PhiaFlickerGrid,
+  PhiaMagicCard,
+  PhiaCardSpotlight,
 }
 
 export default PhiaHooks

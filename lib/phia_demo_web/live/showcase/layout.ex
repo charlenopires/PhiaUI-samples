@@ -26,7 +26,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.Layout do
               </div>
               <div>
                 <span class="text-sm font-bold text-foreground leading-none">Showcase</span>
-                <p class="text-[10px] text-muted-foreground leading-none mt-0.5 font-medium">PhiaUI v0.1.3</p>
+                <p class="text-[10px] text-muted-foreground leading-none mt-0.5 font-medium">PhiaUI v0.1.11</p>
               </div>
             </div>
           </:brand>
@@ -45,6 +45,8 @@ defmodule PhiaDemoWeb.Demo.Showcase.Layout do
               <.nav_item current_path={@current_path} href="/showcase/tables" icon="list-ordered" label="Tables" />
               <.nav_item current_path={@current_path} href="/showcase/upload" icon="upload" label="Upload" />
               <.nav_item current_path={@current_path} href="/showcase/media" icon="image" label="Media" />
+              <.nav_item current_path={@current_path} href="/showcase/animation" icon="sparkles" label="Animation" />
+              <.nav_item current_path={@current_path} href="/showcase/visual" icon="eye" label="Visual Effects" />
             </.nav_section>
           </:nav_items>
           <:footer_items>

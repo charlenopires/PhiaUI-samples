@@ -37,7 +37,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Layout do
               </div>
               <div>
                 <span class="text-sm font-bold text-foreground leading-none">PhiaUI</span>
-                <p class="text-[10px] text-muted-foreground leading-none mt-0.5 font-medium">v0.1.3 · Dashboard</p>
+                <p class="text-[10px] text-muted-foreground leading-none mt-0.5 font-medium">v0.1.11 · Dashboard</p>
               </div>
             </div>
           </:brand>

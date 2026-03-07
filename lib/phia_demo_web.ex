@@ -227,6 +227,7 @@ defmodule PhiaDemoWeb do
       import PhiaUi.Components.ThemeProvider
       import PhiaUi.Components.Glass
       import PhiaUi.Components.Background
+      import PhiaUi.Components.AnimatedSurface
       import PhiaUi.Components.ProfileCard
       import PhiaUi.Components.FeatureCard
 

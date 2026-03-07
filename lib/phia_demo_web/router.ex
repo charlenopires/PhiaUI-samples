@@ -39,6 +39,8 @@ defmodule PhiaDemoWeb.Router do
     live "/showcase/tables",      Demo.Showcase.TablesLive,    :index
     live "/showcase/upload",      Demo.Showcase.UploadLive,    :index
     live "/showcase/media",       Demo.Showcase.MediaLive,     :index
+    live "/showcase/animation",   Demo.Showcase.AnimationLive, :index
+    live "/showcase/visual",      Demo.Showcase.VisualLive,    :index
 
     # Chat demo
     live "/chat",                 Demo.Chat.RoomLive, :index

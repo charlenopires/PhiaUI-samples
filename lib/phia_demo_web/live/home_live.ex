@@ -83,15 +83,9 @@ defmodule PhiaDemoWeb.HomeLive do
     {:ok,
      socket
      |> assign(:page_title, "PhiaUI Demos")
-     |> assign(:current_theme, "violet")
      |> assign(:themes, @themes)
      |> assign(:projects, @projects)
      |> assign(:project_groups, @project_groups)}
-  end
-
-  @impl true
-  def handle_event("set-theme", %{"theme" => theme}, socket) do
-    {:noreply, assign(socket, :current_theme, theme)}
   end
 
   @impl true
@@ -161,37 +155,23 @@ defmodule PhiaDemoWeb.HomeLive do
               <h2 class="text-sm font-semibold text-foreground">Color Theme</h2>
               <p class="text-xs text-muted-foreground mt-0.5">Select a palette — changes take effect instantly across all demos</p>
             </div>
-            <.badge variant={:outline} class="text-[10px] font-mono">{@current_theme}</.badge>
+            <.badge variant={:outline} class="text-[10px] font-mono">Select a theme</.badge>
           </div>
 
-          <%!-- Swatch buttons with PhiaTheme hook --%>
+          <%!-- Swatch buttons with PhiaTheme hook (hook handles active state + localStorage) --%>
           <div class="px-6 py-5 flex flex-wrap gap-2">
             <%= for theme <- @themes do %>
-              <% active = @current_theme == theme.id %>
               <button
                 id={"theme-btn-#{theme.id}"}
                 phx-hook="PhiaTheme"
-                phx-click="set-theme"
-                phx-value-theme={theme.id}
                 data-theme={theme.id}
-                style={if active, do: "background-color: #{theme.color}; border-color: #{theme.color};", else: ""}
-                class={[
-                  "group flex items-center gap-2.5 rounded-xl border-2 px-4 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer",
-                  if(active,
-                    do: ["shadow-lg scale-105", theme.text_on],
-                    else: "border-border bg-background text-muted-foreground hover:bg-foreground/8 hover:text-foreground hover:border-foreground/20"
-                  )
-                ]}
+                class="group flex items-center gap-2.5 rounded-xl border-2 border-border bg-background text-muted-foreground px-4 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer hover:bg-foreground/8 hover:text-foreground hover:border-foreground/20"
               >
                 <span
-                  class={[
-                    "h-4 w-4 rounded-full shrink-0 ring-2 transition-all",
-                    if(active, do: "ring-white/40", else: "ring-black/10 dark:ring-white/10")
-                  ]}
+                  class="h-4 w-4 rounded-full shrink-0 ring-2 ring-black/10 dark:ring-white/10"
                   style={"background-color: #{theme.color}"}
                 />
                 {theme.label}
-                <.icon :if={active} name="check" size={:xs} />
               </button>
             <% end %>
           </div>
@@ -203,13 +183,13 @@ defmodule PhiaDemoWeb.HomeLive do
             </p>
             <div class="grid grid-cols-4 sm:grid-cols-8 gap-2">
               <%= for theme <- @themes do %>
-                <.theme_provider theme={theme.atom} class="rounded-xl border border-border/40 bg-card p-3 flex flex-col items-center gap-2">
+                <.theme_provider theme={theme.atom} class="rounded-xl border border-primary/25 bg-gradient-to-b from-primary/15 to-primary/5 p-3 flex flex-col items-center gap-2.5">
                   <span
-                    class="h-6 w-6 rounded-full ring-2 ring-black/10 dark:ring-white/10"
+                    class="h-7 w-7 rounded-full ring-2 ring-white/30 shadow-md"
                     style={"background-color: #{theme.color}"}
                   />
-                  <.button size={:sm} class="w-full text-[10px] px-1 py-0.5 h-auto">Primary</.button>
-                  <.badge class="text-[9px] px-1">{theme.label}</.badge>
+                  <.button size={:sm} class="w-full text-[10px] px-1 py-1 h-auto">Primary</.button>
+                  <span class="text-[9px] font-semibold text-primary/80">{theme.label}</span>
                 </.theme_provider>
               <% end %>
             </div>
