@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: phiaui-demo
+    runtime: elixir
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: ./build.sh
+    startCommand: ./_build/prod/rel/phia_demo/bin/server
+    healthCheckPath: /
+    envVars:
+      - key: MIX_ENV
+        value: prod
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: RENDER_EXTERNAL_HOSTNAME
+        fromRenderHostname: true

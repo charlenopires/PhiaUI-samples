@@ -15,7 +15,7 @@
 @source "../css";
 @source "../js";
 @source "../../lib/phia_demo_web";
-@source "../../../phiaui/lib";
+@source "../../deps/phia_ui/lib";
 
 /* Heroicons plugin */
 @plugin "../vendor/heroicons";

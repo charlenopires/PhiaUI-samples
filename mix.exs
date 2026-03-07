@@ -60,7 +60,7 @@ defmodule PhiaDemo.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:phia_ui, path: "../phiaui"}
+      {:phia_ui, "~> 0.1.11"}
     ]
   end
 
