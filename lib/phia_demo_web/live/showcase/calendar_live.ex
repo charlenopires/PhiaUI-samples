@@ -195,7 +195,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.CalendarLive do
 
     ~H"""
     <Layout.layout current_path="/showcase/calendar">
-      <div class="p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Calendar</h1>
           <p class="text-sm text-muted-foreground mt-0.5">Date selection, scheduling, and time components</p>
@@ -501,7 +501,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.CalendarLive do
         <h2 class="text-base font-semibold text-foreground">{@title}</h2>
         <p class="text-xs text-muted-foreground mt-0.5">{@subtitle}</p>
       </div>
-      <div class="rounded-xl border border-border/60 bg-card p-5 shadow-sm">
+      <div class="rounded-xl border border-border/60 bg-card p-3 sm:p-5 shadow-sm">
         <%= render_slot(@inner_block) %>
       </div>
     </div>

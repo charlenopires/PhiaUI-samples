@@ -190,6 +190,19 @@ defmodule PhiaDemoWeb.Demo.Showcase.MediaLive do
           </div>
         </section>
 
+        <%!-- Watermark --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">Watermark</h2>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <.watermark content="PhiaUI Demo" class="h-48 rounded-lg bg-muted/30 flex items-center justify-center">
+              <p class="text-sm text-muted-foreground">Content with watermark overlay</p>
+            </.watermark>
+            <.watermark content="CONFIDENTIAL" rotate={-45} opacity="0.08" font_size="20px" class="h-48 rounded-lg bg-muted/30 flex items-center justify-center">
+              <p class="text-sm text-muted-foreground">Custom rotation and opacity</p>
+            </.watermark>
+          </div>
+        </section>
+
       </div>
     </Layout.layout>
     """

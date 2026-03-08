@@ -4,7 +4,7 @@ defmodule PhiaDemo.MixProject do
   def project do
     [
       app: :phia_demo,
-      version: "0.1.0",
+      version: "0.2.0",
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -60,7 +60,7 @@ defmodule PhiaDemo.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:phia_ui, "~> 0.1.11"}
+      {:phia_ui, "~> 0.1.13"}
     ]
   end
 

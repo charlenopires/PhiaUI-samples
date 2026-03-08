@@ -82,7 +82,16 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
      # Chip filter
      |> assign(:chip_filter, "all")
      # MultiSelect
-     |> assign(:multi_selected, ["elixir", "phoenix"])}
+     |> assign(:multi_selected, ["elixir", "phoenix"])
+     # AutocompleteInput
+     |> assign(:ac_language, "")
+     # PhoneInput
+     |> assign(:phone_value, "")
+     |> assign(:phone_code, "+1")
+     # SearchInput
+     |> assign(:search_query, "")
+     # ClearableInput
+     |> assign(:clearable_value, "")}
   end
 
   @impl true
@@ -177,6 +186,28 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
   end
   def handle_event("multi-change", _, s), do: {:noreply, assign(s, :multi_selected, [])}
 
+  def handle_event("ac-language-change", %{"value" => val}, s) do
+    {:noreply, assign(s, :ac_language, val)}
+  end
+
+  def handle_event("phone-change", %{"value" => val}, s) do
+    {:noreply, assign(s, :phone_value, val)}
+  end
+
+  def handle_event("search-change", %{"value" => val}, s) do
+    {:noreply, assign(s, :search_query, val)}
+  end
+  def handle_event("clear-search", _, s) do
+    {:noreply, assign(s, :search_query, "")}
+  end
+
+  def handle_event("clearable-change", %{"value" => val}, s) do
+    {:noreply, assign(s, :clearable_value, val)}
+  end
+  def handle_event("clear-clearable", _, s) do
+    {:noreply, assign(s, :clearable_value, "")}
+  end
+
   def handle_event(_, _, s), do: {:noreply, s}
 
   @impl true
@@ -188,7 +219,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
 
     ~H"""
     <Layout.layout current_path="/showcase/inputs">
-      <div class="p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Inputs</h1>
           <p class="text-sm text-muted-foreground mt-0.5">Form components — text fields, selectors, toggles, pickers and editors</p>
@@ -210,7 +241,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
               <.button size={:sm}>Small</.button>
               <.button>Default</.button>
               <.button size={:lg}>Large</.button>
-              <.button size={:icon}><.icon name="settings" size={:xs} /></.button>
+              <.button size={:icon} aria-label="Settings"><.icon name="settings" size={:xs} /></.button>
             </div>
             <.separator />
             <div class="flex flex-wrap gap-2 items-center">
@@ -226,10 +257,10 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
             <div>
               <p class="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">Horizontal (default)</p>
               <.button_group>
-                <.button variant={:outline} size={:sm}><.icon name="bold" size={:xs} /></.button>
-                <.button variant={:outline} size={:sm}><.icon name="italic" size={:xs} /></.button>
-                <.button variant={:outline} size={:sm}><.icon name="underline" size={:xs} /></.button>
-                <.button variant={:outline} size={:sm}><.icon name="link" size={:xs} /></.button>
+                <.button variant={:outline} size={:sm} aria-label="Bold"><.icon name="bold" size={:xs} /></.button>
+                <.button variant={:outline} size={:sm} aria-label="Italic"><.icon name="italic" size={:xs} /></.button>
+                <.button variant={:outline} size={:sm} aria-label="Underline"><.icon name="underline" size={:xs} /></.button>
+                <.button variant={:outline} size={:sm} aria-label="Link"><.icon name="link" size={:xs} /></.button>
               </.button_group>
             </div>
             <div>
@@ -649,10 +680,10 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
               <%= for tag <- @tags do %>
                 <span class="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                   {tag}
-                  <button type="button" class="text-primary/60 hover:text-primary ml-0.5">×</button>
+                  <button type="button" class="text-primary/60 hover:text-primary ml-0.5" aria-label={"Remove tag " <> tag}>×</button>
                 </span>
               <% end %>
-              <input type="text" placeholder="Add tag..." class="flex-1 min-w-20 text-sm bg-transparent outline-none placeholder:text-muted-foreground" />
+              <input type="text" placeholder="Add tag..." aria-label="Add tag" class="flex-1 min-w-20 text-sm bg-transparent outline-none placeholder:text-muted-foreground" />
             </div>
             <p class="text-xs text-muted-foreground">Use <code class="font-mono bg-muted px-1 rounded">.form</code> + FormField for full functionality</p>
           </div>
@@ -692,6 +723,164 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
           </div>
         </.demo_section>
 
+        <%!-- AutocompleteInput --%>
+        <.demo_section title="AutocompleteInput" subtitle="Text input with native HTML5 datalist suggestions — no JS required">
+          <div class="grid gap-6 lg:grid-cols-2">
+            <div class="space-y-1.5">
+              <label class="text-sm font-medium text-foreground">Programming Language</label>
+              <.autocomplete_input
+                name="language"
+                value={@ac_language}
+                placeholder="Start typing a language..."
+                suggestions={["Elixir", "Erlang", "Rust", "Go", "Python", "TypeScript", "JavaScript", "Ruby", "Java", "Kotlin", "Swift", "C#", "Haskell", "Clojure", "Scala"]}
+                phx-change="ac-language-change"
+              />
+              <p class="text-xs text-muted-foreground">
+                {if @ac_language != "", do: "Selected: #{@ac_language}", else: "Type to see browser suggestions"}
+              </p>
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-sm font-medium text-foreground">City (tuple suggestions)</label>
+              <.autocomplete_input
+                name="city"
+                placeholder="Search cities..."
+                suggestions={[{"New York", "nyc"}, {"San Francisco", "sfo"}, {"London", "ldn"}, {"Tokyo", "tyo"}, {"Berlin", "ber"}, {"Paris", "par"}, {"São Paulo", "gru"}]}
+              />
+              <p class="text-xs text-muted-foreground">Uses <code class="font-mono bg-muted px-1 rounded">{"{label, value}"}</code> tuples</p>
+            </div>
+          </div>
+        </.demo_section>
+
+        <%!-- PhoneInput --%>
+        <.demo_section title="PhoneInput" subtitle="Phone number input with country dial-code prefix selector — ~50 countries included">
+          <div class="grid gap-6 lg:grid-cols-2">
+            <div class="space-y-1.5">
+              <label class="text-sm font-medium text-foreground">Phone Number</label>
+              <.phone_input
+                name="phone"
+                value={@phone_value}
+                selected_code={@phone_code}
+                placeholder="555 123 4567"
+                phx-change="phone-change"
+              />
+              <p class="text-xs text-muted-foreground">
+                {if @phone_value != "", do: "Number: #{@phone_code} #{@phone_value}", else: "Select a country code and type a number"}
+              </p>
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-sm font-medium text-foreground">Disabled</label>
+              <.phone_input
+                name="phone_disabled"
+                value="7700 900000"
+                selected_code="+44"
+                disabled={true}
+              />
+              <p class="text-xs text-muted-foreground">Disabled state — both selector and input</p>
+            </div>
+          </div>
+        </.demo_section>
+
+        <%!-- SearchInput --%>
+        <.demo_section title="SearchInput" subtitle="Search field with magnifier icon, optional clear button and shortcut badge — 3 variants">
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <label class="text-sm font-medium text-foreground">Default variant</label>
+              <.search_input
+                name="q"
+                value={@search_query}
+                placeholder="Search products..."
+                on_clear="clear-search"
+                phx-change="search-change"
+                phx-debounce="300"
+              />
+              <p class="text-xs text-muted-foreground">
+                {if @search_query != "", do: "Query: \"#{@search_query}\"", else: "Type to search — × button appears when non-empty"}
+              </p>
+            </div>
+            <.separator />
+            <div class="grid gap-4 lg:grid-cols-2">
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">With shortcut badge</label>
+                <.search_input name="cmd" placeholder="Jump to..." shortcut="⌘K" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Minimal variant</label>
+                <.search_input name="filter" placeholder="Filter items..." variant="minimal" />
+              </div>
+            </div>
+            <div class="grid gap-4 lg:grid-cols-2">
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Ghost variant</label>
+                <.search_input name="ghost" placeholder="Search..." variant="ghost" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Disabled</label>
+                <.search_input name="disabled" placeholder="Search..." disabled={true} />
+              </div>
+            </div>
+          </div>
+        </.demo_section>
+
+        <%!-- CopyInput --%>
+        <.demo_section title="CopyInput" subtitle="Read-only input with inline copy button — optional masking for secrets">
+          <div class="space-y-4">
+            <.copy_input
+              label="Share Link"
+              value="https://phiaui.dev/share/abc123xyz"
+            />
+            <.separator />
+            <.copy_input
+              label="API Key"
+              value="sk-live-phia-abc123def456ghi789"
+              masked={true}
+              description="Click the eye icon to reveal, copy button always copies the real value"
+            />
+            <.separator />
+            <div class="grid gap-4 lg:grid-cols-2">
+              <.copy_input
+                label="Embed Code"
+                value={~s(<script src="https://cdn.phiaui.dev/widget.js"></script>)}
+                size="sm"
+              />
+              <.copy_input
+                label="Webhook URL"
+                value="https://api.phiaui.dev/webhooks/events"
+                size="lg"
+              />
+            </div>
+          </div>
+        </.demo_section>
+
+        <%!-- ClearableInput --%>
+        <.demo_section title="ClearableInput" subtitle="Text input with inline × clear button — disappears when empty">
+          <div class="grid gap-6 lg:grid-cols-2">
+            <div class="space-y-1.5">
+              <label class="text-sm font-medium text-foreground">Filter by name</label>
+              <.clearable_input
+                name="filter"
+                value={@clearable_value}
+                placeholder="Type to filter..."
+                on_clear="clear-clearable"
+                phx-change="clearable-change"
+                phx-debounce="300"
+              />
+              <p class="text-xs text-muted-foreground">
+                {if @clearable_value != "", do: "Value: \"#{@clearable_value}\" — click × to clear", else: "× button appears when non-empty"}
+              </p>
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-sm font-medium text-foreground">Email (no clear button)</label>
+              <.clearable_input
+                name="email_demo"
+                value=""
+                type="email"
+                placeholder="user@example.com"
+              />
+              <p class="text-xs text-muted-foreground">Without <code class="font-mono bg-muted px-1 rounded">on_clear</code> — works as a regular input</p>
+            </div>
+          </div>
+        </.demo_section>
+
       </div>
     </Layout.layout>
     """
@@ -708,7 +897,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
         <h2 class="text-base font-semibold text-foreground">{@title}</h2>
         <p class="text-xs text-muted-foreground mt-0.5">{@subtitle}</p>
       </div>
-      <div class="rounded-xl border border-border/60 bg-card p-5 shadow-sm">
+      <div class="rounded-xl border border-border/60 bg-card p-3 sm:p-5 shadow-sm">
         <%= render_slot(@inner_block) %>
       </div>
     </div>

@@ -31,6 +31,14 @@ import PhiaMeshBg from './mesh_bg.js'
 import PhiaFlickerGrid from './flicker_grid.js'
 import PhiaMagicCard from './magic_card.js'
 import PhiaCardSpotlight from './card_spotlight.js'
+import PhiaChart from './chart.js'
+import { PhiaDropZone, PhiaDragTransferList } from './drop_zone.js'
+import PhiaCommand from './command.js'
+import PhiaSpeedDial from './speed_dial.js'
+import PhiaAudioPlayer from './audio_player.js'
+import PhiaImageComparison from './image_comparison.js'
+import PhiaSortable from './sortable.js'
+import PhiaSortableGrid from './sortable_grid.js'
 
 const PhiaHooks = {
   PhiaDialog,
@@ -64,6 +72,15 @@ const PhiaHooks = {
   PhiaFlickerGrid,
   PhiaMagicCard,
   PhiaCardSpotlight,
+  PhiaChart,
+  PhiaDropZone,
+  PhiaDragTransferList,
+  PhiaCommand,
+  PhiaSpeedDial,
+  PhiaAudioPlayer,
+  PhiaImageComparison,
+  PhiaSortable,
+  PhiaSortableGrid,
 }
 
 export default PhiaHooks

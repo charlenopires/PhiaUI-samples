@@ -25,7 +25,7 @@ defmodule PhiaDemoWeb.HomeLive do
       bg: "bg-violet-500/10",
       projects: [
         %{id: :dashboard, title: "Dashboard",  href: "/dashboard",  icon: "layout-dashboard", desc: "Admin panel with metrics, SVG charts, and sidebar navigation."},
-        %{id: :showcase,  title: "Showcase",   href: "/showcase",   icon: "puzzle",           desc: "Gallery of 534 PhiaUI components — interactive, dark-mode ready."},
+        %{id: :showcase,  title: "Showcase",   href: "/showcase",   icon: "puzzle",           desc: "Gallery of 584 PhiaUI components — interactive, dark-mode ready."},
         %{id: :chat,      title: "Chat",       href: "/chat",       icon: "message-circle",   desc: "Real-time chat rooms with agents, polls, and reactions."}
       ]
     },
@@ -99,17 +99,17 @@ defmodule PhiaDemoWeb.HomeLive do
       </header>
 
       <%!-- Hero with aurora background --%>
-      <section class="relative overflow-hidden px-6 pt-20 pb-14 max-w-5xl mx-auto text-center">
+      <section class="relative overflow-hidden px-6 pt-12 pb-8 max-w-5xl mx-auto text-center">
         <%!-- Aurora glow --%>
         <.aurora
           colors={["oklch(0.541 0.281 293.009 / 0.3)", "oklch(0.546 0.245 262.881 / 0.2)", "oklch(0.592 0.241 349.615 / 0.15)"]}
           speed={12}
           class="absolute inset-0 h-full w-full rounded-3xl"
         />
-        <div class="relative z-10">
-          <div class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary mb-6">
+        <div class="relative z-10 phia-animate">
+          <div class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary mb-4">
             <.icon name="layers" size={:xs} />
-            PhiaUI v0.1.11
+            PhiaUI v0.1.13
             <span class="h-3 w-px bg-primary/30" />
             <span class="text-primary/70">Phoenix LiveView</span>
           </div>
@@ -123,7 +123,7 @@ defmodule PhiaDemoWeb.HomeLive do
             a Tailwind v4 component library with CSS-first theming and dark mode.
           </p>
           <%!-- Stats row --%>
-          <div class="flex flex-wrap items-center justify-center gap-8">
+          <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
             <div class="text-center">
               <p class="text-3xl font-bold text-foreground tabular-nums">
                 <.number_ticker id="stat-apps" value={16} duration={1200} />
@@ -133,7 +133,7 @@ defmodule PhiaDemoWeb.HomeLive do
             <div class="h-8 w-px bg-border/60" />
             <div class="text-center">
               <p class="text-3xl font-bold text-foreground tabular-nums">
-                <.number_ticker id="stat-components" value={534} duration={1600} />
+                <.number_ticker id="stat-components" value={584} duration={1600} />
               </p>
               <p class="text-xs text-muted-foreground mt-0.5">Components</p>
             </div>
@@ -229,11 +229,11 @@ defmodule PhiaDemoWeb.HomeLive do
           <div class="flex items-center gap-2">
             <.icon name="layers" size={:xs} class="text-primary" />
             <span class="text-sm font-semibold text-foreground">PhiaUI</span>
-            <.badge variant={:outline} class="text-[10px]">v0.1.11</.badge>
+            <.badge variant={:outline} class="text-[10px]">v0.1.13</.badge>
           </div>
           <div class="flex items-center gap-4">
             <p class="text-xs text-muted-foreground">
-              Phoenix LiveView + Tailwind CSS v4 · CSS-first theming · 534 components
+              Phoenix LiveView + Tailwind CSS v4 · CSS-first theming · 584 components
             </p>
             <a
               href="https://github.com/charlenopires/PhiaUI-samples"

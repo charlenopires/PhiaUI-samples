@@ -96,10 +96,10 @@ defmodule PhiaDemoWeb.Demo.Todo.IndexLive do
       <div class="h-full overflow-y-auto bg-background phia-animate">
 
         <%!-- Header --%>
-        <div class="px-6 pt-6 pb-4 max-w-3xl mx-auto">
+        <div class="px-3 sm:px-6 pt-4 sm:pt-6 pb-4 max-w-3xl mx-auto">
           <div class="flex items-start justify-between mb-5">
             <div>
-              <h1 class="text-2xl font-bold text-foreground tracking-tight">My Tasks</h1>
+              <h1 class="text-lg sm:text-xl lg:text-2xl font-bold text-foreground tracking-tight">My Tasks</h1>
               <p class="text-sm text-muted-foreground mt-0.5">{@done} of {@total} completed</p>
             </div>
             <button
@@ -112,7 +112,7 @@ defmodule PhiaDemoWeb.Demo.Todo.IndexLive do
           </div>
 
           <%!-- Overall progress bar --%>
-          <div class="rounded-2xl border border-border/60 bg-card p-5 shadow-sm">
+          <div class="rounded-2xl border border-border/60 bg-card p-3 sm:p-5 shadow-sm">
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
@@ -123,7 +123,7 @@ defmodule PhiaDemoWeb.Demo.Todo.IndexLive do
               <span class="text-2xl font-bold text-primary tabular-nums">{@overall_pct}%</span>
             </div>
             <.progress value={@overall_pct} class="h-2.5 rounded-full" />
-            <div class="flex gap-6 mt-4">
+            <div class="flex gap-3 sm:gap-6 mt-4">
               <%= for list <- @lists do %>
                 <% list_tasks = Enum.filter(@tasks, &(&1.list == list.id))
                    list_done = Enum.count(list_tasks, & &1.done)
@@ -141,7 +141,7 @@ defmodule PhiaDemoWeb.Demo.Todo.IndexLive do
         </div>
 
         <%!-- Task lists --%>
-        <div class="px-6 pb-8 max-w-3xl mx-auto grid sm:grid-cols-2 gap-4">
+        <div class="px-3 sm:px-6 pb-8 max-w-3xl mx-auto grid sm:grid-cols-2 gap-4">
           <%= for list <- @lists do %>
             <% list_tasks = Enum.filter(@tasks, &(&1.list == list.id))
                visible_tasks = if @show_done, do: list_tasks, else: Enum.filter(list_tasks, &(!&1.done))
@@ -183,6 +183,7 @@ defmodule PhiaDemoWeb.Demo.Todo.IndexLive do
                           else: "border-border hover:border-primary group-hover:border-primary/60"
                         )
                       ]}
+                      aria-label={if task.done, do: "Mark as incomplete", else: "Mark as complete"}
                     >
                       <.icon :if={task.done} name="check" size={:xs} class="text-primary-foreground" />
                     </button>
@@ -199,6 +200,7 @@ defmodule PhiaDemoWeb.Demo.Todo.IndexLive do
                       phx-click="delete-task"
                       phx-value-id={task.id}
                       class="p-1 rounded-lg opacity-0 group-hover:opacity-100 text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-all"
+                      aria-label="Delete task"
                     >
                       <.icon name="x" size={:xs} />
                     </button>

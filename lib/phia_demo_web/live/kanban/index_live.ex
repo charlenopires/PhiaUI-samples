@@ -81,25 +81,25 @@ defmodule PhiaDemoWeb.Demo.Kanban.IndexLive do
   def render(assigns) do
     ~H"""
     <Layout.layout current_path="/kanban">
-      <div class="p-6 h-full flex flex-col gap-6 max-w-screen-2xl mx-auto">
+      <div class="p-3 sm:p-4 lg:p-6 h-full flex flex-col gap-4 sm:gap-6 max-w-screen-2xl mx-auto">
 
         <%!-- Header --%>
         <div class="flex items-center justify-between phia-animate">
           <div>
-            <h1 class="text-xl font-bold text-foreground tracking-tight">Project Board</h1>
-            <p class="text-sm text-muted-foreground mt-0.5">PhiaUI v0.2 — Sprint 3</p>
+            <h1 class="text-lg sm:text-xl font-bold text-foreground tracking-tight">Project Board</h1>
+            <p class="text-xs sm:text-sm text-muted-foreground mt-0.5">PhiaUI v0.2 — Sprint 3</p>
           </div>
           <div class="flex items-center gap-2">
             <.badge variant={:secondary}>{length(@cards)} cards</.badge>
-            <.badge variant={:outline}>{length(Enum.filter(@cards, &(&1.column == :done)))} done</.badge>
+            <.badge variant={:outline} class="hidden sm:inline-flex">{length(Enum.filter(@cards, &(&1.column == :done)))} done</.badge>
           </div>
         </div>
 
         <%!-- Columns --%>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 flex-1 min-h-0 phia-animate-d1">
+        <div class="flex overflow-x-auto gap-4 pb-2 sm:grid sm:grid-cols-2 xl:grid-cols-4 flex-1 min-h-0 phia-animate-d1 snap-x snap-mandatory sm:snap-none">
           <%= for col <- @columns do %>
             <% col_cards = Enum.filter(@cards, &(&1.column == col.id)) %>
-            <div class={"flex flex-col gap-0 rounded-2xl border border-border/60 overflow-hidden shadow-sm " <> col.col_bg}>
+            <div class={"flex flex-col gap-0 rounded-2xl border border-border/60 overflow-hidden shadow-sm min-w-[280px] sm:min-w-0 snap-center " <> col.col_bg}>
               <%!-- Column header band --%>
               <div class={"h-1 w-full " <> col.band} />
               <div class="flex items-center justify-between px-4 py-3">
@@ -113,8 +113,9 @@ defmodule PhiaDemoWeb.Demo.Kanban.IndexLive do
                 <button
                   phx-click="add-card"
                   phx-value-column={col.id}
-                  class="p-1.5 rounded-lg text-muted-foreground hover:bg-background/80 hover:text-foreground transition-colors"
+                  class="p-2 sm:p-1.5 rounded-lg text-muted-foreground hover:bg-background/80 hover:text-foreground transition-colors min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center"
                   title="Add card"
+                  aria-label="Add card"
                 >
                   <.icon name="plus" size={:xs} />
                 </button>
@@ -159,7 +160,8 @@ defmodule PhiaDemoWeb.Demo.Kanban.IndexLive do
                       <button
                         phx-click="delete-card"
                         phx-value-id={card.id}
-                        class="p-1 rounded-lg opacity-0 group-hover:opacity-100 text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-all shrink-0"
+                        class="p-2 sm:p-1 rounded-lg sm:opacity-0 sm:group-hover:opacity-100 text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-all shrink-0"
+                        aria-label="Delete card"
                       >
                         <.icon name="x" size={:xs} />
                       </button>
@@ -169,7 +171,7 @@ defmodule PhiaDemoWeb.Demo.Kanban.IndexLive do
                         {card.assignee}
                       </span>
                       <%!-- Quick-move arrows --%>
-                      <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div class="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                         <%= for dest <- [:backlog, :in_progress, :review, :done], dest != card.column do %>
                           <button
                             phx-click="move-card"

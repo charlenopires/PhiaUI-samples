@@ -22,7 +22,8 @@ defmodule PhiaDemoWeb.Demo.Mail.IndexLive do
      |> assign(:emails, @emails)
      |> assign(:selected, first)
      |> assign(:folder, :inbox)
-     |> assign(:compose_open, false)}
+     |> assign(:compose_open, false)
+     |> assign(:mobile_view, :list)}
   end
 
   @impl true
@@ -32,7 +33,7 @@ defmodule PhiaDemoWeb.Demo.Mail.IndexLive do
       if e.id == email_id, do: %{e | read: true}, else: e
     end)
     selected = Enum.find(emails, &(&1.id == email_id))
-    {:noreply, assign(socket, emails: emails, selected: selected)}
+    {:noreply, assign(socket, emails: emails, selected: selected, mobile_view: :detail)}
   end
 
   def handle_event("toggle-star", %{"id" => id}, socket) do
@@ -54,6 +55,10 @@ defmodule PhiaDemoWeb.Demo.Mail.IndexLive do
     {:noreply, assign(socket, :compose_open, false)}
   end
 
+  def handle_event("back-to-list", _params, socket) do
+    {:noreply, assign(socket, :mobile_view, :list)}
+  end
+
   def handle_event("archive", %{"id" => id}, socket) do
     email_id = String.to_integer(id)
     emails = Enum.reject(socket.assigns.emails, &(&1.id == email_id))
@@ -72,7 +77,10 @@ defmodule PhiaDemoWeb.Demo.Mail.IndexLive do
       <div class="flex h-full phia-animate">
 
         <%!-- Email list --%>
-        <div class="w-80 shrink-0 border-r border-border/60 flex flex-col">
+        <div class={[
+          "w-full md:w-80 shrink-0 border-r border-border/60 flex flex-col",
+          if(@mobile_view == :detail, do: "hidden md:flex", else: "flex")
+        ]}>
           <div class="p-3 border-b border-border/60 flex items-center justify-between">
             <div class="flex items-center gap-2">
               <h2 class="text-sm font-semibold text-foreground">Inbox</h2>
@@ -93,7 +101,7 @@ defmodule PhiaDemoWeb.Demo.Mail.IndexLive do
                 phx-click="select-email"
                 phx-value-id={email.id}
                 class={[
-                  "w-full text-left px-4 py-3 border-b border-border/40 last:border-0 transition-colors",
+                  "w-full text-left px-4 py-3.5 sm:py-3 border-b border-border/40 last:border-0 transition-colors min-h-[44px]",
                   if(@selected && @selected.id == email.id,
                     do: "bg-primary/5 border-l-2 border-l-primary",
                     else: "hover:bg-accent"
@@ -124,11 +132,21 @@ defmodule PhiaDemoWeb.Demo.Mail.IndexLive do
         </div>
 
         <%!-- Email detail --%>
-        <div class="flex-1 flex flex-col min-w-0">
+        <div class={[
+          "flex-1 flex flex-col min-w-0",
+          if(@mobile_view == :list, do: "hidden md:flex", else: "flex")
+        ]}>
           <%= if @selected do %>
             <%!-- Email toolbar --%>
-            <div class="flex items-center justify-between px-6 py-3 border-b border-border/60 bg-card/30">
+            <div class="flex items-center justify-between px-3 sm:px-6 py-3 border-b border-border/60 bg-card/30">
               <div class="flex items-center gap-2">
+                <button
+                  phx-click="back-to-list"
+                  class="md:hidden flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground border border-border hover:bg-accent hover:text-foreground transition-colors min-h-[44px]"
+                >
+                  <.icon name="arrow-left" size={:xs} />
+                  Back
+                </button>
                 <button
                   phx-click="archive"
                   phx-value-id={@selected.id}
@@ -147,13 +165,14 @@ defmodule PhiaDemoWeb.Demo.Mail.IndexLive do
                 phx-value-id={@selected.id}
                 class={["p-1.5 rounded-md transition-colors", if(@selected.starred, do: "text-amber-500", else: "text-muted-foreground hover:bg-accent")]}
                 title={if @selected.starred, do: "Unstar", else: "Star"}
+                aria-label={if @selected.starred, do: "Remove star", else: "Add star"}
               >
                 <.icon name="star" size={:sm} />
               </button>
             </div>
 
             <%!-- Email body --%>
-            <div class="flex-1 overflow-y-auto p-6 max-w-3xl mx-auto w-full">
+            <div class="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 max-w-3xl mx-auto w-full">
               <h1 class="text-lg font-bold text-foreground mb-3">{@selected.subject}</h1>
               <div class="flex items-center gap-3 mb-6 pb-4 border-b border-border/60">
                 <.avatar size="default">

@@ -76,7 +76,7 @@ defmodule PhiaDemoWeb.Demo.AiChat.IndexLive do
       <div class="flex flex-col h-full bg-background phia-animate">
 
         <%!-- Chat header --%>
-        <div class="flex items-center justify-between px-5 py-3 border-b border-border/60 bg-card/40 backdrop-blur shrink-0">
+        <div class="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-border/60 bg-card/40 backdrop-blur shrink-0">
           <div class="flex items-center gap-3">
             <div class="relative">
               <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-sm">
@@ -95,6 +95,7 @@ defmodule PhiaDemoWeb.Demo.AiChat.IndexLive do
               phx-click="clear-chat"
               class="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
               title="Clear chat"
+              aria-label="Clear chat"
             >
               <.icon name="trash-2" size={:xs} />
             </button>
@@ -116,7 +117,7 @@ defmodule PhiaDemoWeb.Demo.AiChat.IndexLive do
                 </div>
               </div>
               <div class="max-w-sm">
-                <h2 class="text-2xl font-bold text-foreground">How can I help?</h2>
+                <h2 class="text-xl sm:text-2xl font-bold text-foreground">How can I help?</h2>
                 <p class="text-muted-foreground mt-2 text-sm leading-relaxed">
                   Ask me anything about Elixir, Phoenix LiveView, or web development.
                   Select a suggestion below to get started.
@@ -138,7 +139,7 @@ defmodule PhiaDemoWeb.Demo.AiChat.IndexLive do
               </div>
             </div>
           <% else %>
-            <div class="py-6 px-4 space-y-6 max-w-3xl mx-auto w-full">
+            <div class="py-4 sm:py-6 px-3 sm:px-4 space-y-4 sm:space-y-6 max-w-3xl mx-auto w-full">
               <%= for msg <- @messages do %>
                 <div class={["flex items-end gap-3", if(msg.role == :user, do: "flex-row-reverse", else: "")]}>
                   <%!-- Avatar --%>
@@ -178,7 +179,7 @@ defmodule PhiaDemoWeb.Demo.AiChat.IndexLive do
         </div>
 
         <%!-- Input area --%>
-        <div class="shrink-0 border-t border-border/60 bg-background/95 backdrop-blur px-4 py-4">
+        <div class="shrink-0 border-t border-border/60 bg-background/95 backdrop-blur px-3 sm:px-4 py-3 sm:py-4">
           <div class="max-w-3xl mx-auto">
             <form phx-submit="send-message" class="flex gap-2.5 items-end">
               <input type="hidden" name="message" value={@input} />
@@ -192,7 +193,7 @@ defmodule PhiaDemoWeb.Demo.AiChat.IndexLive do
                   style="min-height: 48px; max-height: 160px;"
                 >{@input}</textarea>
               </div>
-              <.button type="submit" class="h-12 w-12 rounded-2xl shrink-0 p-0 shadow-sm">
+              <.button type="submit" class="h-12 w-12 rounded-2xl shrink-0 p-0 shadow-sm" aria-label="Send message">
                 <.icon name="send" size={:xs} />
               </.button>
             </form>

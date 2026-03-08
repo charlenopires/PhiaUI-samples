@@ -173,6 +173,104 @@ defmodule PhiaDemoWeb.Demo.Showcase.CardsLive do
           </div>
         </section>
 
+        <%!-- ArticleCard --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">ArticleCard</h2>
+          <div class="grid gap-4 sm:grid-cols-3">
+            <.article_card
+              title="Getting Started with Phoenix"
+              excerpt="A comprehensive guide to building real-time web applications with Phoenix LiveView."
+              author_name="Jane Doe"
+              date="Mar 2026"
+              read_time="5 min read"
+              category="Tutorial"
+            />
+            <.article_card
+              title="Understanding OTP Patterns"
+              excerpt="Deep dive into GenServers, Supervisors, and the building blocks of fault-tolerant systems."
+              author_name="Bob Smith"
+              date="Feb 2026"
+              read_time="8 min read"
+              category="Advanced"
+              href="#"
+            />
+            <.article_card
+              title="PhiaUI 1.0 Released"
+              excerpt="Announcing the first stable release of the Phoenix LiveView component library."
+              date="Mar 2026"
+              category="Announcement"
+            />
+          </div>
+        </section>
+
+        <%!-- PricingCard --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">PricingCard</h2>
+          <div class="grid gap-4 sm:grid-cols-3">
+            <.pricing_card
+              plan="Starter"
+              price="$0"
+              period="/month"
+              features={["1 project", "5 team members", "—Priority support", "—Custom domains"]}
+              cta_label="Get started"
+            />
+            <.pricing_card
+              plan="Pro"
+              price="$29"
+              period="/month"
+              description="Everything you need for growing teams."
+              badge="Most popular"
+              highlighted={true}
+              features={["Unlimited projects", "Priority support", "Custom domains", "Analytics"]}
+              cta_label="Start free trial"
+            />
+            <.pricing_card
+              plan="Enterprise"
+              price="Custom"
+              period=""
+              features={["Unlimited projects", "Priority support", "Custom domains", "Analytics", "SSO / SAML", "Dedicated support"]}
+              cta_label="Contact sales"
+            />
+          </div>
+        </section>
+
+        <%!-- TestimonialCard --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">TestimonialCard</h2>
+          <div class="grid gap-4 sm:grid-cols-3">
+            <.testimonial_card
+              quote="PhiaUI has transformed our development workflow. The component quality is outstanding."
+              author_name="Sarah Chen"
+              author_role="CTO at Acme"
+              rating={5}
+            />
+            <.testimonial_card
+              quote="Clean, well-documented components that just work. Saved us weeks of development time."
+              author_name="Marcus Lee"
+              author_role="Lead Engineer"
+              company="NovaTech"
+              variant={:bordered}
+              rating={4}
+            />
+            <.testimonial_card
+              quote="The best Phoenix component library I have used. Period."
+              author_name="Ana Ferreira"
+              variant={:minimal}
+            />
+          </div>
+        </section>
+
+        <%!-- TeamCard --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">TeamCard</h2>
+          <div class="grid gap-4 sm:grid-cols-4">
+            <.team_card name="Alex Rivera" role="Lead Engineer" fallback="AR" />
+            <.team_card name="Mei Zhang" role="Product Designer" department="Design" fallback="MZ" />
+            <.team_card name="Jordan Cole" role="DevOps" email="jordan@acme.com" variant={:compact} fallback="JC" />
+            <.team_card name="Sara Nunes" role="Backend Engineer" department="Platform" variant={:horizontal} fallback="SN" />
+          </div>
+        </section>
+
       </div>
     </Layout.layout>
     """

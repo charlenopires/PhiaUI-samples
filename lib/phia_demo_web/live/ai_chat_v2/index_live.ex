@@ -89,7 +89,7 @@ defmodule PhiaDemoWeb.Demo.AiChatV2.IndexLive do
       <div class="flex h-full phia-animate">
 
         <%!-- Conversation list --%>
-        <div class="w-64 shrink-0 border-r border-border/60 bg-card/50 flex flex-col">
+        <div class="hidden md:flex w-64 shrink-0 border-r border-border/60 bg-card/50 flex-col">
           <div class="p-3 border-b border-border/60">
             <.button class="w-full" size={:sm} phx-click="new-conversation">
               <.icon name="plus" size={:xs} class="mr-1.5" />
@@ -122,20 +122,20 @@ defmodule PhiaDemoWeb.Demo.AiChatV2.IndexLive do
         <%!-- Chat area --%>
         <div class="flex-1 flex flex-col min-w-0">
           <%!-- Header with model info --%>
-          <div class="flex items-center justify-between px-5 py-3 border-b border-border/60 bg-card/30 shrink-0">
+          <div class="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-border/60 bg-card/30 shrink-0">
             <div>
               <p class="text-sm font-semibold text-foreground">{@active_conversation && @active_conversation.title || "New Chat"}</p>
               <p class="text-xs text-muted-foreground">{@current_model && @current_model.label}</p>
             </div>
             <%!-- Model selector --%>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 overflow-x-auto">
               <div class="flex gap-1">
                 <%= for m <- @models do %>
                   <button
                     phx-click="set-model"
                     phx-value-model={m.id}
                     class={[
-                      "rounded-md px-2.5 py-1.5 text-xs font-medium border transition-all",
+                      "rounded-md px-2.5 py-2 sm:py-1.5 text-xs font-medium border transition-all whitespace-nowrap",
                       if(@model == m.id,
                         do: "bg-primary text-primary-foreground border-primary",
                         else: "border-border text-muted-foreground hover:border-primary/40"
@@ -151,7 +151,7 @@ defmodule PhiaDemoWeb.Demo.AiChatV2.IndexLive do
           </div>
 
           <%!-- Messages --%>
-          <div class="flex-1 overflow-y-auto p-5 space-y-5">
+          <div class="flex-1 overflow-y-auto p-3 sm:p-5 space-y-4 sm:space-y-5">
             <%= for msg <- @messages do %>
               <div class={["flex gap-3 max-w-3xl mx-auto w-full", if(msg.role == :user, do: "flex-row-reverse", else: "")]}>
                 <div class={[
@@ -163,7 +163,7 @@ defmodule PhiaDemoWeb.Demo.AiChatV2.IndexLive do
                 <div class={[
                   "flex-1 rounded-2xl px-4 py-3 text-sm leading-relaxed",
                   if(msg.role == :user,
-                    do: "bg-primary text-primary-foreground rounded-tr-sm max-w-[70%] ml-auto",
+                    do: "bg-primary text-primary-foreground rounded-tr-sm max-w-[85%] sm:max-w-[70%] ml-auto",
                     else: "bg-muted text-foreground rounded-tl-sm"
                   )
                 ]}>
@@ -174,11 +174,11 @@ defmodule PhiaDemoWeb.Demo.AiChatV2.IndexLive do
           </div>
 
           <%!-- Input --%>
-          <div class="shrink-0 border-t border-border/60 bg-background p-4">
+          <div class="shrink-0 border-t border-border/60 bg-background p-3 sm:p-4">
             <div class="max-w-3xl mx-auto space-y-3">
               <%!-- Temperature control --%>
-              <div class="flex items-center gap-3 text-xs text-muted-foreground">
-                <span>Temperature: {@temperature}</span>
+              <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 text-xs text-muted-foreground">
+                <span class="whitespace-nowrap">Temperature: {@temperature}</span>
                 <input
                   type="range"
                   min="0"
@@ -199,7 +199,7 @@ defmodule PhiaDemoWeb.Demo.AiChatV2.IndexLive do
                   placeholder="Ask anything..."
                   class="flex-1 rounded-xl border border-border bg-background px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
                 >{@input}</textarea>
-                <.button type="submit" class="rounded-xl self-end h-12 w-12 p-0 shrink-0">
+                <.button type="submit" class="rounded-xl self-end h-12 w-12 p-0 shrink-0" aria-label="Send message">
                   <.icon name="send" size={:sm} />
                 </.button>
               </form>
@@ -208,7 +208,7 @@ defmodule PhiaDemoWeb.Demo.AiChatV2.IndexLive do
         </div>
 
         <%!-- Settings panel --%>
-        <div class="w-56 shrink-0 border-l border-border/60 bg-card/50 p-4 space-y-5">
+        <div class="hidden lg:block w-56 shrink-0 border-l border-border/60 bg-card/50 p-4 space-y-5">
           <div>
             <p class="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 mb-3">Model Settings</p>
             <div class="space-y-4">

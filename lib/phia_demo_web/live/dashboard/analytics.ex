@@ -84,80 +84,25 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Analytics do
 
         <%!-- Charts row --%>
         <div class="grid gap-6 lg:grid-cols-2 phia-animate-d1">
-          <.chart_shell
+          <.phia_chart
+            id="analytics-visitors"
+            type={:area}
             title="Monthly Visitors"
             description="Unique visitors per month"
-            period="Last 12 months"
-            min_height="240px"
-          >
-            <svg viewBox="0 0 420 210" class="w-full h-full">
-              <% max_val = Enum.max(Enum.map(@visits, & &1.value)) %>
-              <% n = length(@visits) - 1 %>
-              <% coords = Enum.with_index(@visits) |> Enum.map(fn {item, i} ->
-                x = Float.round(18.0 + i * (384.0 / n), 1)
-                y = Float.round(175.0 - item.value / max_val * 155.0, 1)
-                {x, y}
-              end) %>
-              <% line_pts = Enum.map_join(coords, " ", fn {x, y} -> "#{x},#{y}" end) %>
-              <% {fx, _} = List.first(coords) %>
-              <% {lx, _} = List.last(coords) %>
-              <% area_pts = "#{fx},175 #{line_pts} #{lx},175" %>
-              <polygon points={area_pts} class="fill-primary" fill-opacity="0.08" />
-              <polyline points={line_pts} class="stroke-primary fill-none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
-              <%= for {item, {x, y}} <- Enum.zip(@visits, coords) do %>
-                <circle cx={x} cy={y} r="3" class="fill-background stroke-primary" stroke-width="1.5" />
-                <text x={x} y="197" text-anchor="middle" class="fill-muted-foreground" style="font-size:9px">
-                  {item.month}
-                </text>
-              <% end %>
-            </svg>
-          </.chart_shell>
+            series={[%{name: "Visitors", data: Enum.map(@visits, & &1.value)}]}
+            labels={Enum.map(@visits, & &1.month)}
+            height="280px"
+          />
 
-          <.chart_shell
+          <.phia_chart
+            id="analytics-traffic"
+            type={:pie}
             title="Traffic by Source"
             description="Distribution by acquisition channel"
-            min_height="240px"
-          >
-            <div class="flex gap-6 items-center h-full py-2">
-              <div class="relative w-32 h-32 shrink-0">
-                <svg viewBox="0 0 120 120" class="w-full h-full">
-                  <% total = Enum.sum(Enum.map(@traffic, & &1.value)) %>
-                  <% {_offset, slices} =
-                    Enum.reduce(@traffic, {0, []}, fn item, {offset, acc} ->
-                      pct = item.value / total * 100
-                      {offset + pct, [{item, offset, pct} | acc]}
-                    end) %>
-                  <%= for {item, offset, pct} <- Enum.reverse(slices) do %>
-                    <circle
-                      cx="60" cy="60" r="40" fill="none"
-                      class={"stroke-current #{String.replace(item.color, "fill-", "text-")}"}
-                      stroke-width="20"
-                      stroke-dasharray={"#{Float.round(pct * 2.513, 1)} #{100 * 2.513}"}
-                      stroke-dashoffset={"-#{Float.round(offset * 2.513, 1)}"}
-                      transform="rotate(-90 60 60)"
-                    />
-                  <% end %>
-                  <text x="60" y="56" text-anchor="middle" class="fill-foreground" style="font-size:11px; font-weight:700">
-                    {total}k
-                  </text>
-                  <text x="60" y="69" text-anchor="middle" class="fill-muted-foreground" style="font-size:8px">
-                    visits
-                  </text>
-                </svg>
-              </div>
-              <ul class="space-y-2 text-sm flex-1">
-                <%= for item <- @traffic do %>
-                  <li class="flex items-center justify-between gap-2">
-                    <span class="flex items-center gap-2">
-                      <span class={"inline-block w-2 h-2 rounded-full #{item.color}"} />
-                      <span class="text-foreground">{item.source}</span>
-                    </span>
-                    <span class="font-semibold text-muted-foreground">{item.value}%</span>
-                  </li>
-                <% end %>
-              </ul>
-            </div>
-          </.chart_shell>
+            series={[%{name: "Traffic", data: Enum.map(@traffic, & &1.value)}]}
+            labels={Enum.map(@traffic, & &1.source)}
+            height="280px"
+          />
         </div>
 
         <%!-- Conversion by channel --%>

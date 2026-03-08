@@ -4,26 +4,26 @@ defmodule PhiaDemoWeb.Demo.Showcase.IndexLive do
   alias PhiaDemoWeb.Demo.Showcase.Layout
 
   @categories [
-    %{name: "Inputs", href: "/showcase/inputs", icon: "keyboard", count: 27,
-      description: "Button, ButtonGroup, Switch, Slider, Rating, Toggle, Chip, Input, Textarea, PasswordInput, ColorPicker, OTP, InputAddon, MultiSelect, Combobox, Checkbox, RadioGroup, DatePicker, TagsInput, FileUpload, CopyButton e mais"},
+    %{name: "Inputs", href: "/showcase/inputs", icon: "keyboard", count: 35,
+      description: "Button, ButtonGroup, FancyButton, SplitButton, IconButton, SocialButton, ActionButton, Switch, Slider, Rating, Toggle, Chip, Input, Textarea, PasswordInput, ColorPicker, OTP, InputAddon, MultiSelect, Combobox, Checkbox, RadioGroup, DatePicker, TagsInput, FileUpload, CopyButton, AutocompleteInput, MentionInput, PhoneInput, SearchInput, CopyInput, ClearableInput, Editable, InputGroup e mais"},
     %{name: "Display", href: "/showcase/display", icon: "eye", count: 31,
       description: "Badge, Separator, Kbd, Tabs, TabsNav, Avatar, AvatarGroup, Card, SelectableCard, Timeline, ActivityFeed, Breadcrumb, Accordion, Skeleton, Table, Pagination, EmptyState, Icon, Tree, Direction, QrCode, ScrollArea, AspectRatio e mais"},
-    %{name: "Feedback", href: "/showcase/feedback", icon: "bell", count: 22,
-      description: "Spinner, Progress, CircularProgress, StepTracker, Alert, Toast, Snackbar, Sheet, Dialog, AlertDialog, Drawer, Command, HoverCard, Tooltip, Popover, DropdownMenu, ContextMenu, Carousel, BackTop, FloatButton, DarkModeToggle, Sonner"},
-    %{name: "Data & Charts", href: "/showcase/charts", icon: "chart-bar", count: 17,
-      description: "StatCard, MetricGrid, ChartShell, AreaChart, BarChart, DonutChart, SparklineCard, GaugeChart, UptimeBar, FilterBar, DataGrid, Resizable"},
+    %{name: "Feedback", href: "/showcase/feedback", icon: "bell", count: 32,
+      description: "Spinner, Progress, ProgressEnhanced, CircularProgress, StepTracker, Alert, Toast, Snackbar, Sheet, Dialog, AlertDialog, Drawer, Command, HoverCard, Tooltip, Popover, DropdownMenu, ContextMenu, Carousel, BackTop, FloatButton, DarkModeToggle, Sonner, Banner, Notification, ErrorDisplay, StatusIndicator, Popconfirm, LoadingOverlay, FeedbackWidget, ResultState, GlobalMessage"},
+    %{name: "Data & Charts", href: "/showcase/charts", icon: "chart-bar", count: 38,
+      description: "phia_chart (ECharts), LineChart, AreaChart, BarChart, PieChart, DonutChart, RadarChart, ScatterChart, BubbleChart, FunnelChart, HeatmapChart, TreemapChart, WaterfallChart, RadialBarChart, HistogramChart, PolarAreaChart, SlopeChart, TimelineChart, GanttChart, StatCard, MetricGrid, SparklineCard, GaugeChart, UptimeBar, FilterBar, DataGrid, Resizable"},
     %{name: "Calendar", href: "/showcase/calendar", icon: "calendar", count: 22,
       description: "Calendar, BigCalendar, EventCalendar, HeatmapCalendar, WeekCalendar, RangeCalendar, MultiSelectCalendar, BadgeCalendar, StreakCalendar, BookingCalendar, DateRangePresets, DateCard, DateStrip, CountdownTimer, TimePicker, DateField, DateTimePicker, MonthPicker, YearPicker, WeekPicker, WeekDayPicker e mais"},
-    %{name: "Cards", href: "/showcase/cards", icon: "layers", count: 18,
-      description: "Card, SelectableCard, ReceiptCard, ProfileCard, StatCard, SparklineCard, MetricGrid — all card variants with headers, footers, and action areas"},
-    %{name: "Navigation", href: "/showcase/navigation", icon: "list", count: 12,
-      description: "Breadcrumb, Tabs, TabsNav, Separator, Pagination, StepTracker, Accordion, Kbd — core navigation and structure components"},
-    %{name: "Tables", href: "/showcase/tables", icon: "list-ordered", count: 15,
-      description: "Table, DataGrid, FilterBar, Tree, BulkActionBar — sortable tables, filterable grids, and hierarchical trees"},
-    %{name: "Upload", href: "/showcase/upload", icon: "upload", count: 8,
-      description: "ImageUpload, FileUpload, CopyButton, DropZone — all file upload patterns including drag-and-drop and progress indicators"},
-    %{name: "Media", href: "/showcase/media", icon: "image", count: 7,
-      description: "Carousel, QrCode, AspectRatio, ScrollArea, Resizable, Direction — media display and layout utilities"},
+    %{name: "Cards", href: "/showcase/cards", icon: "layers", count: 28,
+      description: "Card, SelectableCard, ReceiptCard, ProfileCard, FeatureCard, ArticleCard, CtaCard, EventCard, ImageCard, PricingCard, ProductCard, ProgressCard, TestimonialCard, TeamCard, NotificationCard, StatCard, SparklineCard, MetricGrid — all card variants"},
+    %{name: "Navigation", href: "/showcase/navigation", icon: "list", count: 23,
+      description: "Breadcrumb, Tabs, TabsNav, Separator, Pagination, StepTracker, Accordion, Kbd, CommandPalette, MegaMenu, FloatingNav, SpeedDial, Dock, NavRail, Topbar, VerticalNav, BottomNavigation, StepperNav, Toolbar — core navigation and structure"},
+    %{name: "Tables", href: "/showcase/tables", icon: "list-ordered", count: 21,
+      description: "Table, DataGrid, FilterBar, Tree, BulkActionBar, ExpandableTable, ResponsiveTable, ComparisonTable, InlineEditTable, TimelineTable, KanbanBoard — sortable, filterable, expandable tables"},
+    %{name: "Upload", href: "/showcase/upload", icon: "upload", count: 10,
+      description: "ImageUpload, FileUpload, CopyButton, DropZone, DocumentUpload, AvatarUpload — all file upload patterns including drag-and-drop and progress indicators"},
+    %{name: "Media", href: "/showcase/media", icon: "image", count: 10,
+      description: "Carousel, QrCode, AspectRatio, ScrollArea, Resizable, Direction, AudioPlayer, ImageComparison, Watermark — media display and layout utilities"},
     %{name: "Animation", href: "/showcase/animation", icon: "sparkles", count: 22,
       description: "marquee, orbit, aurora, meteor_shower, shimmer_text, typewriter, word_rotate, text_scramble, fade_in, float, spotlight, tilt_card, number_ticker, typing_indicator, wave_loader, animated_border, pulse_ring, confetti_burst, particle_bg e mais"},
     %{name: "Visual Effects", href: "/showcase/visual", icon: "eye", count: 20,
@@ -53,9 +53,9 @@ defmodule PhiaDemoWeb.Demo.Showcase.IndexLive do
             Every PhiaUI component — live demos, fully interactive, dark-mode ready.
           </p>
           <div class="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <.badge variant={:secondary}>v0.1.11</.badge>
+            <.badge variant={:secondary}>v0.1.13</.badge>
             <span>·</span>
-            <span>534 components</span>
+            <span>584 components</span>
             <span>·</span>
             <span>12 categories</span>
           </div>

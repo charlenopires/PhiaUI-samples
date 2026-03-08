@@ -21,10 +21,14 @@
       })();
     </script>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
     <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
     </script>
   </head>
   <body>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:text-sm focus:font-medium">
+      Skip to content
+    </a>
     <.toast id="phia-toast-viewport" />
     {@inner_content}
   </body>

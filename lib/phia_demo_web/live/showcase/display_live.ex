@@ -26,7 +26,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
   def render(assigns) do
     ~H"""
     <Layout.layout current_path="/showcase/display">
-      <div class="p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Display</h1>
           <p class="text-sm text-muted-foreground mt-0.5">Visual components for presenting data and content</p>
@@ -251,7 +251,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
                 </div>
               </:icon>
               <p class="text-sm font-semibold text-foreground">Deployment completed</p>
-              <p class="text-xs text-muted-foreground mt-0.5">v0.1.11 is live in production</p>
+              <p class="text-xs text-muted-foreground mt-0.5">v0.1.13 is live in production</p>
             </.timeline_item>
             <.timeline_item timestamp="2 hours ago">
               <:icon>
@@ -392,7 +392,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
               </div>
             </div>
             <.skeleton class="h-32 w-full rounded-xl" />
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <.skeleton class="h-20 rounded-lg" />
               <.skeleton class="h-20 rounded-lg" />
               <.skeleton class="h-20 rounded-lg" />
@@ -424,7 +424,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
                 Is it production-ready?
               </.accordion_trigger>
               <.accordion_content value="a3">
-                PhiaUI is actively developed. v0.1.11 is suitable for demos and prototypes. Production apps should pin the version and test thoroughly.
+                PhiaUI is actively developed. v0.1.13 is suitable for demos and prototypes. Production apps should pin the version and test thoroughly.
               </.accordion_content>
             </.accordion_item>
           </.accordion>
@@ -714,7 +714,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
         <h2 class="text-base font-semibold text-foreground">{@title}</h2>
         <p class="text-xs text-muted-foreground mt-0.5">{@subtitle}</p>
       </div>
-      <div class="rounded-xl border border-border/60 bg-card p-5 shadow-sm">
+      <div class="rounded-xl border border-border/60 bg-card p-3 sm:p-5 shadow-sm">
         <%= render_slot(@inner_block) %>
       </div>
     </div>

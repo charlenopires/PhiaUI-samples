@@ -27,7 +27,7 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
   }
 
   @initial_notes [
-    %{id: 1, title: "Getting started with PhiaUI", content: "PhiaUI is a Phoenix LiveView component library built on Tailwind CSS v4. It provides 534+ components covering all common UI patterns.\n\nKey features:\n- Server-rendered with minimal JS\n- Dark mode via CSS custom properties\n- Lucide icon system\n- CSS-first theming", tags: ["work", "docs"], updated_at: "2 min ago", pinned: true, color: "yellow"},
+    %{id: 1, title: "Getting started with PhiaUI", content: "PhiaUI is a Phoenix LiveView component library built on Tailwind CSS v4. It provides 584+ components covering all common UI patterns.\n\nKey features:\n- Server-rendered with minimal JS\n- Dark mode via CSS custom properties\n- Lucide icon system\n- CSS-first theming", tags: ["work", "docs"], updated_at: "2 min ago", pinned: true, color: "yellow"},
     %{id: 2, title: "Elixir pattern matching", content: "Pattern matching is one of Elixir's most powerful features:\n\n1. Pin operator: Use ^ to match existing variable values\n2. Guard clauses: Add `when` conditions\n3. Multi-clause functions: dispatch to the right clause", tags: ["elixir"], updated_at: "1 hour ago", pinned: true, color: "green"},
     %{id: 3, title: "Book list for 2026", content: "Technical:\n- Programming Elixir 1.6 by Dave Thomas\n- The Little Schemer\n- SICP\n\nNon-technical:\n- Atomic Habits\n- Deep Work by Cal Newport", tags: ["personal"], updated_at: "Yesterday", pinned: false, color: "blue"},
     %{id: 4, title: "Phoenix LiveView lifecycle", content: "Key callbacks:\n\n- mount/3: Initialize state\n- handle_params/3: URL params\n- handle_event/3: User interactions\n- handle_info/2: PubSub messages\n- render/1: HEEx template", tags: ["work", "phoenix"], updated_at: "2 days ago", pinned: false, color: "purple"},
@@ -159,7 +159,7 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
     <Layout.layout current_path="/notes">
       <div class="h-full overflow-y-auto bg-background phia-animate">
         <%!-- Top bar --%>
-        <div class="sticky top-0 z-20 flex items-center gap-3 px-6 py-3 bg-background/95 backdrop-blur border-b border-border/60">
+        <div class="sticky top-0 z-20 flex items-center gap-3 px-3 sm:px-4 lg:px-6 py-3 bg-background/95 backdrop-blur border-b border-border/60">
           <div class="relative flex-1 max-w-lg">
             <.icon name="search" size={:xs} class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
             <input
@@ -167,19 +167,20 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
               placeholder="Search notes..."
               phx-keyup="search"
               phx-value-value=""
+              aria-label="Search notes"
               class="w-full rounded-full border border-border bg-accent/50 pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-background transition-all"
             />
           </div>
           <button
             phx-click="start-create"
-            class="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shrink-0"
+            class="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shrink-0 min-h-[44px] sm:min-h-0"
           >
             <.icon name="plus" size={:xs} />
             New note
           </button>
         </div>
 
-        <div class="px-6 py-6 max-w-6xl mx-auto space-y-8">
+        <div class="px-3 py-4 sm:px-4 sm:py-6 lg:px-6 max-w-6xl mx-auto space-y-8">
 
           <%!-- Create note card --%>
           <%= if @creating do %>
@@ -207,6 +208,7 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
                       phx-value-color={color_id}
                       class={["h-5 w-5 rounded-full transition-transform hover:scale-110 ring-offset-1", swatch_class, if(@new_color == color_id, do: "ring-2 ring-primary scale-110", else: "")]}
                       title={color_id}
+                      aria-label={"Set color to " <> color_id}
                     />
                   <% end %>
                 </div>
@@ -229,7 +231,7 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
                 <.icon name="pin" size={:xs} />
                 Pinned
               </p>
-              <div class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-3 space-y-3">
+              <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-3 space-y-3">
                 <%= for note <- @pinned do %>
                   <.note_card note={note} color_swatches={@color_swatches} />
                 <% end %>
@@ -243,7 +245,7 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
               <p :if={@pinned != []} class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-3">
                 Other notes
               </p>
-              <div class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-3 space-y-3">
+              <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-3 space-y-3">
                 <%= for note <- @others do %>
                   <.note_card note={note} color_swatches={@color_swatches} />
                 <% end %>
@@ -275,6 +277,7 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
                       phx-value-id={@selected_note.id}
                       class={["p-1.5 rounded-lg transition-colors", if(@selected_note.pinned, do: "text-primary bg-primary/10", else: "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/10")]}
                       title={if @selected_note.pinned, do: "Unpin", else: "Pin"}
+                      aria-label={if @selected_note.pinned, do: "Unpin note", else: "Pin note"}
                     >
                       <.icon name="pin" size={:xs} />
                     </button>
@@ -283,6 +286,7 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
                       phx-value-id={@selected_note.id}
                       class="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                       title="Delete note"
+                      aria-label="Delete note"
                     >
                       <.icon name="trash-2" size={:xs} />
                     </button>
@@ -312,6 +316,7 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
                       phx-value-color={color_id}
                       class={["h-5 w-5 rounded-full transition-transform hover:scale-110 ring-offset-1", swatch_class, if(@selected_note.color == color_id, do: "ring-2 ring-primary scale-110", else: "")]}
                       title={color_id}
+                      aria-label={"Set color to " <> color_id}
                     />
                   <% end %>
                 </div>
@@ -352,6 +357,7 @@ defmodule PhiaDemoWeb.Demo.Notes.IndexLive do
             phx-value-id={@note.id}
             class={["p-1 rounded-lg transition-colors", if(@note.pinned, do: "text-primary", else: "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10")]}
             title={if @note.pinned, do: "Unpin", else: "Pin"}
+            aria-label={if @note.pinned, do: "Unpin note", else: "Pin note"}
           >
             <.icon name="pin" size={:xs} />
           </button>

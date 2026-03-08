@@ -6,7 +6,7 @@ defmodule PhiaDemoWeb.Demo.Social.IndexLive do
   @posts [
     %{id: 1, author: "Ana Costa", handle: "@ana_costa", avatar: "AC", time: "2 min ago", content: "Just published a new article on Phoenix LiveView real-time features! The combination of PubSub and LiveView streams makes building collaborative UIs incredibly smooth. Check it out! 🚀", likes: 42, comments: 8, liked: false, tags: ["elixir", "phoenix"]},
     %{id: 2, author: "Bruno Lima", handle: "@brunolima", avatar: "BL", time: "1 hour ago", content: "Hot take: Tailwind CSS v4 with CSS-first configuration is the best thing to happen to frontend development this year. No more config file wrangling — just write CSS with superpowers.", likes: 87, comments: 23, liked: true, tags: ["tailwind", "css"]},
-    %{id: 3, author: "Carla Souza", handle: "@carla_dev", avatar: "CS", time: "3 hours ago", content: "Working on PhiaUI — a comprehensive Phoenix LiveView component library. 534+ components, zero JavaScript dependencies for most features. Server-rendered and proud of it! Who else is building with LiveView?", likes: 156, comments: 41, liked: false, tags: ["phiaui", "elixir", "liveview"]},
+    %{id: 3, author: "Carla Souza", handle: "@carla_dev", avatar: "CS", time: "3 hours ago", content: "Working on PhiaUI — a comprehensive Phoenix LiveView component library. 584+ components, zero JavaScript dependencies for most features. Server-rendered and proud of it! Who else is building with LiveView?", likes: 156, comments: 41, liked: false, tags: ["phiaui", "elixir", "liveview"]},
     %{id: 4, author: "Diego Melo", handle: "@diegomelo", avatar: "DM", time: "Yesterday", content: "Reminder that pattern matching in Elixir is genuinely one of the most powerful programming features ever designed. Writing code that reads like a specification is pure joy.", likes: 203, comments: 19, liked: false, tags: ["elixir", "functional"]},
     %{id: 5, author: "Elena Rocha", handle: "@elena_tech", avatar: "ER", time: "Yesterday", content: "Dark mode done right: CSS custom properties + a single .dark class toggle on the root element. No JavaScript frameworks needed. This is the way.", likes: 324, comments: 67, liked: true, tags: ["darkmode", "css"]}
   ]
@@ -60,12 +60,12 @@ defmodule PhiaDemoWeb.Demo.Social.IndexLive do
   def render(assigns) do
     ~H"""
     <Layout.layout current_path="/social">
-      <div class="flex gap-6 p-6 max-w-screen-xl mx-auto phia-animate">
+      <div class="flex gap-6 p-3 sm:p-4 lg:p-6 max-w-screen-xl mx-auto phia-animate">
 
         <%!-- Main feed --%>
         <div class="flex-1 min-w-0 space-y-4">
           <%!-- Compose bar --%>
-          <div class="flex gap-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+          <div class="flex gap-3 rounded-xl border border-border/60 bg-card p-3 sm:p-4 shadow-sm">
             <.avatar size="default">
               <.avatar_fallback name="Me" class="bg-primary/10 text-primary font-semibold" />
             </.avatar>
@@ -84,7 +84,7 @@ defmodule PhiaDemoWeb.Demo.Social.IndexLive do
           <%!-- Posts --%>
           <%= for post <- @posts do %>
             <.card class="border-border/60 shadow-sm hover:shadow-md transition-shadow">
-              <.card_content class="p-5">
+              <.card_content class="p-3 sm:p-5">
                 <div class="flex items-start gap-3">
                   <.avatar size="default" class="shrink-0">
                     <.avatar_fallback name={post.author} class="bg-primary/10 text-primary font-semibold" />
@@ -129,7 +129,7 @@ defmodule PhiaDemoWeb.Demo.Social.IndexLive do
         </div>
 
         <%!-- Sidebar --%>
-        <div class="w-72 shrink-0 space-y-5">
+        <div class="hidden lg:block w-72 shrink-0 space-y-5">
           <%!-- Trending --%>
           <.card class="border-border/60 shadow-sm">
             <.card_header class="pb-3">

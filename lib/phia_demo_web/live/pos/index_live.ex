@@ -100,10 +100,10 @@ defmodule PhiaDemoWeb.Demo.Pos.IndexLive do
 
     ~H"""
     <Layout.layout current_path="/pos">
-      <div class="flex h-full phia-animate">
+      <div class="flex flex-col lg:flex-row h-full phia-animate">
 
         <%!-- Products panel --%>
-        <div class="flex-1 flex flex-col min-w-0 p-5 space-y-4 overflow-auto">
+        <div class="flex-1 flex flex-col min-w-0 p-3 sm:p-4 lg:p-5 space-y-4 overflow-auto">
           <%!-- Category filter --%>
           <div class="flex gap-2 flex-wrap">
             <%= for cat <- @categories do %>
@@ -111,7 +111,7 @@ defmodule PhiaDemoWeb.Demo.Pos.IndexLive do
                 phx-click="set-category"
                 phx-value-cat={cat}
                 class={[
-                  "rounded-lg px-4 py-2 text-sm font-medium transition-all border",
+                  "rounded-lg px-4 py-2.5 sm:py-2 text-sm font-medium transition-all border min-h-[44px] sm:min-h-0",
                   if(@category == cat,
                     do: "bg-primary text-primary-foreground border-primary shadow-sm",
                     else: "border-border text-muted-foreground hover:border-primary/40 hover:bg-accent"
@@ -146,7 +146,7 @@ defmodule PhiaDemoWeb.Demo.Pos.IndexLive do
         </div>
 
         <%!-- Cart panel --%>
-        <div class="w-80 shrink-0 border-l border-border/60 flex flex-col bg-card/50">
+        <div class="w-full lg:w-80 shrink-0 border-t lg:border-t-0 lg:border-l border-border/60 flex flex-col bg-card/50">
           <div class="p-4 border-b border-border/60 flex items-center justify-between">
             <div class="flex items-center gap-2">
               <.icon name="shopping-cart" size={:sm} class="text-primary" />
@@ -174,7 +174,8 @@ defmodule PhiaDemoWeb.Demo.Pos.IndexLive do
                   <button
                     phx-click="remove-from-cart"
                     phx-value-id={item.product.id}
-                    class="h-6 w-6 flex items-center justify-center rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                    class="h-8 w-8 sm:h-7 sm:w-7 flex items-center justify-center rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                    aria-label={"Decrease quantity of " <> item.product.name}
                   >
                     <.icon name="minus" size={:xs} />
                   </button>
@@ -182,7 +183,8 @@ defmodule PhiaDemoWeb.Demo.Pos.IndexLive do
                   <button
                     phx-click="add-to-cart"
                     phx-value-id={item.product.id}
-                    class="h-6 w-6 flex items-center justify-center rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                    class="h-8 w-8 sm:h-7 sm:w-7 flex items-center justify-center rounded border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                    aria-label={"Increase quantity of " <> item.product.name}
                   >
                     <.icon name="plus" size={:xs} />
                   </button>

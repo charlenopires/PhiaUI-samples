@@ -84,7 +84,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.FeedbackLive do
 
     ~H"""
     <Layout.layout current_path="/showcase/feedback">
-      <div class="p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Feedback</h1>
           <p class="text-sm text-muted-foreground mt-0.5">Notification, progress, and overlay components</p>
@@ -509,7 +509,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.FeedbackLive do
 
         <%!-- ContextMenu --%>
         <.demo_section title="ContextMenu" subtitle="Right-click menu — try right-clicking the cards below">
-          <div class="grid grid-cols-3 gap-3">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <%= for {name, icon, color} <- [{"document.pdf", "bold", "text-blue-500"}, {"image.png", "image", "text-green-500"}, {"archive.zip", "package", "text-orange-500"}] do %>
               <.context_menu id={"ctx-#{name}"}>
                 <.context_menu_trigger context_menu_id={"ctx-#{name}"}>
@@ -584,6 +584,43 @@ defmodule PhiaDemoWeb.Demo.Showcase.FeedbackLive do
             <% end %>
           </div>
           <p class="text-xs text-muted-foreground mt-2">Toasts appear bottom-right, stack on multiple fires, and auto-dismiss after 4s. Hover to expand stacked notifications.</p>
+        </.demo_section>
+
+        <%!-- Banner --%>
+        <.demo_section title="Banner" subtitle="Full-width page-level feedback strip — 5 variants, optionally dismissible">
+          <div class="space-y-3">
+            <.banner id="demo-banner-info" variant={:info}>
+              <:icon><.icon name="info" class="h-4 w-4" /></:icon>
+              New version v0.1.13 is available with 50+ new components.
+            </.banner>
+            <.banner id="demo-banner-success" variant={:success}>
+              <:icon><.icon name="circle-check" class="h-4 w-4" /></:icon>
+              Deployment completed successfully.
+            </.banner>
+            <.banner id="demo-banner-warning" variant={:warning}>
+              <:icon><.icon name="triangle-alert" class="h-4 w-4" /></:icon>
+              Your trial expires in 3 days.
+              <:action>
+                <.button size={:sm} variant={:outline}>Upgrade now</.button>
+              </:action>
+            </.banner>
+            <.banner id="demo-banner-destructive" variant={:destructive}>
+              <:icon><.icon name="circle-x" class="h-4 w-4" /></:icon>
+              Service outage detected. Our team is investigating.
+            </.banner>
+          </div>
+        </.demo_section>
+
+        <%!-- StatusIndicator --%>
+        <.demo_section title="StatusIndicator" subtitle="Colored presence dots — online, offline, away, busy, and more">
+          <div class="flex flex-wrap items-center gap-6">
+            <.status_indicator status={:online} label="API Server" />
+            <.status_indicator status={:offline} label="Backup Service" />
+            <.status_indicator status={:error} label="Queue Worker" />
+            <.status_indicator status={:away} label="Worker Node" />
+            <.status_indicator status={:busy} label="Build Agent" />
+            <.status_indicator status={:online} label="Live" show_pulse={true} />
+          </div>
         </.demo_section>
 
         <%!-- BackTop --%>
@@ -681,7 +718,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.FeedbackLive do
         <h2 class="text-base font-semibold text-foreground">{@title}</h2>
         <p class="text-xs text-muted-foreground mt-0.5">{@subtitle}</p>
       </div>
-      <div class="rounded-xl border border-border/60 bg-card p-5 shadow-sm">
+      <div class="rounded-xl border border-border/60 bg-card p-3 sm:p-5 shadow-sm">
         <%= render_slot(@inner_block) %>
       </div>
     </div>

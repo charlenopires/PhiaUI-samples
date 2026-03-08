@@ -75,15 +75,15 @@ defmodule PhiaDemoWeb.Demo.Tasks.IndexLive do
 
     ~H"""
     <Layout.layout current_path="/tasks">
-      <div class="p-6 space-y-5 max-w-screen-xl mx-auto phia-animate">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-5 max-w-screen-xl mx-auto phia-animate">
 
         <%!-- Header --%>
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 class="text-xl font-bold text-foreground tracking-tight">Issues</h1>
             <p class="text-sm text-muted-foreground mt-0.5">{length(@issues)} total · {length(@filtered)} shown</p>
           </div>
-          <.button phx-click="open-create">
+          <.button phx-click="open-create" class="self-start sm:self-auto">
             <.icon name="plus" size={:xs} class="mr-1.5" />
             New Issue
           </.button>
@@ -99,7 +99,8 @@ defmodule PhiaDemoWeb.Demo.Tasks.IndexLive do
               placeholder="Search issues..."
               phx-keyup="search"
               phx-value-value=""
-              class="rounded-md border border-border bg-background pl-8 pr-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/40 w-64"
+              aria-label="Search issues"
+              class="rounded-md border border-border bg-background pl-8 pr-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/40 w-full sm:w-64"
             />
           </div>
           <%!-- Status filter --%>
@@ -109,7 +110,7 @@ defmodule PhiaDemoWeb.Demo.Tasks.IndexLive do
                 phx-click="filter-status"
                 phx-value-status={val}
                 class={[
-                  "rounded-md px-2.5 py-1.5 text-xs font-medium transition-all border",
+                  "rounded-md px-2.5 py-2 text-xs font-medium transition-all border min-h-[44px] sm:min-h-0 sm:py-1.5",
                   if(@status_filter == val,
                     do: "bg-primary text-primary-foreground border-primary",
                     else: "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
@@ -121,13 +122,13 @@ defmodule PhiaDemoWeb.Demo.Tasks.IndexLive do
             <% end %>
           </div>
           <%!-- Priority filter --%>
-          <div class="flex gap-1 ml-auto">
+          <div class="flex gap-1 sm:ml-auto">
             <%= for {label, val} <- [{"All", :all}, {"High", :high}, {"Medium", :medium}, {"Low", :low}] do %>
               <button
                 phx-click="filter-priority"
                 phx-value-priority={val}
                 class={[
-                  "rounded-md px-2.5 py-1.5 text-xs font-medium transition-all border",
+                  "rounded-md px-2.5 py-2 text-xs font-medium transition-all border min-h-[44px] sm:min-h-0 sm:py-1.5",
                   if(@priority_filter == val,
                     do: "bg-primary text-primary-foreground border-primary",
                     else: "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
@@ -171,9 +172,10 @@ defmodule PhiaDemoWeb.Demo.Tasks.IndexLive do
                         phx-click="toggle-select"
                         phx-value-id={issue.id}
                         class={[
-                          "h-4 w-4 rounded border-2 flex items-center justify-center transition-all",
+                          "h-6 w-6 sm:h-4 sm:w-4 rounded border-2 flex items-center justify-center transition-all",
                           if(issue.id in @selected_ids, do: "border-primary bg-primary", else: "border-border hover:border-primary")
                         ]}
+                        aria-label={"Select issue " <> issue.id}
                       >
                         <.icon :if={issue.id in @selected_ids} name="check" size={:xs} class="text-primary-foreground" />
                       </button>

@@ -8,6 +8,17 @@ defmodule PhiaDemoWeb.Demo.Showcase.UploadLive do
     {:ok,
      socket
      |> assign(:page_title, "Upload Showcase")
+     |> assign(:zone_state, "idle")
+     |> assign(:transfer_source, [
+       %{id: "admin", label: "Admin"},
+       %{id: "editor", label: "Editor"},
+       %{id: "viewer", label: "Viewer"},
+       %{id: "moderator", label: "Moderator"},
+       %{id: "contributor", label: "Contributor"}
+     ])
+     |> assign(:transfer_target, [
+       %{id: "owner", label: "Owner"}
+     ])
      |> allow_upload(:showcase_image,
        accept: ~w(.jpg .jpeg .png .webp .gif),
        max_entries: 3,
@@ -15,6 +26,16 @@ defmodule PhiaDemoWeb.Demo.Showcase.UploadLive do
      )
      |> allow_upload(:showcase_file,
        accept: ~w(.pdf .doc .docx .txt .csv),
+       max_entries: 5,
+       max_file_size: 10_485_760
+     )
+     |> allow_upload(:showcase_btn,
+       accept: ~w(.csv .json .txt),
+       max_entries: 3,
+       max_file_size: 5_242_880
+     )
+     |> allow_upload(:showcase_queue,
+       accept: :any,
        max_entries: 5,
        max_file_size: 10_485_760
      )}
@@ -34,6 +55,14 @@ defmodule PhiaDemoWeb.Demo.Showcase.UploadLive do
     {:noreply, socket}
   end
 
+  def handle_event("zone_drop", _params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("roles_updated", _params, socket) do
+    {:noreply, socket}
+  end
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -42,7 +71,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.UploadLive do
 
         <div>
           <h1 class="text-2xl font-bold text-foreground tracking-tight">Upload</h1>
-          <p class="text-muted-foreground mt-1">File upload, image upload, avatar upload, and drop zones.</p>
+          <p class="text-muted-foreground mt-1">File upload, image upload, avatar upload, drop zones, transfer lists, and progress indicators.</p>
         </div>
 
         <%!-- ImageUpload --%>
@@ -73,16 +102,40 @@ defmodule PhiaDemoWeb.Demo.Showcase.UploadLive do
           </div>
         </section>
 
-        <%!-- Drop zone pattern --%>
+        <%!-- DropZone component --%>
         <section class="space-y-4">
-          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">Drop Zone Pattern</h2>
-          <div class="rounded-xl border-2 border-dashed border-border p-12 text-center hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer group">
-            <div class="flex h-14 w-14 mx-auto items-center justify-center rounded-xl bg-muted group-hover:bg-primary/10 transition-colors mb-4">
-              <.icon name="cloud-upload" size={:sm} class="text-muted-foreground group-hover:text-primary transition-colors" />
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">DropZone</h2>
+          <p class="text-sm text-muted-foreground">Interactive drop zone with state transitions (idle / hover / active / error). Drag files over to see the visual states.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+            <div class="space-y-2">
+              <p class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Default (idle)</p>
+              <.drop_zone id="zone-idle" label="Drop files here" on_drop="zone_drop" />
             </div>
-            <p class="text-sm font-semibold text-foreground">Drop files here to upload</p>
-            <p class="text-xs text-muted-foreground mt-1">or <span class="text-primary font-medium">click to browse</span></p>
-            <p class="text-[10px] text-muted-foreground mt-3">PNG, JPG, PDF up to 50MB</p>
+            <div class="space-y-2">
+              <p class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Custom icon &amp; label</p>
+              <.drop_zone id="zone-custom" label="Drop images here" on_drop="zone_drop" accepts="image/*">
+                <:icon>
+                  <.icon name="image" size={:md} class="opacity-60" />
+                </:icon>
+                Drag &amp; drop images or click to browse
+              </.drop_zone>
+            </div>
+          </div>
+        </section>
+
+        <%!-- DragTransferList --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">DragTransferList</h2>
+          <p class="text-sm text-muted-foreground">Dual-list transfer widget with drag-and-drop and button-click fallbacks. Click an item to select, then use arrows or drag between lists.</p>
+          <div class="max-w-md">
+            <.drag_transfer_list
+              id="role-transfer"
+              source_label="Available Roles"
+              target_label="Assigned Roles"
+              source_items={@transfer_source}
+              target_items={@transfer_target}
+              on_transfer="roles_updated"
+            />
           </div>
         </section>
 
@@ -134,6 +187,57 @@ defmodule PhiaDemoWeb.Demo.Showcase.UploadLive do
                 Upload photo
               </.button>
             </div>
+          </div>
+        </section>
+
+        <%!-- UploadButton --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">UploadButton</h2>
+          <p class="text-sm text-muted-foreground">Compact button-style file picker — opens the file dialog without a drop zone. Selected files appear in a list below.</p>
+          <div class="flex flex-wrap gap-4 max-w-lg">
+            <.form for={%{}} phx-change="validate" phx-submit="noop">
+              <div class="space-y-4">
+                <.upload_button upload={@uploads.showcase_btn} label="Import CSV" variant="default" />
+                <.upload_button upload={@uploads.showcase_btn} label="Attach files" variant="outline" size="sm" show_list={false} />
+              </div>
+            </.form>
+          </div>
+        </section>
+
+        <%!-- UploadQueue --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">UploadQueue</h2>
+          <p class="text-sm text-muted-foreground">Multi-entry upload queue showing per-file progress with file-type badges and cancel buttons. Select files to see the queue.</p>
+          <div class="max-w-md space-y-3">
+            <.form for={%{}} phx-change="validate" phx-submit="noop">
+              <.upload_button upload={@uploads.showcase_queue} label="Add files" variant="outline" show_list={false} />
+              <.upload_queue upload={@uploads.showcase_queue} on_cancel="cancel_upload" show_empty={true} empty_label="No files added yet" class="mt-3" />
+            </.form>
+          </div>
+        </section>
+
+        <%!-- UploadProgress (standalone) --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">UploadProgress</h2>
+          <p class="text-sm text-muted-foreground">Standalone progress rows with five status states: pending, uploading, done, error, and canceled.</p>
+          <div class="max-w-md space-y-2">
+            <.upload_progress filename="quarterly-report.pdf" status={:pending} />
+            <.upload_progress filename="photo-gallery.zip" status={:uploading} progress={67} on_cancel="noop" />
+            <.upload_progress filename="invoice_2026.xlsx" status={:done} progress={100} />
+            <.upload_progress filename="backup.tar.gz" status={:error} progress={34} error_message="Network timeout — file too large" on_retry="noop" on_cancel="noop" />
+            <.upload_progress filename="old-draft.docx" status={:canceled} />
+          </div>
+        </section>
+
+        <%!-- UploadCard --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">UploadCard</h2>
+          <p class="text-sm text-muted-foreground">Cards representing completed file uploads with file-type badges, size, status, and optional download/remove actions.</p>
+          <div class="max-w-md space-y-2">
+            <.upload_card filename="invoice_q1_2026.pdf" size_bytes={248_320} status={:done} uploaded_at="Mar 6, 2026" on_remove="noop" />
+            <.upload_card filename="product_photo.jpg" size_bytes={1_843_200} status={:done} uploaded_at="Mar 7, 2026" href="#" />
+            <.upload_card filename="team-data.xlsx" size_bytes={512_000} status={:done} on_remove="noop" href="#" />
+            <.upload_card filename="corrupted_file.zip" size_bytes={98_304} status={:error} on_remove="noop" />
           </div>
         </section>
 

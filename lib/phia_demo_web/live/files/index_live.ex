@@ -73,7 +73,7 @@ defmodule PhiaDemoWeb.Demo.FileManager.IndexLive do
       <div class="flex h-full phia-animate">
 
         <%!-- Folder tree panel --%>
-        <div class="w-56 shrink-0 border-r border-border/60 bg-card/50 p-3 space-y-1">
+        <div class="hidden md:block w-56 shrink-0 border-r border-border/60 bg-card/50 p-3 space-y-1">
           <button
             phx-click="set-folder"
             phx-value-folder=""
@@ -107,9 +107,20 @@ defmodule PhiaDemoWeb.Demo.FileManager.IndexLive do
         <%!-- Main content --%>
         <div class="flex-1 flex flex-col min-w-0">
           <%!-- Toolbar --%>
-          <div class="flex items-center justify-between px-5 py-3 border-b border-border/60 bg-card/30">
-            <div class="flex items-center gap-2">
-              <.breadcrumb>
+          <div class="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-border/60 bg-card/30">
+            <div class="flex items-center gap-2 min-w-0">
+              <%!-- Mobile folder select --%>
+              <select
+                phx-change="set-folder"
+                name="folder"
+                class="md:hidden rounded-md border border-border bg-background px-2 py-1.5 text-sm min-h-[44px]"
+              >
+                <option value="" selected={is_nil(@folder)}>All Files</option>
+                <%= for folder <- @folders do %>
+                  <option value={folder} selected={@folder == folder}>{folder}</option>
+                <% end %>
+              </select>
+              <.breadcrumb class="hidden md:flex">
                 <.breadcrumb_list>
                   <.breadcrumb_item>
                     <.breadcrumb_link href="/files">Files</.breadcrumb_link>
@@ -135,6 +146,8 @@ defmodule PhiaDemoWeb.Demo.FileManager.IndexLive do
                   phx-value-view="grid"
                   class={["px-2.5 py-1.5 text-sm transition-colors", if(@view == :grid, do: "bg-primary text-primary-foreground", else: "text-muted-foreground hover:bg-accent")]}
                   title="Grid view"
+                  aria-label="Grid view"
+                  aria-pressed={to_string(@view == :grid)}
                 >
                   <.icon name="layout-grid" size={:xs} />
                 </button>
@@ -143,6 +156,8 @@ defmodule PhiaDemoWeb.Demo.FileManager.IndexLive do
                   phx-value-view="list"
                   class={["px-2.5 py-1.5 text-sm transition-colors border-l border-border", if(@view == :list, do: "bg-primary text-primary-foreground", else: "text-muted-foreground hover:bg-accent")]}
                   title="List view"
+                  aria-label="List view"
+                  aria-pressed={to_string(@view == :list)}
                 >
                   <.icon name="list" size={:xs} />
                 </button>
@@ -150,10 +165,10 @@ defmodule PhiaDemoWeb.Demo.FileManager.IndexLive do
             </div>
           </div>
 
-          <div class="flex-1 overflow-auto p-5">
+          <div class="flex-1 overflow-auto p-3 sm:p-5">
             <%= if @view == :grid do %>
               <%!-- Grid view --%>
-              <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 <%= for file <- @filtered do %>
                   <button
                     phx-click="select-file"
@@ -176,7 +191,8 @@ defmodule PhiaDemoWeb.Demo.FileManager.IndexLive do
               </div>
             <% else %>
               <%!-- List view --%>
-              <div class="space-y-1">
+              <div class="overflow-x-auto">
+              <div class="space-y-1 min-w-[600px]">
                 <%= for file <- @filtered do %>
                   <button
                     phx-click="select-file"
@@ -203,21 +219,23 @@ defmodule PhiaDemoWeb.Demo.FileManager.IndexLive do
                       phx-value-id={file.id}
                       class="p-1.5 rounded opacity-0 group-hover:opacity-100 text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-all shrink-0"
                       title="Delete"
+                      aria-label="Delete file"
                     >
                       <.icon name="trash-2" size={:xs} />
                     </button>
                   </button>
                 <% end %>
               </div>
+              </div>
             <% end %>
           </div>
         </div>
 
         <%!-- File detail panel --%>
-        <div :if={@selected} class="w-64 shrink-0 border-l border-border/60 bg-card/50 p-4 space-y-4">
+        <div :if={@selected} class="hidden lg:block w-64 shrink-0 border-l border-border/60 bg-card/50 p-4 space-y-4">
           <div class="flex items-center justify-between">
             <p class="text-sm font-semibold text-foreground">Details</p>
-            <button phx-click="select-file" phx-value-id="-1" class="p-1 rounded text-muted-foreground hover:bg-accent transition-colors">
+            <button phx-click="select-file" phx-value-id="-1" class="p-1 rounded text-muted-foreground hover:bg-accent transition-colors" aria-label="Close details panel">
               <.icon name="x" size={:xs} />
             </button>
           </div>

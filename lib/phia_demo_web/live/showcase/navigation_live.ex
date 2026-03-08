@@ -221,7 +221,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.NavigationLive do
                   What is PhiaUI?
                 </.accordion_trigger>
                 <.accordion_content value="a1">
-                  PhiaUI is a comprehensive Phoenix LiveView component library built on Tailwind CSS v4. It provides 534+ components covering all common UI patterns, from basic inputs to complex data visualization.
+                  PhiaUI is a comprehensive Phoenix LiveView component library built on Tailwind CSS v4. It provides 584+ components covering all common UI patterns, from basic inputs to complex data visualization.
                 </.accordion_content>
               </.accordion_item>
               <.accordion_item value="a2" type={:single} accordion_id="showcase-acc">
@@ -266,6 +266,47 @@ defmodule PhiaDemoWeb.Demo.Showcase.NavigationLive do
           </div>
           <div class="flex items-center gap-2 text-sm text-muted-foreground">
             Press <.kbd>⌘K</.kbd> to open the command palette, or <.kbd>?</.kbd> for help
+          </div>
+        </section>
+
+        <%!-- BottomNavigation --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">BottomNavigation</h2>
+          <p class="text-xs text-muted-foreground">Mobile tab bar — shown inline here instead of fixed to viewport for demo purposes.</p>
+          <div class="max-w-sm mx-auto border border-border rounded-xl overflow-hidden">
+            <div class="h-32 flex items-center justify-center bg-muted/30">
+              <p class="text-sm text-muted-foreground">App content area</p>
+            </div>
+            <.bottom_navigation
+              class="!fixed-none !relative border-t border-border"
+              active="home"
+              items={[
+                %{label: "Home", icon: "home", value: "home"},
+                %{label: "Search", icon: "search", value: "search"},
+                %{label: "Profile", icon: "user", value: "profile"}
+              ]}
+            />
+          </div>
+        </section>
+
+        <%!-- Toolbar --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">Toolbar</h2>
+          <div class="space-y-4">
+            <.toolbar>
+              <:item aria_label="Bold" on_click="noop">B</:item>
+              <:item aria_label="Italic" on_click="noop">I</:item>
+              <:item aria_label="Underline" on_click="noop">U</:item>
+              <:separator />
+              <:item aria_label="List" on_click="noop">☰</:item>
+              <:item aria_label="Link" on_click="noop">🔗</:item>
+            </.toolbar>
+
+            <.toolbar variant={:floating}>
+              <:item aria_label="Align left" on_click="noop">←</:item>
+              <:item aria_label="Align center" on_click="noop">↔</:item>
+              <:item aria_label="Align right" on_click="noop">→</:item>
+            </.toolbar>
           </div>
         </section>
 

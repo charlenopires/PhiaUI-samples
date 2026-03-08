@@ -91,15 +91,15 @@ defmodule PhiaDemoWeb.Demo.ApiKeys.IndexLive do
 
     ~H"""
     <Layout.layout current_path="/api-keys">
-      <div class="p-6 space-y-6 max-w-screen-xl mx-auto phia-animate">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-6 max-w-screen-xl mx-auto phia-animate">
 
         <%!-- Header --%>
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 class="text-xl font-bold text-foreground tracking-tight">API Keys</h1>
             <p class="text-sm text-muted-foreground mt-0.5">{@active_count} active keys</p>
           </div>
-          <.button phx-click="open-create">
+          <.button phx-click="open-create" class="self-start sm:self-auto">
             <.icon name="plus" size={:xs} class="mr-1.5" />
             Generate New Key
           </.button>
@@ -135,7 +135,7 @@ defmodule PhiaDemoWeb.Demo.ApiKeys.IndexLive do
                     <td class="px-5 py-4 font-semibold text-foreground">{k.name}</td>
                     <td class="px-5 py-4">
                       <div class="flex items-center gap-2">
-                        <code class="font-mono text-xs bg-muted px-2 py-1 rounded text-foreground">
+                        <code class="font-mono text-xs bg-muted px-2 py-1 rounded text-foreground max-w-[120px] sm:max-w-none truncate inline-block">
                           {if k.id in @revealed,
                             do: String.slice(k.key, 0, 32) <> "...",
                             else: k.prefix <> String.duplicate("•", 20)}
@@ -145,6 +145,7 @@ defmodule PhiaDemoWeb.Demo.ApiKeys.IndexLive do
                           phx-value-id={k.id}
                           class="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                           title={if k.id in @revealed, do: "Hide", else: "Reveal"}
+                          aria-label={if k.id in @revealed, do: "Hide API key", else: "Reveal API key"}
                         >
                           <.icon name={if k.id in @revealed, do: "eye-off", else: "eye"} size={:xs} />
                         </button>

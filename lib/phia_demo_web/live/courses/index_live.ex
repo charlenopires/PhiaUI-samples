@@ -57,18 +57,18 @@ defmodule PhiaDemoWeb.Demo.Courses.IndexLive do
 
     ~H"""
     <Layout.layout current_path="/courses">
-      <div class="p-6 space-y-6 max-w-screen-xl mx-auto phia-animate">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6 max-w-screen-xl mx-auto phia-animate">
 
         <%!-- Header --%>
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-xl font-bold text-foreground tracking-tight">Course Catalog</h1>
+            <h1 class="text-lg sm:text-xl font-bold text-foreground tracking-tight">Course Catalog</h1>
             <p class="text-sm text-muted-foreground mt-0.5">{@enrolled_count} enrolled · {@completed_count} completed</p>
           </div>
         </div>
 
         <%!-- Stats --%>
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <%= for {label, value, icon, color} <- [{"Enrolled", @enrolled_count, "layers", "text-blue-500"}, {"Completed", @completed_count, "circle-check", "text-green-500"}, {"In Progress", @enrolled_count - @completed_count, "trending-up", "text-amber-500"}] do %>
             <.card class="border-border/60 shadow-sm">
               <.card_content class="p-5">
@@ -87,14 +87,14 @@ defmodule PhiaDemoWeb.Demo.Courses.IndexLive do
         </div>
 
         <%!-- Filters --%>
-        <div class="flex flex-wrap gap-3 items-center">
-          <div class="flex gap-1">
+        <div class="flex flex-col sm:flex-row flex-wrap gap-3 items-start sm:items-center">
+          <div class="flex flex-wrap gap-1">
             <%= for {label, val} <- [{"All", :all}, {"My Courses", :enrolled}, {"Completed", :completed}, {"Not Enrolled", :not_enrolled}] do %>
               <button
                 phx-click="set-filter"
                 phx-value-filter={val}
                 class={[
-                  "rounded-md px-3 py-1.5 text-xs font-medium border transition-all",
+                  "rounded-md px-3 py-2 sm:py-1.5 text-xs font-medium border transition-all",
                   if(@filter == val,
                     do: "bg-primary text-primary-foreground border-primary",
                     else: "border-border text-muted-foreground hover:border-primary/40"
@@ -105,13 +105,13 @@ defmodule PhiaDemoWeb.Demo.Courses.IndexLive do
               </button>
             <% end %>
           </div>
-          <div class="flex gap-1 ml-auto">
+          <div class="flex flex-wrap gap-1 sm:ml-auto">
             <%= for {label, val} <- [{"All Levels", :all}, {"Beginner", :beginner}, {"Intermediate", :intermediate}, {"Advanced", :advanced}] do %>
               <button
                 phx-click="set-level"
                 phx-value-level={val}
                 class={[
-                  "rounded-md px-3 py-1.5 text-xs font-medium border transition-all",
+                  "rounded-md px-3 py-2 sm:py-1.5 text-xs font-medium border transition-all",
                   if(@level_filter == val,
                     do: "bg-primary text-primary-foreground border-primary",
                     else: "border-border text-muted-foreground hover:border-primary/40"

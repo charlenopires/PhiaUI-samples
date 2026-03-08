@@ -281,3 +281,14 @@
     animation: none;
   }
 }
+
+/* ── Chat Message Entrance ───────────────────────────────────────────────── */
+@keyframes chatMsgSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.chat-msg-enter { animation: chatMsgSlideIn 0.3s ease forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-msg-enter { animation: none; }
+}

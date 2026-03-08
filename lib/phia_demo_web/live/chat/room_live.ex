@@ -305,20 +305,20 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
       </div>
 
       <%!-- Messages area --%>
-      <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3" phx-update="replace">
+      <div id="chat-messages" class="flex-1 overflow-y-auto overflow-x-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4 space-y-3" phx-update="replace" aria-live="polite" role="log" aria-label="Chat messages">
         <%= for msg <- @messages do %>
           <% user = Enum.find(@users, &(&1.id == msg.user_id)) %>
           <% is_me = msg.user_id == @current_user_id %>
 
           <%= if msg.type == :system do %>
             <%!-- System message --%>
-            <div class="flex items-center justify-center py-1">
+            <div class="chat-msg-enter flex items-center justify-center py-1">
               <span class="px-3 py-1 rounded-full bg-muted text-[10px] text-muted-foreground font-medium">
                 {msg.text}
               </span>
             </div>
           <% else %>
-            <div id={"msg-#{msg.id}"} class={["flex gap-2.5 group", if(is_me, do: "flex-row-reverse", else: "")]}>
+            <div id={"msg-#{msg.id}"} class={["chat-msg-enter flex gap-2.5 group", if(is_me, do: "flex-row-reverse", else: "")]}>
 
               <%!-- Avatar with online dot --%>
               <div class="shrink-0 mt-0.5 relative">
@@ -428,6 +428,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
                     phx-value-msg_id={msg.id}
                     class="h-6 w-6 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                     title="Reply"
+                    aria-label="Reply"
                   >
                     <.icon name="reply" size={:xs} />
                   </button>
@@ -467,7 +468,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
       <%!-- Reply preview bar --%>
       <%= if @reply_to do %>
-        <div class="flex items-center gap-2 px-4 py-2 bg-muted/40 border-t border-border/40 shrink-0">
+        <div class="flex items-center gap-2 px-3 sm:px-4 lg:px-6 py-2 bg-muted/40 border-t border-border/40 shrink-0">
           <.icon name="reply" size={:xs} class="text-primary shrink-0" />
           <div class="flex-1 min-w-0">
             <span class="text-xs font-semibold text-primary">{@reply_to.user_name}</span>
@@ -477,6 +478,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
             type="button"
             phx-click="cancel_reply"
             class="h-5 w-5 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground shrink-0"
+            aria-label="Cancel reply"
           >
             <.icon name="x" size={:xs} />
           </button>
@@ -484,12 +486,13 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
       <% end %>
 
       <%!-- Input bar --%>
-      <div class="shrink-0 border-t border-border/60 bg-background px-4 py-3">
+      <div class="shrink-0 border-t border-border/60 bg-background px-3 sm:px-4 lg:px-6 py-3">
         <form phx-submit="send_message" class="flex items-center gap-2">
           <button
             type="button"
-            class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors shrink-0"
+            class="h-11 w-11 sm:h-9 sm:w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors shrink-0"
             title="Anexar arquivo"
+            aria-label="Attach file"
           >
             <.icon name="paperclip" size={:sm} />
           </button>
@@ -499,6 +502,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
             name="text"
             value={@input_text}
             placeholder={"Message — #{room_label(@rooms, @room_id)}..."}
+            aria-label="Type a message"
             phx-keyup="typing"
             phx-debounce="100"
             autocomplete="off"
@@ -507,15 +511,17 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
           <button
             type="button"
-            class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors shrink-0"
+            class="h-11 w-11 sm:h-9 sm:w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors shrink-0"
             title="Emoji"
+            aria-label="Emoji"
           >
             <.icon name="smile" size={:sm} />
           </button>
 
           <button
             type="submit"
-            class="h-9 w-9 flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shrink-0 disabled:opacity-50"
+            class="h-11 w-11 sm:h-9 sm:w-9 flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shrink-0 disabled:opacity-50"
+            aria-label="Send message"
           >
             <.icon name="send" size={:xs} />
           </button>

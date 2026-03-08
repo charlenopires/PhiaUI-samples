@@ -13,7 +13,8 @@ defmodule PhiaDemoWeb.Demo.Showcase.TablesLive do
      |> assign(:users, FakeData.users())
      |> assign(:sort_col, nil)
      |> assign(:sort_dir, :asc)
-     |> assign(:selected_ids, [])}
+     |> assign(:selected_ids, [])
+     |> assign(:expanded_rows, MapSet.new())}
   end
 
   @impl true
@@ -34,6 +35,15 @@ defmodule PhiaDemoWeb.Demo.Showcase.TablesLive do
 
   def handle_event("clear-selection", _params, socket) do
     {:noreply, assign(socket, :selected_ids, [])}
+  end
+
+  def handle_event("toggle_row", %{"id" => id}, socket) do
+    expanded =
+      if MapSet.member?(socket.assigns.expanded_rows, id),
+        do: MapSet.delete(socket.assigns.expanded_rows, id),
+        else: MapSet.put(socket.assigns.expanded_rows, id)
+
+    {:noreply, assign(socket, expanded_rows: expanded)}
   end
 
   @impl true
@@ -207,6 +217,79 @@ defmodule PhiaDemoWeb.Demo.Showcase.TablesLive do
             <.filter_select label="Status" name="status" options={[{"All", ""}, {"Active", "active"}, {"Inactive", "inactive"}]} value="" on_change="noop" />
             <.filter_reset on_click="noop" />
           </.filter_bar>
+        </section>
+
+        <%!-- Comparison Table --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">Comparison Table</h2>
+          <.card class="border-border/60 shadow-sm p-4">
+            <.comparison_table
+              plans={[
+                %{name: "Starter", highlighted: false},
+                %{name: "Pro", highlighted: true},
+                %{name: "Enterprise", highlighted: false}
+              ]}
+              features={[
+                %{label: "Users", values: ["1", "Up to 10", "Unlimited"]},
+                %{label: "Storage", values: ["5 GB", "100 GB", "Unlimited"]},
+                %{label: "API Access", values: [false, true, true]},
+                %{label: "Priority Support", values: [false, false, true]},
+                %{label: "Custom Domain", values: [false, true, true]},
+                %{label: "SLA", values: [false, false, "99.99%"]}
+              ]}
+            />
+          </.card>
+        </section>
+
+        <%!-- Expandable Table --%>
+        <section class="space-y-4">
+          <h2 class="text-base font-semibold text-foreground border-b border-border/60 pb-2">Expandable Table</h2>
+          <.card class="border-border/60 shadow-sm">
+            <.table>
+              <.table_header>
+                <.table_row>
+                  <.table_head class="w-10"></.table_head>
+                  <.table_head>Order</.table_head>
+                  <.table_head>Customer</.table_head>
+                  <.table_head>Product</.table_head>
+                  <.table_head>Amount</.table_head>
+                  <.table_head>Status</.table_head>
+                </.table_row>
+              </.table_header>
+              <.table_body>
+                <%= for order <- @orders do %>
+                  <.expandable_table_row
+                    row_id={to_string(order.id)}
+                    expanded={to_string(order.id) in @expanded_rows}
+                    on_toggle="toggle_row"
+                  >
+                    <.table_cell>{order.id}</.table_cell>
+                    <.table_cell>{order.customer}</.table_cell>
+                    <.table_cell>{order.product}</.table_cell>
+                    <.table_cell>{order.amount}</.table_cell>
+                    <.table_cell>
+                      <.badge variant={status_variant(order.status)} class="text-[10px] capitalize">
+                        {to_string(order.status)}
+                      </.badge>
+                    </.table_cell>
+                  </.expandable_table_row>
+                  <.expandable_table_detail
+                    row_id={to_string(order.id)}
+                    expanded={to_string(order.id) in @expanded_rows}
+                    col_span={6}
+                  >
+                    <div class="rounded-md bg-muted/30 p-4 text-sm space-y-1">
+                      <p><span class="font-medium text-foreground">Order ID:</span> <span class="text-muted-foreground">{order.id}</span></p>
+                      <p><span class="font-medium text-foreground">Customer:</span> <span class="text-muted-foreground">{order.customer}</span></p>
+                      <p><span class="font-medium text-foreground">Product:</span> <span class="text-muted-foreground">{order.product}</span></p>
+                      <p><span class="font-medium text-foreground">Amount:</span> <span class="text-muted-foreground">{order.amount}</span></p>
+                      <p><span class="font-medium text-foreground">Date:</span> <span class="text-muted-foreground">{order.date}</span></p>
+                    </div>
+                  </.expandable_table_detail>
+                <% end %>
+              </.table_body>
+            </.table>
+          </.card>
         </section>
 
       </div>

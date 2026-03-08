@@ -1,6 +1,6 @@
 # PhiaUI Samples
 
-**16 complete Phoenix LiveView demo apps** in a single repo, each built with the [PhiaUI](https://hex.pm/packages/phia_ui) component library — featuring CSS-first theming, 534 components, and full dark mode support.
+**16 complete Phoenix LiveView demo apps** in a single repo, each built with the [PhiaUI](https://hex.pm/packages/phia_ui) component library — featuring CSS-first theming, 584 components, and full dark mode support.
 
 ---
 
@@ -10,7 +10,7 @@
 |---|---|
 | **Repository** | [github.com/charlenopires/PhiaUI-samples](https://github.com/charlenopires/PhiaUI-samples) |
 | **Framework** | Phoenix `~> 1.8.3` + LiveView `~> 1.1.0` |
-| **UI Library** | [PhiaUI](https://hex.pm/packages/phia_ui) `v0.1.11` |
+| **UI Library** | [PhiaUI](https://hex.pm/packages/phia_ui) `v0.1.13` |
 | **CSS** | Tailwind CSS v4 (CSS-first `@theme`, OKLCH colors) |
 | **Themes** | Violet, Blue, Green, Rose, Orange, Slate, Zinc, Neutral — light + dark mode |
 | **Language** | Elixir `~> 1.15` |
@@ -46,8 +46,8 @@ Open **http://localhost:4000** — home page with live theme picker and links to
 
 | App | Route | Description |
 |-----|-------|-------------|
-| **Dashboard** | `/dashboard` | Admin panel — KPIs, SVG charts, user/order management, settings |
-| **Showcase** | `/showcase` | Interactive gallery of 534 PhiaUI components across 11 pages |
+| **Dashboard** | `/dashboard` | Admin panel — KPIs, ECharts visualizations, user/order management, settings |
+| **Showcase** | `/showcase` | Interactive gallery of 584 PhiaUI components across 12 pages |
 | **Chat** | `/chat` | Real-time chat rooms with PubSub, polls, reactions, typing indicators |
 
 ### Productivity
@@ -89,11 +89,11 @@ Open **http://localhost:4000** — home page with live theme picker and links to
 
 | Route | Components |
 |-------|------------|
-| `/showcase` | Category overview — 534 components across 11 sections |
-| `/showcase/inputs` | Input, Textarea, Select, Combobox, DateRangePicker, TagsInput, Checkbox, RadioGroup |
+| `/showcase` | Category overview — 584 components across 12 sections |
+| `/showcase/inputs` | Input, Textarea, Select, Combobox, DateRangePicker, TagsInput, AutocompleteInput, PhoneInput, SearchInput, ClearableInput |
 | `/showcase/display` | Badge, Avatar, Card, Skeleton, Accordion, Table, Pagination, EmptyState |
-| `/showcase/feedback` | Alert, Toast, Dialog, AlertDialog, Tooltip, Popover, DropdownMenu, Drawer, Progress |
-| `/showcase/charts` | StatCard, MetricGrid, Area, Bar, Donut charts via inline SVG |
+| `/showcase/feedback` | Alert, Toast, Dialog, Drawer, Progress, Banner, StatusIndicator, Popconfirm, LoadingOverlay |
+| `/showcase/charts` | phia_chart (ECharts), Line, Area, Bar, Pie, StatCard, MetricGrid, GaugeChart, SparklineCard |
 | `/showcase/calendar` | Monthly, weekly, range calendars; DateStrip; event markers |
 | `/showcase/cards` | ArticleCard, PricingCard, ProductCard, ProfileCard, FeatureCard, TestimonialCard |
 | `/showcase/navigation` | MegaMenu, Dock, CommandPalette, ChipNav, Stepper, Breadcrumb, Toolbar |
@@ -103,9 +103,9 @@ Open **http://localhost:4000** — home page with live theme picker and links to
 
 ---
 
-## Theming (v0.1.11)
+## Theming (v0.1.13)
 
-PhiaUI v0.1.11 introduces **CSS-first theming** with 8 built-in presets:
+PhiaUI v0.1.13 introduces **CSS-first theming** with 8 built-in presets:
 
 ```bash
 mix phia.theme install   # generates assets/css/phia-themes.css
@@ -148,6 +148,7 @@ All PhiaUI interactive components use lightweight vanilla-JS hooks registered in
 | `PhiaHoverCard` | HoverCard |
 | `PhiaTheme` | Theme palette switcher |
 | `PhiaNumberTicker` | Animated number count-up |
+| `PhiaChart` | Apache ECharts integration |
 
 ---
 
@@ -206,7 +207,7 @@ assets/
 - **Shared top nav** — `PhiaDemoWeb.ProjectNav` renders the cross-project navigation bar
 - **Global component imports** — all PhiaUI components imported once in `phia_demo_web.ex`
 - **Lucide icons** — SVG sprite at `priv/static/icons/lucide-sprite.svg`, no npm; add icons by appending a `<symbol>` entry
-- **SVG charts** — inline SVG computed server-side with `Enum.with_index`; no JS chart library
+- **ECharts integration** — interactive charts via `phia_chart/1` component + `PhiaChart` JS hook; Apache ECharts loaded from CDN
 - **CSS-first theming** — `data-phia-theme` attribute on `<html>`; theme persists via `localStorage['phia-color-theme']`
 
 ---

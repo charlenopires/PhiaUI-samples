@@ -45,7 +45,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Overview do
             trend={s.trend}
             trend_value={s.trend_value}
             description={s.description}
-            class="border-border/60 shadow-sm"
+            class="border-border/60 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
           >
             <:icon>
               <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
@@ -70,42 +70,13 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Overview do
             </div>
           </.card_header>
           <.card_content class="px-6 pb-6 pt-0">
-            <% max_val = Enum.max(Enum.map(@revenue, & &1.value)) %>
-            <% n = length(@revenue) - 1 %>
-            <% pts = Enum.with_index(@revenue) |> Enum.map(fn {item, i} ->
-              x = 44.0 + i * (548.0 / n)
-              y = 165.0 - item.value / max_val * 135.0
-              {Float.round(x, 1), Float.round(y, 1)}
-            end) %>
-            <% {fx, _} = List.first(pts) %>
-            <% {lx, _} = List.last(pts) %>
-            <% area_pts = "#{fx},165 " <> Enum.map_join(pts, " ", fn {x, y} -> "#{x},#{y}" end) <> " #{lx},165" %>
-            <% line_pts = Enum.map_join(pts, " ", fn {x, y} -> "#{x},#{y}" end) %>
-            <svg viewBox="0 0 612 190" class="w-full" style="height:220px">
-              <%!-- Grid lines --%>
-              <%= for pct <- [0.25, 0.5, 0.75, 1.0] do %>
-                <% gy = Float.round(165.0 - pct * 135.0, 1) %>
-                <line x1="44" y1={gy} x2="592" y2={gy} class="stroke-border" stroke-width="1" stroke-dasharray="4 3" />
-                <text x="38" y={gy + 4} text-anchor="end" class="fill-muted-foreground" style="font-size:9px">
-                  {trunc(max_val * pct / 1000)}k
-                </text>
-              <% end %>
-              <%!-- Area fill --%>
-              <polygon points={area_pts} class="fill-primary" fill-opacity="0.08" />
-              <%!-- Line --%>
-              <polyline points={line_pts} class="stroke-primary" fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
-              <%!-- Data dots --%>
-              <%= for {x, y} <- pts do %>
-                <circle cx={x} cy={y} r="3" class="fill-background stroke-primary" stroke-width="1.5" />
-              <% end %>
-              <%!-- X-axis month labels --%>
-              <%= for {item, i} <- Enum.with_index(@revenue) do %>
-                <% lx2 = Float.round(44.0 + i * (548.0 / n), 1) %>
-                <text x={lx2} y="183" text-anchor="middle" class="fill-muted-foreground" style="font-size:9px">
-                  {item.month}
-                </text>
-              <% end %>
-            </svg>
+            <.phia_chart
+              id="dashboard-revenue"
+              type={:area}
+              series={[%{name: "Revenue", data: Enum.map(@revenue, & &1.value)}]}
+              labels={Enum.map(@revenue, & &1.month)}
+              height="280px"
+            />
           </.card_content>
         </.card>
 
@@ -188,39 +159,13 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Overview do
                 <% paid = Enum.count(@orders, & &1.status == :paid) %>
                 <% pending = Enum.count(@orders, & &1.status == :pending) %>
                 <% cancelled = Enum.count(@orders, & &1.status == :cancelled) %>
-                <% total = length(@orders) %>
-                <% circ = 251.3 %>
-                <% paid_len = Float.round(paid / total * circ, 1) %>
-                <% pending_len = Float.round(pending / total * circ, 1) %>
-                <% cancelled_len = Float.round(cancelled / total * circ, 1) %>
-                <div class="flex items-center gap-6">
-                  <svg viewBox="0 0 100 100" class="w-24 h-24 shrink-0" style="transform: rotate(-90deg)">
-                    <circle cx="50" cy="50" r="40" fill="transparent" class="stroke-muted" stroke-width="14" />
-                    <circle cx="50" cy="50" r="40" fill="transparent" class="stroke-primary" stroke-width="14"
-                      stroke-dasharray={"#{paid_len} #{circ}"} stroke-dashoffset="0" stroke-linecap="round" />
-                    <circle cx="50" cy="50" r="40" fill="transparent" class="stroke-warning" stroke-width="14"
-                      stroke-dasharray={"#{pending_len} #{circ}"} stroke-dashoffset={"-#{paid_len}"} stroke-linecap="round" />
-                    <circle cx="50" cy="50" r="40" fill="transparent" class="stroke-destructive" stroke-width="14"
-                      stroke-dasharray={"#{cancelled_len} #{circ}"} stroke-dashoffset={"-#{paid_len + pending_len}"} stroke-linecap="round" />
-                  </svg>
-                  <div class="space-y-2 text-sm">
-                    <div class="flex items-center gap-2">
-                      <span class="h-2 w-2 rounded-full bg-primary shrink-0"></span>
-                      <span class="text-muted-foreground">Paid</span>
-                      <span class="ml-auto font-semibold text-foreground">{paid}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <span class="h-2 w-2 rounded-full bg-warning shrink-0"></span>
-                      <span class="text-muted-foreground">Pending</span>
-                      <span class="ml-auto font-semibold text-foreground">{pending}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <span class="h-2 w-2 rounded-full bg-destructive shrink-0"></span>
-                      <span class="text-muted-foreground">Cancelled</span>
-                      <span class="ml-auto font-semibold text-foreground">{cancelled}</span>
-                    </div>
-                  </div>
-                </div>
+                <.phia_chart
+                  id="dashboard-orders"
+                  type={:pie}
+                  series={[%{name: "Orders", data: [paid, pending, cancelled]}]}
+                  labels={["Paid", "Pending", "Cancelled"]}
+                  height="200px"
+                />
               </.card_content>
             </.card>
 
