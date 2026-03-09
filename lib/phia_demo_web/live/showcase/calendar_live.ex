@@ -487,15 +487,12 @@ defmodule PhiaDemoWeb.Demo.Showcase.CalendarLive do
 
         <%!-- DailyAgenda --%>
         <.demo_section title="DailyAgenda" subtitle="Day view with time slots and event blocks">
-          <.daily_agenda
-            date={Date.utc_today()}
-            events={[
-              %{id: "1", title: "Team Standup", start_time: ~T[09:00:00], end_time: ~T[09:30:00], color: :blue},
-              %{id: "2", title: "Design Review", start_time: ~T[11:00:00], end_time: ~T[12:00:00], color: :purple},
-              %{id: "3", title: "Lunch Break", start_time: ~T[12:00:00], end_time: ~T[13:00:00], color: :green},
-              %{id: "4", title: "Sprint Planning", start_time: ~T[14:00:00], end_time: ~T[15:30:00], color: :orange}
-            ]}
-          />
+          <.daily_agenda date={Date.utc_today()} has_events on_date_select="noop">
+            <:event icon="🔵" time="09:00">Team Standup</:event>
+            <:event icon="🟣" time="11:00">Design Review</:event>
+            <:event icon="🟢" time="12:00">Lunch Break</:event>
+            <:event icon="🟠" time="14:00">Sprint Planning</:event>
+          </.daily_agenda>
         </.demo_section>
 
         <%!-- MultiMonthCalendar --%>

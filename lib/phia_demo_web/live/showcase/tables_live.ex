@@ -315,23 +315,23 @@ defmodule PhiaDemoWeb.Demo.Showcase.TablesLive do
         <.demo_section title="TreeEnhanced — File Tree" subtitle="Enhanced tree variants — file browser style with icons">
           <div class="max-w-sm">
             <.file_tree id="showcase-file-tree">
-              <.file_tree_item label="src" type="folder" expanded={true}>
-                <.file_tree_item label="components" type="folder" expanded={true}>
-                  <.file_tree_item label="button.ex" type="file" />
-                  <.file_tree_item label="card.ex" type="file" />
-                  <.file_tree_item label="input.ex" type="file" />
+              <.file_tree_item label="src" type={:folder} expanded={true}>
+                <.file_tree_item label="components" type={:folder} expanded={true}>
+                  <.file_tree_item label="button.ex" type={:file} />
+                  <.file_tree_item label="card.ex" type={:file} />
+                  <.file_tree_item label="input.ex" type={:file} />
                 </.file_tree_item>
-                <.file_tree_item label="live" type="folder">
-                  <.file_tree_item label="home_live.ex" type="file" />
-                  <.file_tree_item label="dashboard_live.ex" type="file" />
+                <.file_tree_item label="live" type={:folder}>
+                  <.file_tree_item label="home_live.ex" type={:file} />
+                  <.file_tree_item label="dashboard_live.ex" type={:file} />
                 </.file_tree_item>
-                <.file_tree_item label="router.ex" type="file" />
+                <.file_tree_item label="router.ex" type={:file} />
               </.file_tree_item>
-              <.file_tree_item label="test" type="folder">
-                <.file_tree_item label="test_helper.exs" type="file" />
+              <.file_tree_item label="test" type={:folder}>
+                <.file_tree_item label="test_helper.exs" type={:file} />
               </.file_tree_item>
-              <.file_tree_item label="mix.exs" type="file" />
-              <.file_tree_item label="README.md" type="file" />
+              <.file_tree_item label="mix.exs" type={:file} />
+              <.file_tree_item label="README.md" type={:file} />
             </.file_tree>
           </div>
         </.demo_section>

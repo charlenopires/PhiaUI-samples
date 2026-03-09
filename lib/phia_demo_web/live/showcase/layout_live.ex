@@ -174,10 +174,10 @@ defmodule PhiaDemoWeb.Demo.Showcase.LayoutLive do
 
         <%!-- Section --%>
         <.demo_section title="Section" subtitle="Content section with title, description, and optional footer">
-          <.section>
-            <:title>Notification Preferences</:title>
-            <:description>Choose how you want to be notified about updates.</:description>
-            <div class="space-y-3">
+          <.section size={:sm}>
+            <h3 class="text-sm font-semibold text-foreground">Notification Preferences</h3>
+            <p class="text-xs text-muted-foreground mt-1">Choose how you want to be notified about updates.</p>
+            <div class="space-y-3 mt-3">
               <div class="flex items-center justify-between">
                 <span class="text-sm text-foreground">Email notifications</span>
                 <.switch checked={true} />
@@ -199,10 +199,8 @@ defmodule PhiaDemoWeb.Demo.Showcase.LayoutLive do
                   <.avatar_fallback name="Ana Costa" class="bg-primary/10 text-primary font-semibold" />
                 </.avatar>
               </:media>
-              <:content>
-                <p class="font-semibold text-foreground">Ana Costa</p>
-                <p class="text-sm text-muted-foreground">Frontend Engineer at PhiaUI. Building beautiful interfaces with Elixir and LiveView.</p>
-              </:content>
+              <p class="font-semibold text-foreground">Ana Costa</p>
+              <p class="text-sm text-muted-foreground">Frontend Engineer at PhiaUI. Building beautiful interfaces with Elixir and LiveView.</p>
             </.media_object>
             <.separator />
             <.media_object>
@@ -211,10 +209,8 @@ defmodule PhiaDemoWeb.Demo.Showcase.LayoutLive do
                   <.icon name="circle-check" size={:sm} class="text-green-600 dark:text-green-400" />
                 </div>
               </:media>
-              <:content>
-                <p class="font-semibold text-foreground">Deployment Successful</p>
-                <p class="text-sm text-muted-foreground">v0.1.15 deployed to production 2 minutes ago.</p>
-              </:content>
+              <p class="font-semibold text-foreground">Deployment Successful</p>
+              <p class="text-sm text-muted-foreground">v0.1.15 deployed to production 2 minutes ago.</p>
             </.media_object>
           </div>
         </.demo_section>
@@ -222,14 +218,16 @@ defmodule PhiaDemoWeb.Demo.Showcase.LayoutLive do
         <%!-- SplitLayout --%>
         <.demo_section title="SplitLayout" subtitle="Two-column split layout — sidebar + main content area">
           <.split_layout class="h-40 rounded-lg border border-border/60 overflow-hidden">
-            <:left class="bg-muted/30 p-4">
-              <p class="text-sm font-medium text-foreground">Sidebar</p>
-              <p class="text-xs text-muted-foreground mt-1">Navigation or filters</p>
-            </:left>
-            <:right class="p-4">
+            <:pane>
+              <div class="bg-muted/30 p-4 h-full">
+                <p class="text-sm font-medium text-foreground">Sidebar</p>
+                <p class="text-xs text-muted-foreground mt-1">Navigation or filters</p>
+              </div>
+            </:pane>
+            <div class="p-4">
               <p class="text-sm font-medium text-foreground">Main Content</p>
               <p class="text-xs text-muted-foreground mt-1">Primary content area</p>
-            </:right>
+            </div>
           </.split_layout>
         </.demo_section>
 
