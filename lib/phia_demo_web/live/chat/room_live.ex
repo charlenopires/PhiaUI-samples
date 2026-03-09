@@ -286,7 +286,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
             <span class="font-semibold text-foreground text-sm">{room_label(@rooms, @room_id)}</span>
             <%= if agent do %>
               <p class="text-[10px] text-muted-foreground leading-none mt-0.5 flex items-center gap-1">
-                <span class="inline-block h-1.5 w-1.5 rounded-full bg-success" />
+                <span class="inline-block h-1.5 w-1.5 rounded-full bg-success chat-online-dot" />
                 {agent.name} · online agora
               </p>
             <% end %>
@@ -329,7 +329,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
                   />
                 </.avatar>
                 <%= if user && user.status == :online do %>
-                  <span class="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-success ring-1 ring-background" />
+                  <span class="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-success ring-1 ring-background chat-online-dot" />
                 <% end %>
               </div>
 
@@ -371,7 +371,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
                     <.poll_bubble msg={msg} current_user_id={@current_user_id} />
                   <% _ -> %>
                     <div class={[
-                      "rounded-2xl px-3.5 py-2 text-sm leading-relaxed",
+                      "chat-bubble-hover rounded-2xl px-3.5 py-2 text-sm leading-relaxed",
                       if(is_me,
                         do: "bg-primary text-primary-foreground rounded-tr-sm",
                         else: "bg-muted text-foreground rounded-tl-sm"
@@ -391,7 +391,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
                         phx-value-msg_id={msg.id}
                         phx-value-emoji={emoji}
                         class={[
-                          "inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-xs transition-colors",
+                          "chat-reaction-btn inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-xs transition-colors",
                           if(@current_user_id in user_ids,
                             do: "bg-primary/10 border-primary/30 text-primary",
                             else: "bg-background border-border text-muted-foreground hover:bg-muted"
@@ -407,7 +407,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
                 <%!-- Hover actions: emoji quick-react + reply --%>
                 <div class={[
-                  "hidden group-hover:flex items-center gap-0.5 bg-background border border-border shadow-sm rounded-full px-1.5 py-1",
+                  "chat-hover-actions hidden group-hover:flex items-center gap-0.5 bg-background border border-border shadow-sm rounded-full px-1.5 py-1",
                   if(is_me, do: "flex-row-reverse", else: "")
                 ]}>
                   <%= for emoji <- @quick_emojis do %>
@@ -416,7 +416,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
                       phx-click="react"
                       phx-value-msg_id={msg.id}
                       phx-value-emoji={emoji}
-                      class="h-6 w-6 flex items-center justify-center rounded-full hover:bg-muted text-sm transition-colors"
+                      class="chat-reaction-btn h-6 w-6 flex items-center justify-center rounded-full hover:bg-muted text-sm transition-colors"
                     >
                       {emoji}
                     </button>
@@ -436,7 +436,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
                 <%!-- Read receipt for own messages --%>
                 <%= if is_me do %>
-                  <div class="flex items-center gap-0.5 text-[9px] text-muted-foreground/50 mt-0.5">
+                  <div class="chat-read-receipt flex items-center gap-0.5 text-[9px] text-muted-foreground/50 mt-0.5">
                     <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                       <path d="M20 6 9 17l-5-5" />
                     </svg>
@@ -455,11 +455,11 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
         <% typers = Enum.reject(@typing, &(&1 == @current_user_id)) %>
         <%= if typers != [] do %>
           <% names = typers |> Enum.map(fn id -> (Enum.find(@users, &(&1.id == id)) || %{name: id}).name end) |> Enum.join(", ") %>
-          <div class="flex items-center gap-2 px-1">
-            <div class="flex gap-0.5 items-center">
-              <span class="h-2 w-2 rounded-full bg-muted-foreground/50 animate-bounce" style="animation-delay: 0ms" />
-              <span class="h-2 w-2 rounded-full bg-muted-foreground/50 animate-bounce" style="animation-delay: 150ms" />
-              <span class="h-2 w-2 rounded-full bg-muted-foreground/50 animate-bounce" style="animation-delay: 300ms" />
+          <div class="chat-msg-enter flex items-center gap-2 px-1">
+            <div class="flex gap-1 items-center">
+              <span class="h-2 w-2 rounded-full bg-muted-foreground/50 chat-typing-dot" style="animation-delay: 0ms" />
+              <span class="h-2 w-2 rounded-full bg-muted-foreground/50 chat-typing-dot" style="animation-delay: 200ms" />
+              <span class="h-2 w-2 rounded-full bg-muted-foreground/50 chat-typing-dot" style="animation-delay: 400ms" />
             </div>
             <span class="text-xs text-muted-foreground italic">{names} esta digitando...</span>
           </div>
@@ -468,7 +468,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
       <%!-- Reply preview bar --%>
       <%= if @reply_to do %>
-        <div class="flex items-center gap-2 px-3 sm:px-4 lg:px-6 py-2 bg-muted/40 border-t border-border/40 shrink-0">
+        <div class="chat-reply-bar flex items-center gap-2 px-3 sm:px-4 lg:px-6 py-2 bg-muted/40 border-t border-border/40 shrink-0">
           <.icon name="reply" size={:xs} class="text-primary shrink-0" />
           <div class="flex-1 min-w-0">
             <span class="text-xs font-semibold text-primary">{@reply_to.user_name}</span>
@@ -477,7 +477,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
           <button
             type="button"
             phx-click="cancel_reply"
-            class="h-5 w-5 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground shrink-0"
+            class="h-5 w-5 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground shrink-0 transition-colors"
             aria-label="Cancel reply"
           >
             <.icon name="x" size={:xs} />
@@ -486,11 +486,11 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
       <% end %>
 
       <%!-- Input bar --%>
-      <div class="shrink-0 border-t border-border/60 bg-background px-3 sm:px-4 lg:px-6 py-3">
+      <div class="chat-input-bar shrink-0 border-t border-border/60 bg-background px-3 sm:px-4 lg:px-6 py-3">
         <form phx-submit="send_message" class="flex items-center gap-2">
           <button
             type="button"
-            class="h-11 w-11 sm:h-9 sm:w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors shrink-0"
+            class="chat-attach-btn h-11 w-11 sm:h-9 sm:w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground shrink-0"
             title="Anexar arquivo"
             aria-label="Attach file"
           >
@@ -506,12 +506,12 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
             phx-keyup="typing"
             phx-debounce="100"
             autocomplete="off"
-            class="flex-1 h-9 rounded-xl border border-input bg-muted/40 px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
+            class="chat-input-glow flex-1 h-9 rounded-xl border border-input bg-muted/40 px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
           />
 
           <button
             type="button"
-            class="h-11 w-11 sm:h-9 sm:w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors shrink-0"
+            class="chat-emoji-btn h-11 w-11 sm:h-9 sm:w-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors shrink-0"
             title="Emoji"
             aria-label="Emoji"
           >
@@ -520,7 +520,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
           <button
             type="submit"
-            class="h-11 w-11 sm:h-9 sm:w-9 flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shrink-0 disabled:opacity-50"
+            class="chat-send-btn h-11 w-11 sm:h-9 sm:w-9 flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shrink-0 disabled:opacity-50"
             aria-label="Send message"
           >
             <.icon name="send" size={:xs} />
@@ -536,7 +536,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
   defp product_card_bubble(assigns) do
     ~H"""
-    <div class="rounded-2xl border border-border bg-card overflow-hidden w-64 shadow-sm rounded-tl-sm">
+    <div class="chat-card-interactive rounded-2xl border border-border bg-card overflow-hidden w-64 shadow-sm rounded-tl-sm">
       <%!-- Product image area --%>
       <div class="h-28 flex flex-col items-center justify-center gap-1" style={product_card_style(@msg.product.gradient)}>
         <span class="text-4xl">{product_emoji(@msg.product.icon)}</span>
@@ -567,7 +567,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
                 phx-click="quick_reply"
                 phx-value-msg_id={@msg.id}
                 phx-value-value={qr.value}
-                class="flex-1 text-xs py-2 rounded-lg border border-border bg-background hover:border-primary/50 hover:bg-primary/5 transition-colors font-medium text-center"
+                class="chat-quick-reply flex-1 text-xs py-2 rounded-lg border border-border bg-background hover:border-primary/50 hover:bg-primary/5 font-medium text-center"
               >
                 {qr.label}
               </button>
@@ -581,7 +581,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
   defp email_form_bubble(assigns) do
     ~H"""
-    <div class="rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
+    <div class="chat-card-interactive rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
       <div class="flex items-center gap-2">
         <.icon name="inbox" size={:xs} class="text-primary" />
         <span class="text-xs font-semibold text-primary uppercase tracking-wide">Email Capture</span>
@@ -600,13 +600,13 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
             value={@email_input}
             phx-keyup="update_email_input"
             phx-debounce="100"
-            class="flex-1 h-8 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
+            class="chat-input-glow flex-1 h-8 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
           />
           <button
             type="button"
             phx-click="submit_email"
             phx-value-msg_id={@msg.id}
-            class="h-8 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors shrink-0"
+            class="chat-send-btn h-8 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 shrink-0"
           >
             Send
           </button>
@@ -618,7 +618,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
   defp booking_bubble(assigns) do
     ~H"""
-    <div class="rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
+    <div class="chat-card-interactive rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
       <div class="flex items-center gap-2">
         <.icon name="calendar" size={:xs} class="text-primary" />
         <span class="text-xs font-semibold text-primary uppercase tracking-wide">Schedule a Demo</span>
@@ -637,7 +637,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
               phx-click="select_day"
               phx-value-msg_id={@msg.id}
               phx-value-day={day}
-              class="py-2.5 rounded-lg border border-border text-xs font-medium text-foreground hover:border-primary/60 hover:bg-primary/5 hover:text-primary transition-all"
+              class="chat-booking-day py-2.5 rounded-lg border border-border text-xs font-medium text-foreground hover:border-primary/60 hover:bg-primary/5 hover:text-primary"
             >
               {day}
             </button>
@@ -650,7 +650,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
   defp nps_bubble(assigns) do
     ~H"""
-    <div class="rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
+    <div class="chat-card-interactive rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
       <div class="flex items-center gap-2">
         <.icon name="zap" size={:xs} class="text-primary" />
         <span class="text-xs font-semibold text-primary uppercase tracking-wide">NPS · Satisfaction</span>
@@ -674,7 +674,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
                 phx-click="nps_score"
                 phx-value-msg_id={@msg.id}
                 phx-value-score={score}
-                class={["flex-1 py-2 rounded-md text-[10px] font-bold transition-colors", nps_color(score)]}
+                class={["chat-nps-btn flex-1 py-2 rounded-md text-[10px] font-bold", nps_color(score)]}
               >
                 {score}
               </button>
@@ -688,7 +688,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
   defp poll_bubble(assigns) do
     ~H"""
-    <div class="rounded-2xl border border-border bg-card p-4 space-y-2.5 w-72 rounded-tl-sm shadow-sm">
+    <div class="chat-card-interactive rounded-2xl border border-border bg-card p-4 space-y-2.5 w-72 rounded-tl-sm shadow-sm">
       <div class="flex items-center gap-2">
         <.icon name="chart-bar" size={:xs} class="text-primary" />
         <span class="text-xs font-semibold text-primary uppercase tracking-wide">Poll</span>
@@ -703,7 +703,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
           phx-click="vote_poll"
           phx-value-msg_id={@msg.id}
           phx-value-option_idx={idx}
-          class={["w-full text-left rounded-lg p-2.5 transition-all space-y-1.5", if(voted, do: "bg-primary/10 ring-1 ring-primary/20", else: "hover:bg-muted/60")]}
+          class={["chat-poll-opt w-full text-left rounded-lg p-2.5 space-y-1.5", if(voted, do: "bg-primary/10 ring-1 ring-primary/20", else: "hover:bg-muted/60")]}
         >
           <div class="flex justify-between text-xs">
             <span class={["font-medium", if(voted, do: "text-primary", else: "text-foreground")]}>{opt.text}</span>
@@ -711,7 +711,7 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
           </div>
           <div class="h-1.5 w-full rounded-full bg-muted overflow-hidden">
             <div
-              class={["h-1.5 rounded-full transition-all duration-500", if(voted, do: "bg-primary", else: "bg-muted-foreground/40")]}
+              class={["chat-progress-bar h-1.5 rounded-full transition-all duration-500", if(voted, do: "bg-primary", else: "bg-muted-foreground/40")]}
               style={"width: #{pct}%"}
             />
           </div>

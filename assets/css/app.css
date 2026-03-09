@@ -282,15 +282,150 @@
   }
 }
 
-/* ── Chat Message Entrance ───────────────────────────────────────────────── */
+/* ── Chat Micro-interactions ──────────────────────────────────────────────── */
+
+/* Message entrance */
 @keyframes chatMsgSlideIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .chat-msg-enter { animation: chatMsgSlideIn 0.3s ease forwards; }
 
+/* Message bubble hover lift */
+.chat-bubble-hover { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.chat-bubble-hover:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+/* Send button pulse */
+@keyframes chatSendPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+.chat-send-btn { transition: transform 0.12s ease, background-color 0.15s ease; }
+.chat-send-btn:hover { transform: scale(1.08); }
+.chat-send-btn:active { animation: chatSendPulse 0.25s ease; }
+
+/* Input focus glow */
+.chat-input-glow { transition: box-shadow 0.2s ease, border-color 0.2s ease; }
+.chat-input-glow:focus { box-shadow: 0 0 0 3px oklch(var(--color-primary) / 15%); }
+
+/* Reaction pop */
+@keyframes chatReactionPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.chat-reaction-btn { transition: transform 0.1s ease; }
+.chat-reaction-btn:hover { transform: scale(1.2); }
+.chat-reaction-btn:active { animation: chatReactionPop 0.25s ease; }
+
+/* Reply bar slide-in */
+@keyframes chatReplySlide {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.chat-reply-bar { animation: chatReplySlide 0.2s ease-out forwards; }
+
+/* Hover actions toolbar fade-in */
+@keyframes chatActionsIn {
+  from { opacity: 0; transform: translateY(4px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.chat-hover-actions { animation: chatActionsIn 0.15s ease-out forwards; }
+
+/* Product card hover */
+.chat-card-interactive { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.chat-card-interactive:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+/* Online pulse */
+@keyframes chatOnlinePulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+.chat-online-dot { animation: chatOnlinePulse 2s ease-in-out infinite; }
+
+/* Sidebar room item hover */
+.chat-room-item { transition: background-color 0.15s ease, transform 0.15s ease; }
+.chat-room-item:hover { transform: translateX(2px); }
+
+/* Typing dots improved */
+@keyframes chatTypingDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%           { transform: translateY(-5px); opacity: 1; }
+}
+.chat-typing-dot { animation: chatTypingDot 1.4s ease-in-out infinite; }
+
+/* Input bar entrance */
+@keyframes chatInputBarIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.chat-input-bar { animation: chatInputBarIn 0.3s ease-out 0.1s both; }
+
+/* Emoji button wiggle on hover */
+@keyframes chatEmojiWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-8deg); }
+  75%      { transform: rotate(8deg); }
+}
+.chat-emoji-btn:hover { animation: chatEmojiWiggle 0.4s ease; }
+
+/* Attachment button hover */
+.chat-attach-btn { transition: transform 0.15s ease, color 0.15s ease; }
+.chat-attach-btn:hover { transform: rotate(-15deg) scale(1.1); }
+
+/* Read receipt fade */
+@keyframes chatReceiptFade {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.chat-read-receipt { animation: chatReceiptFade 0.3s ease 0.15s both; }
+
+/* Quick reply button hover bounce */
+.chat-quick-reply { transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease; }
+.chat-quick-reply:hover { transform: translateY(-1px); }
+.chat-quick-reply:active { transform: translateY(1px); }
+
+/* NPS score button hover */
+.chat-nps-btn { transition: transform 0.1s ease; }
+.chat-nps-btn:hover { transform: scale(1.15); }
+
+/* Poll option hover */
+.chat-poll-opt { transition: transform 0.12s ease, background-color 0.15s ease; }
+.chat-poll-opt:hover { transform: scale(1.02); }
+
+/* Progress bar animated fill */
+@keyframes chatProgressFill {
+  from { width: 0%; }
+}
+.chat-progress-bar { animation: chatProgressFill 0.6s ease-out forwards; }
+
+/* Booking day button */
+.chat-booking-day { transition: transform 0.12s ease, border-color 0.15s ease, background-color 0.15s ease; }
+.chat-booking-day:hover { transform: scale(1.05); }
+.chat-booking-day:active { transform: scale(0.95); }
+
+/* Badge bounce for sidebar unread (future) */
+@keyframes chatBadgeBounce {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.2); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .chat-msg-enter { animation: none; }
+  .chat-msg-enter, .chat-reply-bar, .chat-hover-actions, .chat-input-bar, .chat-read-receipt { animation: none; }
+  .chat-bubble-hover:hover { transform: none; }
+  .chat-send-btn:hover, .chat-send-btn:active { transform: none; animation: none; }
+  .chat-reaction-btn:hover, .chat-reaction-btn:active { transform: none; animation: none; }
+  .chat-room-item:hover { transform: none; }
+  .chat-online-dot { animation: none; }
+  .chat-typing-dot { animation: none; }
+  .chat-emoji-btn:hover { animation: none; }
+  .chat-attach-btn:hover { transform: none; }
+  .chat-quick-reply:hover, .chat-quick-reply:active { transform: none; }
+  .chat-nps-btn:hover { transform: none; }
+  .chat-poll-opt:hover { transform: none; }
+  .chat-card-interactive:hover { transform: none; }
+  .chat-booking-day:hover, .chat-booking-day:active { transform: none; }
 }
 
 /* ── Animation Keyframes (PhiaUI 0.1.14 template) ───────────────────────── */

@@ -45,7 +45,7 @@ defmodule PhiaDemoWeb.Demo.Chat.Layout do
                 <a
                   href={"/chat/#{room.id}"}
                   class={[
-                    "flex items-center gap-2.5 px-3 py-2 mx-1 rounded-lg transition-colors",
+                    "chat-room-item flex items-center gap-2.5 px-3 py-2 mx-1 rounded-lg",
                     if(room.id == @current_room_id,
                       do: "bg-primary/10 text-primary",
                       else: "text-muted-foreground hover:bg-accent hover:text-foreground"
