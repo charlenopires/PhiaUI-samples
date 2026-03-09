@@ -304,10 +304,10 @@ defmodule PhiaDemoWeb.Demo.Showcase.TablesLive do
             ]}
             striped={true}
           >
-            <:column key="name" label="Name" sortable={true} />
-            <:column key="email" label="Email" />
-            <:column key="role" label="Role" />
-            <:column key="status" label="Status" />
+            <:column key="name" label="Name" sortable={true} :let={row}>{row.name}</:column>
+            <:column key="email" label="Email" :let={row}>{row.email}</:column>
+            <:column key="role" label="Role" :let={row}>{row.role}</:column>
+            <:column key="status" label="Status" :let={row}>{row.status}</:column>
           </.data_table>
         </.demo_section>
 

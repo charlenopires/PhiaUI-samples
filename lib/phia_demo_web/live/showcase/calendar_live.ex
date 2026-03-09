@@ -504,9 +504,9 @@ defmodule PhiaDemoWeb.Demo.Showcase.CalendarLive do
         <.demo_section title="WheelPicker" subtitle="iOS-style scroll wheel selector — for time, date, or custom values">
           <.wheel_picker
             columns={[
-              %{name: "hours", items: Enum.map(1..12, &%{value: "#{&1}", label: "#{&1}"}), selected: "9"},
-              %{name: "minutes", items: Enum.map(0..59//5, &%{value: "#{&1}", label: String.pad_leading("#{&1}", 2, "0")}), selected: "30"},
-              %{name: "ampm", items: [%{value: "AM", label: "AM"}, %{value: "PM", label: "PM"}], selected: "AM"}
+              %{name: "hours", items: Enum.map(1..12, &"#{&1}"), selected: "9"},
+              %{name: "minutes", items: Enum.map(0..59//5, &String.pad_leading("#{&1}", 2, "0")), selected: "30"},
+              %{name: "ampm", items: ["AM", "PM"], selected: "AM"}
             ]}
           />
         </.demo_section>
