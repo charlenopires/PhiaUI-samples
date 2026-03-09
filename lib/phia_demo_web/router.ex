@@ -90,8 +90,10 @@ defmodule PhiaDemoWeb.Router do
     live "/hotel/bookings", Demo.Hotel.BookingsLive,  :index
 
     # Profile demo
-    live "/profile",    Demo.Profile.V1Live, :index
-    live "/profile/v2", Demo.Profile.V2Live, :index
+    live "/profile",          Demo.Profile.V1Live,       :index
+    live "/profile/v2",       Demo.Profile.V2Live,       :index
+    live "/profile/teams",    Demo.Profile.TeamsLive,    :index
+    live "/profile/projects", Demo.Profile.ProjectsLive, :index
 
     # Notifications page
     live "/notifications", Demo.Notifications.IndexLive, :index

@@ -35,6 +35,10 @@ defmodule PhiaDemoWeb.Demo.Profile.Layout do
               <.nav_item current_path={@current_path} href="/profile"    icon="user"      label="Profile V1" />
               <.nav_item current_path={@current_path} href="/profile/v2" icon="user-plus" label="Profile V2" />
             </.nav_section>
+            <.nav_section label="Manage">
+              <.nav_item current_path={@current_path} href="/profile/teams"    icon="users"  label="Teams" />
+              <.nav_item current_path={@current_path} href="/profile/projects" icon="folder" label="Projects" />
+            </.nav_section>
           </:nav_items>
           <:footer_items>
             <div class="px-3 py-1">

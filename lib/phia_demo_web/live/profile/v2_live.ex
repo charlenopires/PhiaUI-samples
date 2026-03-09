@@ -203,7 +203,7 @@ defmodule PhiaDemoWeb.Demo.Profile.V2Live do
                   <div class="space-y-3">
                     <div class="flex items-center gap-2.5 text-sm">
                       <.icon name="link" size={:xs} class="shrink-0 text-muted-foreground/60" />
-                      <span class="text-primary truncate">hi@shadcnuikit.com</span>
+                      <span class="text-primary truncate">hello@phiaui.dev</span>
                     </div>
                     <div class="flex items-center gap-2.5 text-sm">
                       <.icon name="message-circle" size={:xs} class="shrink-0 text-muted-foreground/60" />
