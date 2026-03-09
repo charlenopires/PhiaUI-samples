@@ -99,89 +99,74 @@ defmodule PhiaDemoWeb.HomeLive do
       </header>
 
       <%!-- Hero with aurora background --%>
-      <section class="relative overflow-hidden px-6 pt-12 pb-8 max-w-5xl mx-auto text-center">
-        <%!-- Aurora glow --%>
+      <section class="relative overflow-hidden px-6 pt-2 pb-4 max-w-5xl mx-auto text-center">
         <.aurora
           colors={["oklch(0.541 0.281 293.009 / 0.3)", "oklch(0.546 0.245 262.881 / 0.2)", "oklch(0.592 0.241 349.615 / 0.15)"]}
           speed={12}
-          class="absolute inset-0 h-full w-full rounded-3xl"
+          class="absolute inset-0 h-full w-full rounded-3xl pointer-events-none"
         />
         <div class="relative z-10 phia-animate">
-          <div class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary mb-4">
+          <div class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary mb-2">
             <.icon name="layers" size={:xs} />
-            PhiaUI v0.1.13
+            PhiaUI v0.1.14
             <span class="h-3 w-px bg-primary/30" />
             <span class="text-primary/70">Phoenix LiveView</span>
           </div>
           <img
             src={~p"/images/phiaui-demo-logo.svg"}
             alt="PhiaUI Demo"
-            class="mx-auto mb-5 w-full max-w-md sm:max-w-lg"
+            class="mx-auto mb-2 w-full max-w-md sm:max-w-lg"
           />
-          <p class="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            16 complete Phoenix LiveView applications built with PhiaUI —
-            a Tailwind v4 component library with CSS-first theming and dark mode.
-          </p>
-          <%!-- Stats row --%>
-          <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
+          <%!-- Description as visual chips --%>
+          <div class="flex flex-wrap items-center justify-center gap-1.5 mb-4 text-sm">
+            <span class="text-muted-foreground">
+              <span class="font-semibold text-foreground">16</span> complete
+              <span class="font-medium text-foreground/80">Phoenix LiveView</span> apps
+            </span>
+            <span class="text-border/60 hidden sm:inline">·</span>
+            <span class="inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">PhiaUI</span>
+            <span class="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">Tailwind v4</span>
+            <span class="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">CSS-first theming</span>
+            <span class="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">dark mode</span>
+          </div>
+          <%!-- Stats + theme swatches in one compact row --%>
+          <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             <div class="text-center">
-              <p class="text-3xl font-bold text-foreground tabular-nums">
+              <p class="text-2xl font-bold text-foreground tabular-nums">
                 <.number_ticker id="stat-apps" value={16} duration={1200} />
               </p>
-              <p class="text-xs text-muted-foreground mt-0.5">Demo Apps</p>
+              <p class="text-[10px] text-muted-foreground mt-0.5">Apps</p>
             </div>
-            <div class="h-8 w-px bg-border/60" />
+            <div class="h-7 w-px bg-border/60" />
             <div class="text-center">
-              <p class="text-3xl font-bold text-foreground tabular-nums">
+              <p class="text-2xl font-bold text-foreground tabular-nums">
                 <.number_ticker id="stat-components" value={584} duration={1600} />
               </p>
-              <p class="text-xs text-muted-foreground mt-0.5">Components</p>
+              <p class="text-[10px] text-muted-foreground mt-0.5">Components</p>
             </div>
-            <div class="h-8 w-px bg-border/60" />
-            <div class="text-center">
-              <p class="text-3xl font-bold text-foreground tabular-nums">
-                <.number_ticker id="stat-themes" value={8} duration={800} />
-              </p>
-              <p class="text-xs text-muted-foreground mt-0.5">Color Themes</p>
+            <div class="h-7 w-px bg-border/60" />
+            <%!-- Theme swatches inline --%>
+            <div class="flex flex-col items-center gap-1.5">
+              <div class="flex items-center gap-1.5">
+                <%= for theme <- @themes do %>
+                  <button
+                    id={"theme-btn-#{theme.id}"}
+                    phx-hook="PhiaTheme"
+                    data-theme={theme.id}
+                    title={theme.label}
+                    class="h-4 w-4 rounded-full ring-1 ring-black/15 dark:ring-white/15 hover:scale-125 transition-transform cursor-pointer"
+                    style={"background-color: #{theme.color}"}
+                  />
+                <% end %>
+              </div>
+              <p class="text-[10px] text-muted-foreground">Color Theme</p>
             </div>
           </div>
-        </div>
-      </section>
-
-      <%!-- Theme Palette Picker --%>
-      <section class="px-6 pb-12 max-w-5xl mx-auto phia-animate">
-        <div class="rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden">
-          <div class="px-6 pt-6 pb-4 border-b border-border/60 flex items-center justify-between">
-            <div>
-              <h2 class="text-sm font-semibold text-foreground">Color Theme</h2>
-              <p class="text-xs text-muted-foreground mt-0.5">Select a palette — changes take effect instantly across all demos</p>
-            </div>
-            <.badge variant={:outline} class="text-[10px] font-mono">Select a theme</.badge>
-          </div>
-
-          <%!-- Swatch buttons with PhiaTheme hook (hook handles active state + localStorage) --%>
-          <div class="px-6 py-5 flex flex-wrap gap-2">
-            <%= for theme <- @themes do %>
-              <button
-                id={"theme-btn-#{theme.id}"}
-                phx-hook="PhiaTheme"
-                data-theme={theme.id}
-                class="group flex items-center gap-2.5 rounded-xl border-2 border-border bg-background text-muted-foreground px-4 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer hover:bg-foreground/8 hover:text-foreground hover:border-foreground/20"
-              >
-                <span
-                  class="h-4 w-4 rounded-full shrink-0 ring-2 ring-black/10 dark:ring-white/10"
-                  style={"background-color: #{theme.color}"}
-                />
-                {theme.label}
-              </button>
-            <% end %>
-          </div>
-
         </div>
       </section>
 
       <%!-- Project groups --%>
-      <section class="px-6 pb-20 max-w-5xl mx-auto space-y-12 phia-animate-d1">
+      <section class="px-6 pt-4 pb-20 max-w-5xl mx-auto space-y-8 phia-animate-d1">
         <div class="flex items-center justify-between border-b border-border/60 pb-2">
           <p class="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Explore demos
@@ -229,7 +214,7 @@ defmodule PhiaDemoWeb.HomeLive do
           <div class="flex items-center gap-2">
             <.icon name="layers" size={:xs} class="text-primary" />
             <span class="text-sm font-semibold text-foreground">PhiaUI</span>
-            <.badge variant={:outline} class="text-[10px]">v0.1.13</.badge>
+            <.badge variant={:outline} class="text-[10px]">v0.1.14</.badge>
           </div>
           <div class="flex items-center gap-4">
             <p class="text-xs text-muted-foreground">

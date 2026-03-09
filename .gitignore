@@ -40,3 +40,4 @@ npm-debug.log
 .cwa/
 CLAUDE.md
 AGENTS.md
+prompts/
