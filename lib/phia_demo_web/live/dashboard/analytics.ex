@@ -37,15 +37,16 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Analytics do
   def render(assigns) do
     ~H"""
     <Layout.layout current_path="/dashboard/analytics">
-      <div class="p-6 space-y-6 max-w-screen-2xl mx-auto">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-6 max-w-screen-2xl mx-auto">
 
         <%!-- Header + period filter --%>
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 phia-animate">
-          <div>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div class="phia-animate">
             <h1 class="text-xl font-bold text-foreground tracking-tight">Analytics</h1>
             <p class="text-sm text-muted-foreground mt-0.5">Traffic and engagement metrics</p>
           </div>
           <div class="w-full sm:w-56">
+            <div :if={@period_open} phx-click="period-toggle" class="fixed inset-0 z-40" aria-hidden="true" />
             <.combobox
               id="period-combobox"
               options={@period_options}

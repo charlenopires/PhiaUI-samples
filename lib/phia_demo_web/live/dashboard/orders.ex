@@ -10,18 +10,24 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Orders do
   def mount(_params, _session, socket) do
     orders = FakeData.recent_orders()
     summary = FakeData.order_summary()
-    total_pages = max(1, ceil(length(orders) / @page_size))
 
     {:ok,
      socket
      |> assign(:page_title, "Orders")
      |> assign(:orders, orders)
+     |> assign(:status_filter, :all)
      |> assign(:paid_count, Enum.count(orders, &(&1.status == :paid)))
      |> assign(:pending_count, Enum.count(orders, &(&1.status == :pending)))
      |> assign(:cancelled_count, Enum.count(orders, &(&1.status == :cancelled)))
      |> assign(:summary, summary)
      |> assign(:page, 1)
-     |> assign(:total_pages, total_pages)}
+     |> update_filtered_orders()}
+  end
+
+  @impl true
+  def handle_event("filter-status", %{"status" => status}, socket) do
+    atom = String.to_existing_atom(status)
+    {:noreply, socket |> assign(:status_filter, atom) |> assign(:page, 1) |> update_filtered_orders()}
   end
 
   @impl true
@@ -33,7 +39,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Orders do
   def render(assigns) do
     ~H"""
     <Layout.layout current_path="/dashboard/orders">
-      <div class="p-6 space-y-6 max-w-screen-2xl mx-auto">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-6 max-w-screen-2xl mx-auto">
 
         <%!-- Header --%>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 phia-animate">
@@ -82,10 +88,18 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Orders do
           <.collapsible_content id="order-filters-content">
             <div class="mt-2 rounded-lg border bg-card px-4 py-3 shadow-sm">
               <div class="flex flex-wrap gap-2">
-                <.badge variant={:outline} class="cursor-pointer hover:bg-accent transition-colors px-3 py-1">All</.badge>
-                <.badge variant={:default} class="cursor-pointer px-3 py-1">Paid</.badge>
-                <.badge variant={:secondary} class="cursor-pointer px-3 py-1">Pending</.badge>
-                <.badge variant={:destructive} class="cursor-pointer px-3 py-1">Cancelled</.badge>
+                <%= for {label, val} <- [{"All", :all}, {"Paid", :paid}, {"Pending", :pending}, {"Cancelled", :cancelled}] do %>
+                  <button
+                    phx-click="filter-status"
+                    phx-value-status={val}
+                    class={[
+                      "inline-flex items-center rounded-md border px-3 py-1 text-xs font-semibold transition-colors min-h-[36px] sm:min-h-0",
+                      filter_btn_class(val, @status_filter)
+                    ]}
+                  >
+                    {label}
+                  </button>
+                <% end %>
               </div>
             </div>
           </.collapsible_content>
@@ -95,7 +109,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Orders do
         <.card class="border-border/60 shadow-sm">
           <.card_header>
             <.card_title>All Orders</.card_title>
-            <.card_description>Page {@page} of {@total_pages} — {length(@orders)} total</.card_description>
+            <.card_description>Page {@page} of {@total_pages} — {length(@filtered_orders)} shown</.card_description>
           </.card_header>
           <.card_content class="p-0">
             <.table>
@@ -111,7 +125,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Orders do
                 </.table_row>
               </.table_header>
               <.table_body>
-                <%= for {o, idx} <- Enum.with_index(page_slice(@orders, @page)) do %>
+                <%= for {o, idx} <- Enum.with_index(page_slice(@filtered_orders, @page)) do %>
                   <% tip_id = "order-status-#{@page}-#{idx}" %>
                   <.table_row>
                     <.table_cell class="pl-6 font-mono text-xs font-semibold text-primary">{o.id}</.table_cell>
@@ -206,4 +220,28 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Orders do
   defp status_tooltip(:paid), do: "Payment confirmed by gateway"
   defp status_tooltip(:pending), do: "Awaiting payment confirmation"
   defp status_tooltip(:cancelled), do: "Order cancelled — no charge"
+
+  defp update_filtered_orders(socket) do
+    filtered =
+      case socket.assigns.status_filter do
+        :all -> socket.assigns.orders
+        status -> Enum.filter(socket.assigns.orders, &(&1.status == status))
+      end
+
+    total_pages = max(1, ceil(length(filtered) / @page_size))
+    socket |> assign(:filtered_orders, filtered) |> assign(:total_pages, total_pages)
+  end
+
+  defp filter_btn_class(val, val) do
+    case val do
+      :all -> "bg-foreground text-background border-foreground"
+      :paid -> "bg-primary text-primary-foreground border-primary"
+      :pending -> "bg-secondary text-secondary-foreground border-secondary"
+      :cancelled -> "bg-destructive text-destructive-foreground border-destructive"
+    end
+  end
+
+  defp filter_btn_class(_val, _current) do
+    "bg-transparent text-muted-foreground border-border hover:bg-accent hover:text-foreground"
+  end
 end

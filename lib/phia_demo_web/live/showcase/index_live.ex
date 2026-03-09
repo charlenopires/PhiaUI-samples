@@ -52,8 +52,8 @@ defmodule PhiaDemoWeb.Demo.Showcase.IndexLive do
           <p class="text-muted-foreground text-lg max-w-xl mx-auto">
             Every PhiaUI component — live demos, fully interactive, dark-mode ready.
           </p>
-          <div class="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <.badge variant={:secondary}>v0.1.13</.badge>
+          <div class="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground">
+            <.badge variant={:secondary}>v0.1.14</.badge>
             <span>·</span>
             <span>584 components</span>
             <span>·</span>
@@ -70,9 +70,9 @@ defmodule PhiaDemoWeb.Demo.Showcase.IndexLive do
                   <.icon name={cat.icon} class="text-primary" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2">
+                  <div class="flex flex-wrap items-center gap-2">
                     <h2 class="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{cat.name}</h2>
-                    <.badge variant={:outline} class="text-xs">{cat.count} components</.badge>
+                    <.badge variant={:outline} class="text-xs shrink-0">{cat.count} components</.badge>
                   </div>
                   <p class="text-sm text-muted-foreground mt-1">{cat.description}</p>
                 </div>

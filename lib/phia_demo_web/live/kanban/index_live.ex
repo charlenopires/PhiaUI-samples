@@ -89,7 +89,7 @@ defmodule PhiaDemoWeb.Demo.Kanban.IndexLive do
             <h1 class="text-lg sm:text-xl font-bold text-foreground tracking-tight">Project Board</h1>
             <p class="text-xs sm:text-sm text-muted-foreground mt-0.5">PhiaUI v0.2 — Sprint 3</p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <.badge variant={:secondary}>{length(@cards)} cards</.badge>
             <.badge variant={:outline} class="hidden sm:inline-flex">{length(Enum.filter(@cards, &(&1.column == :done)))} done</.badge>
           </div>

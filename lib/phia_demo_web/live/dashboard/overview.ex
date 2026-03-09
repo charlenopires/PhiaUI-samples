@@ -20,7 +20,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Overview do
   def render(assigns) do
     ~H"""
     <Layout.layout current_path="/dashboard">
-      <div class="p-6 space-y-6 max-w-screen-2xl mx-auto">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-6 max-w-screen-2xl mx-auto">
 
         <%!-- Page Header --%>
         <div class="flex items-center justify-between phia-animate">
@@ -37,7 +37,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Overview do
         </div>
 
         <%!-- KPI Stat Cards --%>
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4 phia-animate-d1">
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 phia-animate-d1">
           <.stat_card
             :for={s <- @stats}
             title={s.title}
@@ -48,7 +48,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Overview do
             class="border-border/60 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
           >
             <:icon>
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+              <div class="hidden sm:flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
                 <.icon name={s.icon} size={:sm} class="text-primary" />
               </div>
             </:icon>
@@ -58,12 +58,12 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Overview do
         <%!-- Revenue Area Chart --%>
         <.card class="border-border/60 shadow-sm phia-animate-d2">
           <.card_header class="pb-4">
-            <div class="flex items-start justify-between">
+            <div class="flex flex-wrap items-start justify-between gap-y-2">
               <div>
                 <.card_title>Monthly Revenue</.card_title>
                 <.card_description>Last 12 months · Mar 2025 – Feb 2026</.card_description>
               </div>
-              <div class="text-right">
+              <div class="sm:text-right">
                 <p class="text-2xl font-bold text-foreground tracking-tight">$284,590</p>
                 <p class="text-xs text-success font-medium mt-0.5">+12.5% vs. last period</p>
               </div>

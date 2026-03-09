@@ -104,7 +104,7 @@ defmodule PhiaDemoWeb.Demo.Tasks.IndexLive do
             />
           </div>
           <%!-- Status filter --%>
-          <div class="flex gap-1">
+          <div class="flex flex-wrap gap-1">
             <%= for {label, val} <- [{"All", :all}, {"Bug", :bug}, {"Feature", :feature}, {"Enhancement", :enhancement}, {"Docs", :docs}] do %>
               <button
                 phx-click="filter-status"
@@ -122,7 +122,7 @@ defmodule PhiaDemoWeb.Demo.Tasks.IndexLive do
             <% end %>
           </div>
           <%!-- Priority filter --%>
-          <div class="flex gap-1 sm:ml-auto">
+          <div class="flex flex-wrap gap-1 sm:ml-auto">
             <%= for {label, val} <- [{"All", :all}, {"High", :high}, {"Medium", :medium}, {"Low", :low}] do %>
               <button
                 phx-click="filter-priority"

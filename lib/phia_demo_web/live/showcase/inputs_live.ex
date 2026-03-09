@@ -567,6 +567,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
           <div class="grid gap-6 lg:grid-cols-2">
             <div>
               <label class="text-sm font-medium text-foreground mb-1.5 block">Favorite Fruit</label>
+              <div :if={@fruit_open} phx-click="fruit-toggle" class="fixed inset-0 z-40" aria-hidden="true" />
               <.combobox
                 id="showcase-fruit"
                 options={@fruit_options}
@@ -582,6 +583,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
             </div>
             <div>
               <label class="text-sm font-medium text-foreground mb-1.5 block">Country</label>
+              <div :if={@country_open} phx-click="country-toggle" class="fixed inset-0 z-40" aria-hidden="true" />
               <.combobox
                 id="showcase-country"
                 options={@country_options}

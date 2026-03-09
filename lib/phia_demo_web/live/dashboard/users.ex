@@ -81,7 +81,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Users do
   def render(assigns) do
     ~H"""
     <Layout.layout current_path="/dashboard/users">
-      <div class="p-6 space-y-6 max-w-screen-2xl mx-auto">
+      <div class="p-3 sm:p-4 lg:p-6 space-y-6 max-w-screen-2xl mx-auto">
 
         <%!-- Header --%>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 phia-animate">
@@ -155,8 +155,9 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Users do
         <% end %>
 
         <%!-- Filter bar --%>
-        <div class="flex items-center justify-between gap-4 phia-animate-d1">
+        <div class="flex items-center justify-between gap-4">
           <div class="w-56">
+            <div :if={@role_open} phx-click="role-toggle" class="fixed inset-0 z-40" aria-hidden="true" />
             <.combobox
               id="role-filter-combobox"
               options={@role_options}
@@ -278,7 +279,7 @@ defmodule PhiaDemoWeb.Demo.Dashboard.Users do
             <div>
               <p class="font-semibold text-foreground text-lg">Ana Costa</p>
               <p class="text-sm text-muted-foreground">ana@acme.com</p>
-              <div class="flex items-center gap-2 mt-1">
+              <div class="flex flex-wrap items-center gap-2 mt-1">
                 <.badge variant={:default}>Admin</.badge>
                 <.badge variant={:default}>Active</.badge>
               </div>
