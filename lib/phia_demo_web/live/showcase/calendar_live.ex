@@ -500,29 +500,18 @@ defmodule PhiaDemoWeb.Demo.Showcase.CalendarLive do
 
         <%!-- MultiMonthCalendar --%>
         <.demo_section title="MultiMonthCalendar" subtitle="Side-by-side month panels — great for date range selection">
-          <.multi_month_calendar months={3} start_month={Date.utc_today() |> Date.beginning_of_month()} />
+          <.multi_month_calendar year={Date.utc_today().year} month={Date.utc_today().month} months_count={3} />
         </.demo_section>
 
         <%!-- WheelPicker --%>
         <.demo_section title="WheelPicker" subtitle="iOS-style scroll wheel selector — for time, date, or custom values">
-          <div class="flex gap-6 items-center">
-            <.wheel_picker
-              id="wheel-hours"
-              items={Enum.map(1..12, &%{value: "#{&1}", label: "#{&1}"})}
-              selected="9"
-            />
-            <span class="text-xl font-bold text-foreground">:</span>
-            <.wheel_picker
-              id="wheel-minutes"
-              items={Enum.map(0..59//5, &%{value: "#{&1}", label: String.pad_leading("#{&1}", 2, "0")})}
-              selected="30"
-            />
-            <.wheel_picker
-              id="wheel-ampm"
-              items={[%{value: "AM", label: "AM"}, %{value: "PM", label: "PM"}]}
-              selected="AM"
-            />
-          </div>
+          <.wheel_picker
+            columns={[
+              %{name: "hours", items: Enum.map(1..12, &%{value: "#{&1}", label: "#{&1}"}), selected: "9"},
+              %{name: "minutes", items: Enum.map(0..59//5, &%{value: "#{&1}", label: String.pad_leading("#{&1}", 2, "0")}), selected: "30"},
+              %{name: "ampm", items: [%{value: "AM", label: "AM"}, %{value: "PM", label: "PM"}], selected: "AM"}
+            ]}
+          />
         </.demo_section>
 
       </div>

@@ -411,6 +411,47 @@
   50%      { transform: scale(1.2); }
 }
 
+/* Star rating hover */
+.chat-star-btn { transition: transform 0.12s ease, color 0.15s ease; }
+.chat-star-btn:hover { transform: scale(1.25); }
+
+/* FAQ accordion answer expand */
+.chat-faq-answer { animation: chatFaqExpand 0.2s ease-out; }
+@keyframes chatFaqExpand {
+  from { opacity: 0; max-height: 0; }
+  to   { opacity: 1; max-height: 200px; }
+}
+
+/* File card hover lift */
+.chat-file-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.chat-file-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+/* Carousel slide transition */
+.chat-carousel-slide { transition: opacity 0.25s ease; }
+
+/* Step complete bounce */
+.chat-step-complete { transition: transform 0.15s ease; }
+
+/* CTA card glow pulse */
+@keyframes chatCtaGlow {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(var(--color-primary) / 0%); }
+  50%      { box-shadow: 0 0 12px 2px oklch(var(--color-primary) / 15%); }
+}
+.chat-cta-card { animation: chatCtaGlow 2s ease-in-out infinite; }
+
+/* Quick link button hover */
+.chat-link-btn { transition: transform 0.12s ease, border-color 0.15s ease, background-color 0.15s ease; }
+.chat-link-btn:hover { transform: scale(1.05); }
+
+/* Contact form submit */
+.chat-form-submit { transition: transform 0.12s ease, background-color 0.15s ease; }
+.chat-form-submit:hover { transform: scale(1.02); }
+.chat-form-submit:active { transform: scale(0.98); }
+
+/* Schedule slot button hover */
+.chat-slot-btn { transition: transform 0.1s ease, border-color 0.15s ease, background-color 0.15s ease; }
+.chat-slot-btn:hover { transform: scale(1.08); }
+
 @media (prefers-reduced-motion: reduce) {
   .chat-msg-enter, .chat-reply-bar, .chat-hover-actions, .chat-input-bar, .chat-read-receipt { animation: none; }
   .chat-bubble-hover:hover { transform: none; }
@@ -426,6 +467,13 @@
   .chat-poll-opt:hover { transform: none; }
   .chat-card-interactive:hover { transform: none; }
   .chat-booking-day:hover, .chat-booking-day:active { transform: none; }
+  .chat-star-btn:hover { transform: none; }
+  .chat-faq-answer { animation: none; }
+  .chat-file-card:hover { transform: none; }
+  .chat-cta-card { animation: none; }
+  .chat-link-btn:hover { transform: none; }
+  .chat-form-submit:hover, .chat-form-submit:active { transform: none; }
+  .chat-slot-btn:hover { transform: none; }
 }
 
 /* ── Animation Keyframes (PhiaUI 0.1.14 template) ───────────────────────── */

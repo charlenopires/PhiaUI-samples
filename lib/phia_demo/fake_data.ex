@@ -173,7 +173,9 @@ defmodule PhiaDemo.FakeData do
     [
       %{id: "products", name: "Products", description: "Featured product showcase", icon: "package"},
       %{id: "order", name: "Order", description: "Sales proposal and scheduling", icon: "inbox"},
-      %{id: "survey", name: "Survey", description: "Customer satisfaction survey", icon: "chart-bar"}
+      %{id: "survey", name: "Survey", description: "Customer satisfaction survey", icon: "chart-bar"},
+      %{id: "support", name: "Support", description: "Technical support & FAQ", icon: "shield"},
+      %{id: "onboarding", name: "Onboarding", description: "New user welcome flow", icon: "sparkles"}
     ]
   end
 
@@ -181,6 +183,7 @@ defmodule PhiaDemo.FakeData do
     [
       %{id: "sofia", name: "Sofia", initials: "SF", status: :online, color: "bg-primary", role: "Sales Consultant"},
       %{id: "marcos", name: "Marcos", initials: "MK", status: :online, color: "bg-success", role: "Account Executive"},
+      %{id: "lena", name: "Lena", initials: "LN", status: :online, color: "bg-blue-500", role: "Support Specialist"},
       %{id: "you", name: "You", initials: "YO", status: :online, color: "bg-violet-500", role: "Customer"}
     ]
   end
@@ -371,6 +374,63 @@ defmodule PhiaDemo.FakeData do
         answered: false,
         selected_score: nil
       }
+    ]
+  end
+
+  def chat_seed_messages("support") do
+    [
+      %{id: "sup_sys1", user_id: "system", text: "Lena joined the conversation", timestamp: "11:00", reactions: %{}, type: :system, reply_to: nil},
+      %{id: "sup1", user_id: "lena", text: "Hi there! I'm Lena, your support specialist. How can I help you today?", timestamp: "11:00", reactions: %{}, type: :text, reply_to: nil, read: true},
+      %{id: "sup2", user_id: "lena", text: nil, timestamp: "11:01", reactions: %{}, type: :faq_accordion, reply_to: nil, read: true,
+        faqs: [
+          %{question: "How do I reset my password?", answer: "Go to Settings → Security → Reset Password. You'll receive a confirmation email."},
+          %{question: "What payment methods do you accept?", answer: "We accept Visa, Mastercard, AmEx, and PayPal. Enterprise plans also support wire transfers."},
+          %{question: "How do I cancel my subscription?", answer: "Navigate to Settings → Billing → Cancel Plan. Your access continues until the end of the billing period."},
+          %{question: "Is there a free trial?", answer: "Yes! All plans include a 14-day free trial with full access to all features. No credit card required."}
+        ]},
+      %{id: "sup3", user_id: "lena", text: nil, timestamp: "11:02", reactions: %{}, type: :quick_links, reply_to: nil, read: true,
+        links: [
+          %{label: "Documentation", icon: "file", url: "#"},
+          %{label: "Status Page", icon: "eye", url: "#"},
+          %{label: "Contact Us", icon: "send", url: "#"},
+          %{label: "Community", icon: "users", url: "#"}
+        ]},
+      %{id: "sup4", user_id: "lena", text: "Need to share files? Here's an example of our secure file sharing:", timestamp: "11:03", reactions: %{}, type: :text, reply_to: nil, read: true},
+      %{id: "sup5", user_id: "lena", text: nil, timestamp: "11:03", reactions: %{}, type: :file_attachment, reply_to: nil, read: true,
+        file: %{name: "getting-started-guide.pdf", size: "2.4 MB", icon: "file", mime: "application/pdf"}},
+      %{id: "sup6", user_id: "lena", text: "How would you rate your support experience so far?", timestamp: "11:05", reactions: %{}, type: :rating, reply_to: nil, read: true,
+        answered: false, selected_rating: nil}
+    ]
+  end
+
+  def chat_seed_messages("onboarding") do
+    [
+      %{id: "onb_sys1", user_id: "system", text: "Sofia joined the conversation", timestamp: "09:00", reactions: %{}, type: :system, reply_to: nil},
+      %{id: "onb1", user_id: "sofia", text: "Welcome aboard! I'm Sofia, and I'll guide you through your onboarding journey.", timestamp: "09:00", reactions: %{"🎉" => ["sofia"]}, type: :text, reply_to: nil, read: true},
+      %{id: "onb2", user_id: "sofia", text: nil, timestamp: "09:01", reactions: %{}, type: :progress_tracker, reply_to: nil, read: true,
+        steps: [
+          %{label: "Create Account", status: :complete, icon: "check"},
+          %{label: "Setup Profile", status: :active, icon: "user"},
+          %{label: "Connect Tools", status: :upcoming, icon: "link"},
+          %{label: "Go Live", status: :upcoming, icon: "zap"}
+        ]},
+      %{id: "onb3", user_id: "sofia", text: nil, timestamp: "09:02", reactions: %{}, type: :cta_card, reply_to: nil, read: true,
+        cta: %{title: "Start Free Trial", description: "Get full access to all premium features for 14 days. No credit card required.", button_label: "Start Trial", icon: "zap"},
+        answered: false},
+      %{id: "onb4", user_id: "sofia", text: "Want a personalized demo? Pick a time that works for you:", timestamp: "09:03", reactions: %{}, type: :text, reply_to: nil, read: true},
+      %{id: "onb5", user_id: "sofia", text: nil, timestamp: "09:03", reactions: %{}, type: :schedule_demo, reply_to: nil, read: true,
+        days: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+        slots: ["9:00 AM", "11:00 AM", "2:00 PM", "4:00 PM"],
+        answered: false, selected_day: nil, selected_slot: nil},
+      %{id: "onb6", user_id: "sofia", text: nil, timestamp: "09:04", reactions: %{}, type: :contact_form, reply_to: nil, read: true,
+        answered: false},
+      %{id: "onb7", user_id: "sofia", text: nil, timestamp: "09:05", reactions: %{}, type: :carousel, reply_to: nil, read: true,
+        carousel_index: 0,
+        slides: [
+          %{title: "Real-Time Dashboards", description: "Build stunning analytics dashboards with live data updates.", icon: "eye"},
+          %{title: "Team Collaboration", description: "Work together seamlessly with built-in chat and file sharing.", icon: "users"},
+          %{title: "Smart Automation", description: "Automate repetitive tasks with our AI-powered workflow engine.", icon: "zap"}
+        ]}
     ]
   end
 

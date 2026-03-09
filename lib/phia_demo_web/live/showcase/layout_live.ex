@@ -73,7 +73,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.LayoutLive do
 
         <%!-- SimpleGrid --%>
         <.demo_section title="SimpleGrid" subtitle="Simplified grid — auto-calculates columns from min child width">
-          <.simple_grid cols={%{base: 1, md: 3}} gap={4}>
+          <.simple_grid cols={3} gap={4}>
             <.card class="border-border/60 shadow-sm">
               <.card_content class="p-4">
                 <p class="text-sm font-medium text-foreground">Card A</p>
@@ -135,11 +135,26 @@ defmodule PhiaDemoWeb.Demo.Showcase.LayoutLive do
         <%!-- DescriptionList --%>
         <.demo_section title="DescriptionList" subtitle="Key-value pairs — common for detail/settings views">
           <.description_list>
-            <:item term="Full Name">Ana Costa</:item>
-            <:item term="Email">ana@phiaui.dev</:item>
-            <:item term="Role">Frontend Engineer</:item>
-            <:item term="Status"><.badge variant={:default} class="text-xs">Active</.badge></:item>
-            <:item term="Joined">March 2025</:item>
+            <.dl_item>
+              <:term>Full Name</:term>
+              <:description>Ana Costa</:description>
+            </.dl_item>
+            <.dl_item>
+              <:term>Email</:term>
+              <:description>ana@phiaui.dev</:description>
+            </.dl_item>
+            <.dl_item>
+              <:term>Role</:term>
+              <:description>Frontend Engineer</:description>
+            </.dl_item>
+            <.dl_item>
+              <:term>Status</:term>
+              <:description><.badge variant={:default} class="text-xs">Active</.badge></:description>
+            </.dl_item>
+            <.dl_item>
+              <:term>Joined</:term>
+              <:description>March 2025</:description>
+            </.dl_item>
           </.description_list>
         </.demo_section>
 

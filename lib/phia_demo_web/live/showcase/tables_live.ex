@@ -314,7 +314,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.TablesLive do
         <%!-- TreeEnhanced --%>
         <.demo_section title="TreeEnhanced — File Tree" subtitle="Enhanced tree variants — file browser style with icons">
           <div class="max-w-sm">
-            <.file_tree>
+            <.file_tree id="showcase-file-tree">
               <.file_tree_item label="src" type="folder" expanded={true}>
                 <.file_tree_item label="components" type="folder" expanded={true}>
                   <.file_tree_item label="button.ex" type="file" />

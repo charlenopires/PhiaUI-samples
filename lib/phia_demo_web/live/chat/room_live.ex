@@ -9,7 +9,9 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
   @room_agents %{
     "products" => "sofia",
     "order" => "marcos",
-    "survey" => "sofia"
+    "survey" => "sofia",
+    "support" => "lena",
+    "onboarding" => "sofia"
   }
 
   @quick_emojis ["👍", "❤️", "😂", "🎉", "😮", "🙏"]
@@ -41,7 +43,10 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
      |> assign(:email_input, "")
      |> assign(:quick_emojis, @quick_emojis)
      |> assign(:current_user_id, @current_user_id)
-     |> assign(:current_user, current_user)}
+     |> assign(:current_user, current_user)
+     |> assign(:contact_name, "")
+     |> assign(:contact_email, "")
+     |> assign(:contact_message, "")}
   end
 
   @impl true
@@ -194,6 +199,99 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
 
     schedule_agent_response(room_id, agent_id, response, 1800)
     {:noreply, socket}
+  end
+
+  # ── New bubble event handlers ─────────────────────────────────────────────
+
+  def handle_event("select_slot", %{"msg_id" => msg_id, "day" => day, "slot" => slot}, socket) do
+    room_id = socket.assigns.room_id
+    ChatStore.update_message(room_id, msg_id, %{answered: true, selected_day: day, selected_slot: slot})
+    agent_id = Map.get(@room_agents, room_id, "sofia")
+
+    schedule_agent_response(
+      room_id,
+      agent_id,
+      "Demo scheduled for #{day} at #{slot}! You'll receive a calendar invite shortly.",
+      1500
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("submit_rating", %{"msg_id" => msg_id, "rating" => rating_str}, socket) do
+    rating = String.to_integer(rating_str)
+    room_id = socket.assigns.room_id
+    ChatStore.update_message(room_id, msg_id, %{answered: true, selected_rating: rating})
+    agent_id = Map.get(@room_agents, room_id, "lena")
+
+    response =
+      if rating >= 4,
+        do: "Thank you for the #{rating}-star rating! We're glad you had a great experience!",
+        else: "Thanks for your #{rating}-star feedback. We'll work on improving your experience."
+
+    schedule_agent_response(room_id, agent_id, response, 1500)
+    {:noreply, socket}
+  end
+
+  def handle_event("carousel_nav", %{"msg_id" => msg_id, "direction" => dir}, socket) do
+    room_id = socket.assigns.room_id
+    msg = Enum.find(socket.assigns.messages, &(&1.id == msg_id))
+
+    if msg do
+      max_idx = length(msg.slides) - 1
+      current = Map.get(msg, :carousel_index, 0)
+      new_idx = if dir == "next", do: min(current + 1, max_idx), else: max(current - 1, 0)
+      ChatStore.update_message(room_id, msg_id, %{carousel_index: new_idx})
+    end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("cta_action", %{"msg_id" => msg_id}, socket) do
+    room_id = socket.assigns.room_id
+    ChatStore.update_message(room_id, msg_id, %{answered: true})
+    agent_id = Map.get(@room_agents, room_id, "sofia")
+
+    schedule_agent_response(
+      room_id,
+      agent_id,
+      "Your free trial has been activated! You now have full access for 14 days.",
+      1500
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("update_contact_field", %{"field" => field, "value" => val}, socket) do
+    key = String.to_existing_atom("contact_#{field}")
+    {:noreply, assign(socket, key, val)}
+  end
+
+  def handle_event("submit_contact_form", %{"msg_id" => msg_id}, socket) do
+    name = String.trim(socket.assigns.contact_name)
+    email = String.trim(socket.assigns.contact_email)
+    _message = String.trim(socket.assigns.contact_message)
+
+    if name != "" and email != "" do
+      room_id = socket.assigns.room_id
+      ChatStore.update_message(room_id, msg_id, %{answered: true})
+      agent_id = Map.get(@room_agents, room_id, "sofia")
+
+      schedule_agent_response(
+        room_id,
+        agent_id,
+        "Thanks #{name}! We've received your message and will reach out to #{email} shortly.",
+        1500
+      )
+
+      {:noreply,
+       socket
+       |> assign(:contact_name, "")
+       |> assign(:contact_email, "")
+       |> assign(:contact_message, "")}
+    else
+      {:noreply, socket}
+    end
   end
 
   def handle_event("reply_to_msg", %{"msg_id" => msg_id}, socket) do
@@ -369,6 +467,24 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
                     <.nps_bubble msg={msg} />
                   <% :poll -> %>
                     <.poll_bubble msg={msg} current_user_id={@current_user_id} />
+                  <% :schedule_demo -> %>
+                    <.schedule_demo_bubble msg={msg} />
+                  <% :file_attachment -> %>
+                    <.file_attachment_bubble msg={msg} />
+                  <% :rating -> %>
+                    <.rating_bubble msg={msg} />
+                  <% :faq_accordion -> %>
+                    <.faq_accordion_bubble msg={msg} />
+                  <% :carousel -> %>
+                    <.carousel_bubble msg={msg} />
+                  <% :progress_tracker -> %>
+                    <.progress_tracker_bubble msg={msg} />
+                  <% :cta_card -> %>
+                    <.cta_card_bubble msg={msg} />
+                  <% :contact_form -> %>
+                    <.contact_form_bubble msg={msg} contact_name={@contact_name} contact_email={@contact_email} contact_message={@contact_message} />
+                  <% :quick_links -> %>
+                    <.quick_links_bubble msg={msg} />
                   <% _ -> %>
                     <div class={[
                       "chat-bubble-hover rounded-2xl px-3.5 py-2 text-sm leading-relaxed",
@@ -722,6 +838,309 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
     """
   end
 
+  # ── New bubble components ──────────────────────────────────────────────────
+
+  defp schedule_demo_bubble(assigns) do
+    ~H"""
+    <div class="chat-card-interactive rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <.icon name="calendar" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">Schedule Demo</span>
+      </div>
+      <%= if @msg.answered do %>
+        <div class="flex items-center gap-2 p-2.5 rounded-lg bg-primary/10 border border-primary/20">
+          <.icon name="check" size={:xs} class="text-primary shrink-0" />
+          <span class="text-xs text-primary font-medium">Booked: {@msg.selected_day} at {@msg.selected_slot}</span>
+        </div>
+      <% else %>
+        <div class="space-y-2">
+          <div class="flex gap-1.5 overflow-x-auto pb-1">
+            <%= for day <- @msg.days do %>
+              <span class="chat-slot-btn px-2.5 py-1 rounded-md border border-border text-[10px] font-semibold text-muted-foreground bg-muted/30 shrink-0">{day}</span>
+            <% end %>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5">
+            <%= for slot <- @msg.slots do %>
+              <%= for day <- [@msg.days |> List.first()] do %>
+                <button
+                  type="button"
+                  phx-click="select_slot"
+                  phx-value-msg_id={@msg.id}
+                  phx-value-day={day}
+                  phx-value-slot={slot}
+                  class="chat-slot-btn py-2 rounded-lg border border-border text-xs font-medium text-foreground hover:border-primary/60 hover:bg-primary/5 hover:text-primary"
+                >
+                  {slot}
+                </button>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp file_attachment_bubble(assigns) do
+    ~H"""
+    <div class="chat-file-card rounded-2xl border border-border bg-card p-3.5 w-64 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+          <.icon name={@msg.file.icon} size={:sm} class="text-primary" />
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-foreground truncate">{@msg.file.name}</p>
+          <p class="text-[10px] text-muted-foreground">{@msg.file.size}</p>
+        </div>
+        <button type="button" class="h-8 w-8 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground shrink-0" title="Download">
+          <.icon name="download" size={:xs} />
+        </button>
+      </div>
+    </div>
+    """
+  end
+
+  defp rating_bubble(assigns) do
+    ~H"""
+    <div class="chat-card-interactive rounded-2xl border border-border bg-card p-4 space-y-3 w-64 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <.icon name="star" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">Rate Experience</span>
+      </div>
+      <p class="text-sm text-foreground">{@msg.text || "How would you rate your experience?"}</p>
+      <%= if @msg.answered do %>
+        <div class="flex items-center gap-1">
+          <%= for i <- 1..5 do %>
+            <span class={["text-lg", if(i <= @msg.selected_rating, do: "text-yellow-500", else: "text-muted-foreground/30")]}>★</span>
+          <% end %>
+          <span class="text-xs text-muted-foreground ml-2">{@msg.selected_rating}/5</span>
+        </div>
+      <% else %>
+        <div class="flex gap-1">
+          <%= for i <- 1..5 do %>
+            <button
+              type="button"
+              phx-click="submit_rating"
+              phx-value-msg_id={@msg.id}
+              phx-value-rating={i}
+              class="chat-star-btn h-9 w-9 flex items-center justify-center rounded-lg text-lg text-muted-foreground/40 hover:text-yellow-500 transition-colors"
+            >
+              ★
+            </button>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp faq_accordion_bubble(assigns) do
+    ~H"""
+    <div class="rounded-2xl border border-border bg-card p-4 space-y-2 w-72 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2 mb-1">
+        <.icon name="info" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">FAQ</span>
+      </div>
+      <%= for faq <- @msg.faqs do %>
+        <details class="group">
+          <summary class="flex items-center justify-between cursor-pointer py-2 px-2.5 rounded-lg hover:bg-muted/60 text-sm font-medium text-foreground list-none">
+            {faq.question}
+            <.icon name="chevron-down" size={:xs} class="text-muted-foreground transition-transform group-open:rotate-180 shrink-0 ml-2" />
+          </summary>
+          <div class="chat-faq-answer px-2.5 pb-2 text-xs text-muted-foreground leading-relaxed">
+            {faq.answer}
+          </div>
+        </details>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp carousel_bubble(assigns) do
+    idx = Map.get(assigns.msg, :carousel_index, 0)
+    slides = assigns.msg.slides
+    slide = Enum.at(slides, idx)
+    assigns = assign(assigns, slide: slide, idx: idx, total: length(slides))
+
+    ~H"""
+    <div class="chat-card-interactive rounded-2xl border border-border bg-card overflow-hidden w-64 rounded-tl-sm shadow-sm">
+      <div class="chat-carousel-slide p-4 space-y-2">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+          <.icon name={@slide.icon} size={:sm} class="text-primary" />
+        </div>
+        <h4 class="font-bold text-sm text-foreground">{@slide.title}</h4>
+        <p class="text-xs text-muted-foreground leading-relaxed">{@slide.description}</p>
+      </div>
+      <div class="flex items-center justify-between px-3 py-2 border-t border-border/60 bg-muted/20">
+        <button
+          type="button"
+          phx-click="carousel_nav"
+          phx-value-msg_id={@msg.id}
+          phx-value-direction="prev"
+          disabled={@idx == 0}
+          class="h-7 w-7 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground disabled:opacity-30"
+        >
+          <.icon name="chevron-left" size={:xs} />
+        </button>
+        <span class="text-[10px] text-muted-foreground font-medium">{@idx + 1} / {@total}</span>
+        <button
+          type="button"
+          phx-click="carousel_nav"
+          phx-value-msg_id={@msg.id}
+          phx-value-direction="next"
+          disabled={@idx == @total - 1}
+          class="h-7 w-7 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground disabled:opacity-30"
+        >
+          <.icon name="chevron-right" size={:xs} />
+        </button>
+      </div>
+    </div>
+    """
+  end
+
+  defp progress_tracker_bubble(assigns) do
+    ~H"""
+    <div class="rounded-2xl border border-border bg-card p-4 space-y-3 w-64 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <.icon name="check" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">Progress</span>
+      </div>
+      <div class="space-y-3">
+        <%= for {step, idx} <- Enum.with_index(@msg.steps) do %>
+          <div class="flex items-start gap-3">
+            <div class={[
+              "chat-step-complete flex h-6 w-6 items-center justify-center rounded-full shrink-0 text-[10px] font-bold",
+              case step.status do
+                :complete -> "bg-primary text-primary-foreground"
+                :active -> "bg-primary/20 text-primary ring-2 ring-primary/40"
+                _ -> "bg-muted text-muted-foreground"
+              end
+            ]}>
+              <%= if step.status == :complete do %>
+                <.icon name="check" size={:xs} />
+              <% else %>
+                {idx + 1}
+              <% end %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class={["text-sm font-medium", if(step.status == :upcoming, do: "text-muted-foreground", else: "text-foreground")]}>
+                {step.label}
+              </p>
+            </div>
+          </div>
+          <%= if idx < length(@msg.steps) - 1 do %>
+            <div class="ml-3 w-px h-3 bg-border" />
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    """
+  end
+
+  defp cta_card_bubble(assigns) do
+    ~H"""
+    <div class="chat-cta-card rounded-2xl border border-primary/30 bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+          <.icon name={@msg.cta.icon} size={:xs} class="text-primary" />
+        </div>
+        <h4 class="font-bold text-sm text-foreground">{@msg.cta.title}</h4>
+      </div>
+      <p class="text-xs text-muted-foreground leading-relaxed">{@msg.cta.description}</p>
+      <%= if @msg.answered do %>
+        <div class="flex items-center gap-2 p-2.5 rounded-lg bg-primary/10 border border-primary/20">
+          <.icon name="check" size={:xs} class="text-primary shrink-0" />
+          <span class="text-xs text-primary font-medium">Activated!</span>
+        </div>
+      <% else %>
+        <button
+          type="button"
+          phx-click="cta_action"
+          phx-value-msg_id={@msg.id}
+          class="w-full py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
+        >
+          {@msg.cta.button_label}
+        </button>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp contact_form_bubble(assigns) do
+    ~H"""
+    <div class="chat-card-interactive rounded-2xl border border-border bg-card p-4 space-y-3 w-72 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <.icon name="send" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">Contact Form</span>
+      </div>
+      <%= if @msg.answered do %>
+        <div class="flex items-center gap-2 p-2.5 rounded-lg bg-success/10 border border-success/20">
+          <.icon name="check" size={:xs} class="text-success shrink-0" />
+          <span class="text-xs text-success font-medium">Form submitted!</span>
+        </div>
+      <% else %>
+        <div class="space-y-2">
+          <input
+            type="text"
+            placeholder="Your name"
+            value={@contact_name}
+            phx-keyup="update_contact_field"
+            phx-value-field="name"
+            phx-debounce="100"
+            class="chat-input-glow w-full h-8 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
+          />
+          <input
+            type="email"
+            placeholder="Your email"
+            value={@contact_email}
+            phx-keyup="update_contact_field"
+            phx-value-field="email"
+            phx-debounce="100"
+            class="chat-input-glow w-full h-8 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
+          />
+          <textarea
+            placeholder="Your message (optional)"
+            phx-keyup="update_contact_field"
+            phx-value-field="message"
+            phx-debounce="100"
+            class="chat-input-glow w-full h-16 rounded-lg border border-input bg-background px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground resize-none"
+          >{@contact_message}</textarea>
+          <button
+            type="button"
+            phx-click="submit_contact_form"
+            phx-value-msg_id={@msg.id}
+            class="chat-form-submit w-full py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
+          >
+            Send Message
+          </button>
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp quick_links_bubble(assigns) do
+    ~H"""
+    <div class="rounded-2xl border border-border bg-card p-4 space-y-3 w-64 rounded-tl-sm shadow-sm">
+      <div class="flex items-center gap-2">
+        <.icon name="link" size={:xs} class="text-primary" />
+        <span class="text-xs font-semibold text-primary uppercase tracking-wide">Quick Links</span>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <%= for link <- @msg.links do %>
+          <a
+            href={link.url}
+            class="chat-link-btn flex flex-col items-center gap-1.5 p-3 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 transition-colors"
+          >
+            <.icon name={link.icon} size={:xs} class="text-primary" />
+            <span class="text-[10px] font-medium text-foreground">{link.label}</span>
+          </a>
+        <% end %>
+      </div>
+    </div>
+    """
+  end
+
   # ── Helpers ────────────────────────────────────────────────────────────────
 
   defp room_agent(users, room_id) do
@@ -737,6 +1156,8 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
   defp room_icon("products"), do: "package"
   defp room_icon("order"), do: "inbox"
   defp room_icon("survey"), do: "chart-bar"
+  defp room_icon("support"), do: "shield"
+  defp room_icon("onboarding"), do: "sparkles"
   defp room_icon(_), do: "message-circle"
 
   defp product_emoji("smartphone"), do: "📱"
@@ -774,6 +1195,15 @@ defmodule PhiaDemoWeb.Demo.Chat.RoomLive do
   defp preview_text(%{type: :booking}), do: "Schedule a demo"
   defp preview_text(%{type: :nps}), do: "NPS survey"
   defp preview_text(%{type: :poll, poll: poll}), do: poll.question
+  defp preview_text(%{type: :schedule_demo}), do: "Schedule demo"
+  defp preview_text(%{type: :file_attachment} = msg), do: msg.file.name
+  defp preview_text(%{type: :rating}), do: "Rate experience"
+  defp preview_text(%{type: :faq_accordion}), do: "FAQ"
+  defp preview_text(%{type: :carousel}), do: "Feature carousel"
+  defp preview_text(%{type: :progress_tracker}), do: "Progress tracker"
+  defp preview_text(%{type: :cta_card} = msg), do: msg.cta.title
+  defp preview_text(%{type: :contact_form}), do: "Contact form"
+  defp preview_text(%{type: :quick_links}), do: "Quick links"
   defp preview_text(%{text: text}) when is_binary(text), do: String.slice(text, 0, 60)
   defp preview_text(_), do: "Message"
 

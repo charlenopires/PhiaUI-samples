@@ -890,18 +890,18 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
         <%!-- ChatMessage --%>
         <.demo_section title="ChatMessage" subtitle="Chat UI components — message bubbles with role-based alignment">
           <.chat_container class="h-64 rounded-lg border border-border/60 bg-muted/10 p-4">
-            <.chat_message role={:assistant}>
-              <.chat_bubble role={:assistant} timestamp="10:32 AM">
+            <.chat_message role="assistant">
+              <.chat_bubble role="assistant" timestamp="10:32 AM">
                 Hello! How can I help you today? I'm here to answer any questions about PhiaUI components.
               </.chat_bubble>
             </.chat_message>
-            <.chat_message role={:user}>
-              <.chat_bubble role={:user} timestamp="10:33 AM">
+            <.chat_message role="user">
+              <.chat_bubble role="user" timestamp="10:33 AM">
                 Can you show me how to use the new Layout components in v0.1.15?
               </.chat_bubble>
             </.chat_message>
-            <.chat_message role={:assistant}>
-              <.chat_bubble role={:assistant} timestamp="10:33 AM">
+            <.chat_message role="assistant">
+              <.chat_bubble role="assistant" timestamp="10:33 AM">
                 Of course! The Layout module includes Stack, Flex, Grid, Center, Container, and more. Each supports responsive breakpoint maps for adaptive layouts.
               </.chat_bubble>
             </.chat_message>
@@ -956,10 +956,8 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
               <span>·</span>
               <span>5 min read</span>
             </:meta>
-            <:content>
-              <p>Phoenix LiveView enables rich, real-time user experiences with server-rendered HTML. It leverages Elixir's concurrency model and Phoenix's channel layer to provide seamless interactivity without writing JavaScript.</p>
-              <p>With PhiaUI v0.1.15, you get 623 pre-built components that integrate natively with LiveView's event system, making it easy to build complex dashboards, forms, and data visualizations.</p>
-            </:content>
+            <p>Phoenix LiveView enables rich, real-time user experiences with server-rendered HTML. It leverages Elixir's concurrency model and Phoenix's channel layer to provide seamless interactivity without writing JavaScript.</p>
+            <p>With PhiaUI v0.1.15, you get 623 pre-built components that integrate natively with LiveView's event system, making it easy to build complex dashboards, forms, and data visualizations.</p>
           </.article>
         </.demo_section>
 

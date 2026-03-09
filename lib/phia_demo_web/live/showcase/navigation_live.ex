@@ -312,20 +312,24 @@ defmodule PhiaDemoWeb.Demo.Showcase.NavigationLive do
 
         <%!-- ChipNav --%>
         <.demo_section title="ChipNav" subtitle="Pill-shaped navigation tabs — compact horizontal navigation">
-          <.chip_nav
-            items={[
-              %{label: "All", value: "all", active: true},
-              %{label: "Active", value: "active"},
-              %{label: "Completed", value: "completed"},
-              %{label: "Archived", value: "archived"}
-            ]}
-          />
+          <.chip_nav>
+            <.chip_nav_item active={true}>All</.chip_nav_item>
+            <.chip_nav_item>Active</.chip_nav_item>
+            <.chip_nav_item>Completed</.chip_nav_item>
+            <.chip_nav_item>Archived</.chip_nav_item>
+          </.chip_nav>
         </.demo_section>
 
         <%!-- DotNavigation --%>
         <.demo_section title="DotNavigation" subtitle="Dot-style page indicators — for carousels or step wizards">
           <div class="flex flex-col items-center gap-4">
-            <.dot_navigation total={5} active={2} />
+            <.dot_navigation>
+              <.dot_navigation_item />
+              <.dot_navigation_item />
+              <.dot_navigation_item active={true} />
+              <.dot_navigation_item />
+              <.dot_navigation_item />
+            </.dot_navigation>
             <p class="text-xs text-muted-foreground">Page 3 of 5</p>
           </div>
         </.demo_section>
@@ -333,22 +337,25 @@ defmodule PhiaDemoWeb.Demo.Showcase.NavigationLive do
         <%!-- LinkGroup --%>
         <.demo_section title="LinkGroup" subtitle="Grouped link list — common for footer navigation or sidebars">
           <div class="grid gap-6 sm:grid-cols-3">
-            <.link_group title="Product">
-              <:link href="#">Features</:link>
-              <:link href="#">Pricing</:link>
-              <:link href="#">Changelog</:link>
-              <:link href="#">Roadmap</:link>
+            <.link_group>
+              <.link_group_heading>Product</.link_group_heading>
+              <.link_group_item href="#">Features</.link_group_item>
+              <.link_group_item href="#">Pricing</.link_group_item>
+              <.link_group_item href="#">Changelog</.link_group_item>
+              <.link_group_item href="#">Roadmap</.link_group_item>
             </.link_group>
-            <.link_group title="Company">
-              <:link href="#">About</:link>
-              <:link href="#">Blog</:link>
-              <:link href="#">Careers</:link>
-              <:link href="#">Contact</:link>
+            <.link_group>
+              <.link_group_heading>Company</.link_group_heading>
+              <.link_group_item href="#">About</.link_group_item>
+              <.link_group_item href="#">Blog</.link_group_item>
+              <.link_group_item href="#">Careers</.link_group_item>
+              <.link_group_item href="#">Contact</.link_group_item>
             </.link_group>
-            <.link_group title="Legal">
-              <:link href="#">Privacy</:link>
-              <:link href="#">Terms</:link>
-              <:link href="#">License</:link>
+            <.link_group>
+              <.link_group_heading>Legal</.link_group_heading>
+              <.link_group_item href="#">Privacy</.link_group_item>
+              <.link_group_item href="#">Terms</.link_group_item>
+              <.link_group_item href="#">License</.link_group_item>
             </.link_group>
           </div>
         </.demo_section>
@@ -356,16 +363,16 @@ defmodule PhiaDemoWeb.Demo.Showcase.NavigationLive do
         <%!-- Toc --%>
         <.demo_section title="Toc" subtitle="Table of contents — auto-generates from heading hierarchy">
           <div class="max-w-sm">
-            <.toc items={[
-              %{id: "intro", label: "Introduction", level: 1},
-              %{id: "getting-started", label: "Getting Started", level: 2},
-              %{id: "installation", label: "Installation", level: 3},
-              %{id: "configuration", label: "Configuration", level: 3},
-              %{id: "components", label: "Components", level: 2},
-              %{id: "buttons", label: "Buttons", level: 3},
-              %{id: "inputs", label: "Inputs", level: 3},
-              %{id: "advanced", label: "Advanced Usage", level: 2}
-            ]} active="components" />
+            <.toc id="showcase-toc">
+              <.toc_item id="intro" depth={1}>Introduction</.toc_item>
+              <.toc_item id="getting-started" depth={2}>Getting Started</.toc_item>
+              <.toc_item id="installation" depth={3}>Installation</.toc_item>
+              <.toc_item id="configuration" depth={3}>Configuration</.toc_item>
+              <.toc_item id="components" depth={2}>Components</.toc_item>
+              <.toc_item id="buttons" depth={3}>Buttons</.toc_item>
+              <.toc_item id="inputs" depth={3}>Inputs</.toc_item>
+              <.toc_item id="advanced" depth={2}>Advanced Usage</.toc_item>
+            </.toc>
           </div>
         </.demo_section>
 
