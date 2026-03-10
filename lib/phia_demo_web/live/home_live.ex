@@ -24,8 +24,9 @@ defmodule PhiaDemoWeb.HomeLive do
       color: "text-violet-500",
       bg: "bg-violet-500/10",
       projects: [
+        %{id: :news,      title: "News",       href: "/news",       icon: "newspaper",        desc: "Latest updates, new components, and tools for PhiaUI developers."},
         %{id: :dashboard, title: "Dashboard",  href: "/dashboard",  icon: "layout-dashboard", desc: "Admin panel with metrics, SVG charts, and sidebar navigation."},
-        %{id: :showcase,  title: "Showcase",   href: "/showcase",   icon: "puzzle",           desc: "Gallery of 623 PhiaUI components — interactive, dark-mode ready."},
+        %{id: :components, title: "Components", href: "/components", icon: "puzzle",           desc: "Gallery of 623 PhiaUI components — interactive, dark-mode ready."},
         %{id: :chat,      title: "Chat",       href: "/chat",       icon: "message-circle",   desc: "Real-time chat rooms with agents, polls, and reactions."}
       ]
     },
@@ -100,7 +101,8 @@ defmodule PhiaDemoWeb.HomeLive do
      |> assign(:page_title, "PhiaUI Demos")
      |> assign(:themes, @themes)
      |> assign(:projects, @projects)
-     |> assign(:project_groups, @project_groups)}
+     |> assign(:project_groups, @project_groups)
+     |> assign(:latest_news, PhiaDemo.News.latest_article())}
   end
 
   @impl true
@@ -123,13 +125,13 @@ defmodule PhiaDemoWeb.HomeLive do
         <div class="relative z-10 phia-animate">
           <div class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary mb-2">
             <.icon name="layers" size={:xs} />
-            PhiaUI v0.1.15
+            PhiaUI v0.1.16
             <span class="h-3 w-px bg-primary/30" />
             <span class="text-primary/70">Phoenix LiveView</span>
           </div>
           <img
             src={~p"/images/phiaui-demo-logo.svg"}
-            alt="PhiaUI Demo"
+            alt="PhiaUI Demos"
             class="mx-auto mb-2 w-full max-w-md sm:max-w-lg"
           />
           <%!-- Description as visual chips --%>
@@ -180,6 +182,22 @@ defmodule PhiaDemoWeb.HomeLive do
         </div>
       </section>
 
+      <%!-- Latest news CTA --%>
+      <div :if={@latest_news} class="px-6 max-w-5xl mx-auto mb-4">
+        <a href={"/news/#{@latest_news.slug}"} class="group flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 px-4 py-3 transition-all duration-200">
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/15">
+            <.icon name="newspaper" size={:sm} class="text-primary" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-medium text-muted-foreground">Latest news</p>
+            <p class="text-sm font-semibold text-foreground truncate">{@latest_news.title}</p>
+          </div>
+          <div class="flex items-center gap-1 text-xs font-semibold text-primary shrink-0 group-hover:gap-2 transition-all">
+            Read <.icon name="arrow-right" size={:xs} />
+          </div>
+        </a>
+      </div>
+
       <%!-- Project groups --%>
       <section class="px-6 pt-4 pb-20 max-w-5xl mx-auto space-y-8 phia-animate-d1">
         <div class="flex items-center justify-between border-b border-border/60 pb-2">
@@ -229,7 +247,7 @@ defmodule PhiaDemoWeb.HomeLive do
           <div class="flex items-center gap-2">
             <.icon name="layers" size={:xs} class="text-primary" />
             <span class="text-sm font-semibold text-foreground">PhiaUI</span>
-            <.badge variant={:outline} class="text-[10px]">v0.1.15</.badge>
+            <.badge variant={:outline} class="text-[10px]">v0.1.16</.badge>
           </div>
           <div class="flex items-center gap-4">
             <p class="text-xs text-muted-foreground">

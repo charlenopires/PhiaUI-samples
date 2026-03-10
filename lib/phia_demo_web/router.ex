@@ -27,21 +27,25 @@ defmodule PhiaDemoWeb.Router do
     live "/dashboard/orders",     Demo.Dashboard.Orders,    :index
     live "/dashboard/settings",   Demo.Dashboard.Settings,  :index
 
-    # Showcase demo
-    live "/showcase",             Demo.Showcase.IndexLive,    :index
-    live "/showcase/inputs",      Demo.Showcase.InputsLive,   :index
-    live "/showcase/display",     Demo.Showcase.DisplayLive,  :index
-    live "/showcase/feedback",    Demo.Showcase.FeedbackLive, :index
-    live "/showcase/charts",      Demo.Showcase.ChartsLive,    :index
-    live "/showcase/calendar",    Demo.Showcase.CalendarLive,  :index
-    live "/showcase/cards",       Demo.Showcase.CardsLive,     :index
-    live "/showcase/navigation",  Demo.Showcase.NavigationLive, :index
-    live "/showcase/tables",      Demo.Showcase.TablesLive,    :index
-    live "/showcase/upload",      Demo.Showcase.UploadLive,    :index
-    live "/showcase/media",       Demo.Showcase.MediaLive,     :index
-    live "/showcase/animation",   Demo.Showcase.AnimationLive, :index
-    live "/showcase/visual",      Demo.Showcase.VisualLive,    :index
-    live "/showcase/layout",     Demo.Showcase.LayoutLive,    :index
+    # News
+    live "/news",         Demo.News.IndexLive, :index
+    live "/news/:slug",   Demo.News.ShowLive,  :show
+
+    # Components
+    live "/components",             Demo.Components.IndexLive,      :index
+    live "/components/inputs",      Demo.Components.InputsLive,     :index
+    live "/components/display",     Demo.Components.DisplayLive,    :index
+    live "/components/feedback",    Demo.Components.FeedbackLive,   :index
+    live "/components/charts",      Demo.Components.ChartsLive,     :index
+    live "/components/calendar",    Demo.Components.CalendarLive,   :index
+    live "/components/cards",       Demo.Components.CardsLive,      :index
+    live "/components/navigation",  Demo.Components.NavigationLive, :index
+    live "/components/tables",      Demo.Components.TablesLive,     :index
+    live "/components/upload",      Demo.Components.UploadLive,     :index
+    live "/components/media",       Demo.Components.MediaLive,      :index
+    live "/components/animation",   Demo.Components.AnimationLive,  :index
+    live "/components/visual",      Demo.Components.VisualLive,     :index
+    live "/components/layout",      Demo.Components.LayoutLive,     :index
 
     # Chat demo
     live "/chat",                 Demo.Chat.RoomLive, :index

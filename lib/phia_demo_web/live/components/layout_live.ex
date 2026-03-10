@@ -1,7 +1,7 @@
-defmodule PhiaDemoWeb.Demo.Showcase.LayoutLive do
+defmodule PhiaDemoWeb.Demo.Components.LayoutLive do
   use PhiaDemoWeb, :live_view
 
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
 
   @impl true
   def mount(_params, _session, socket) do
@@ -14,7 +14,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.LayoutLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layout.layout current_path="/showcase/layout">
+    <Layout.layout current_path="/components/layout">
       <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Layout</h1>
@@ -210,7 +210,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.LayoutLive do
                 </div>
               </:media>
               <p class="font-semibold text-foreground">Deployment Successful</p>
-              <p class="text-sm text-muted-foreground">v0.1.15 deployed to production 2 minutes ago.</p>
+              <p class="text-sm text-muted-foreground">v0.1.16 deployed to production 2 minutes ago.</p>
             </.media_object>
           </div>
         </.demo_section>

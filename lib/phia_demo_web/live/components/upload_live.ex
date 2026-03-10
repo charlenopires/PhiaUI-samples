@@ -1,7 +1,7 @@
-defmodule PhiaDemoWeb.Demo.Showcase.UploadLive do
+defmodule PhiaDemoWeb.Demo.Components.UploadLive do
   use PhiaDemoWeb, :live_view
 
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
 
   @impl true
   def mount(_params, _session, socket) do
@@ -66,7 +66,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.UploadLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layout.layout current_path="/showcase/upload">
+    <Layout.layout current_path="/components/upload">
       <div class="p-6 space-y-10 max-w-screen-xl mx-auto phia-animate">
 
         <div>

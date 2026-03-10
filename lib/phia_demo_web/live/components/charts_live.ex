@@ -1,8 +1,8 @@
-defmodule PhiaDemoWeb.Demo.Showcase.ChartsLive do
+defmodule PhiaDemoWeb.Demo.Components.ChartsLive do
   use PhiaDemoWeb, :live_view
 
   alias PhiaDemo.FakeData
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
 
   @users [
     %{id: 1, name: "Alice Brown", email: "alice@acme.com", role: "Admin", status: "Active"},
@@ -42,7 +42,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.ChartsLive do
     assigns = assign(assigns, :users, @users)
 
     ~H"""
-    <Layout.layout current_path="/showcase/charts">
+    <Layout.layout current_path="/components/charts">
       <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Data & Charts</h1>

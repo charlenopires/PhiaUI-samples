@@ -39,7 +39,7 @@ defmodule PhiaDemoWeb.Demo.Tasks.Layout do
             <.nav_section label="Projects">
               <.nav_item current_path={@current_path} href="/tasks" icon="layers" label="PhiaUI Core" />
               <.nav_item current_path={@current_path} href="/tasks" icon="layers" label="Dashboard" />
-              <.nav_item current_path={@current_path} href="/tasks" icon="layers" label="Showcase" />
+              <.nav_item current_path={@current_path} href="/tasks" icon="layers" label="Components" />
             </.nav_section>
           </:nav_items>
           <:footer_items>

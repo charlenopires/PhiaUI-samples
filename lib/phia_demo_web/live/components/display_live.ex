@@ -1,7 +1,7 @@
-defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
+defmodule PhiaDemoWeb.Demo.Components.DisplayLive do
   use PhiaDemoWeb, :live_view
 
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
 
   @impl true
   def mount(_params, _session, socket) do
@@ -25,7 +25,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layout.layout current_path="/showcase/display">
+    <Layout.layout current_path="/components/display">
       <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Display</h1>
@@ -264,7 +264,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
                 </div>
               </:icon>
               <p class="text-sm font-semibold text-foreground">Deployment completed</p>
-              <p class="text-xs text-muted-foreground mt-0.5">v0.1.15 is live in production</p>
+              <p class="text-xs text-muted-foreground mt-0.5">v0.1.16 is live in production</p>
               <div class="mt-2 flex flex-wrap gap-1.5">
                 <.badge variant={:default} class="bg-green-600/80 text-white text-xs">success</.badge>
                 <.badge variant={:outline} class="text-xs">auto-deploy</.badge>
@@ -369,7 +369,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
                     <.avatar_fallback name="Admin" class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-semibold" />
                   </.avatar>
                 </:avatar>
-                <strong>Deployment succeeded</strong> — v0.1.15 pushed to production by <span class="font-medium text-primary">@admin</span>
+                <strong>Deployment succeeded</strong> — v0.1.16 pushed to production by <span class="font-medium text-primary">@admin</span>
               </.activity_item>
 
               <.activity_item type="mention" timestamp="35 min ago">
@@ -589,7 +589,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
                 Is it production-ready?
               </.accordion_trigger>
               <.accordion_content value="a3">
-                PhiaUI is actively developed. v0.1.15 is suitable for demos and prototypes. Production apps should pin the version and test thoroughly.
+                PhiaUI is actively developed. v0.1.16 is suitable for demos and prototypes. Production apps should pin the version and test thoroughly.
               </.accordion_content>
             </.accordion_item>
           </.accordion>
@@ -881,10 +881,10 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
           </div>
         </.demo_section>
 
-        <%!-- v0.1.15 — New Display Components --%>
+        <%!-- v0.1.16 — New Display Components --%>
         <div class="flex items-center gap-2 border-b border-border/60 pb-2 mt-4">
           <.icon name="layers" size={:sm} class="text-primary" />
-          <p class="text-xs font-semibold uppercase tracking-widest text-muted-foreground">v0.1.15 Components</p>
+          <p class="text-xs font-semibold uppercase tracking-widest text-muted-foreground">v0.1.16 Components</p>
         </div>
 
         <%!-- ChatMessage --%>
@@ -897,7 +897,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
             </.chat_message>
             <.chat_message role="user">
               <.chat_bubble role="user" timestamp="10:33 AM">
-                Can you show me how to use the new Layout components in v0.1.15?
+                Can you show me how to use the new Layout components in v0.1.16?
               </.chat_bubble>
             </.chat_message>
             <.chat_message role="assistant">
@@ -957,7 +957,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.DisplayLive do
               <span>5 min read</span>
             </:meta>
             <p>Phoenix LiveView enables rich, real-time user experiences with server-rendered HTML. It leverages Elixir's concurrency model and Phoenix's channel layer to provide seamless interactivity without writing JavaScript.</p>
-            <p>With PhiaUI v0.1.15, you get 623 pre-built components that integrate natively with LiveView's event system, making it easy to build complex dashboards, forms, and data visualizations.</p>
+            <p>With PhiaUI v0.1.16, you get 623 pre-built components that integrate natively with LiveView's event system, making it easy to build complex dashboards, forms, and data visualizations.</p>
           </.article>
         </.demo_section>
 

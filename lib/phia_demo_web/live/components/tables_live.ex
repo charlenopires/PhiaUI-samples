@@ -1,7 +1,7 @@
-defmodule PhiaDemoWeb.Demo.Showcase.TablesLive do
+defmodule PhiaDemoWeb.Demo.Components.TablesLive do
   use PhiaDemoWeb, :live_view
 
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
   alias PhiaDemo.FakeData
 
   @impl true
@@ -56,7 +56,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.TablesLive do
     assigns = assign(assigns, :sorted_users, sorted_users)
 
     ~H"""
-    <Layout.layout current_path="/showcase/tables">
+    <Layout.layout current_path="/components/tables">
       <div class="p-6 space-y-10 max-w-screen-xl mx-auto phia-animate">
 
         <div>

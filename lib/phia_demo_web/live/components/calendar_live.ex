@@ -1,7 +1,7 @@
-defmodule PhiaDemoWeb.Demo.Showcase.CalendarLive do
+defmodule PhiaDemoWeb.Demo.Components.CalendarLive do
   use PhiaDemoWeb, :live_view
 
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
 
   @today Date.utc_today()
   @week_start Date.beginning_of_week(@today)
@@ -194,7 +194,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.CalendarLive do
       |> assign(:booking_prices, booking_prices)
 
     ~H"""
-    <Layout.layout current_path="/showcase/calendar">
+    <Layout.layout current_path="/components/calendar">
       <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Calendar</h1>

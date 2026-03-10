@@ -1,7 +1,7 @@
-defmodule PhiaDemoWeb.Demo.Showcase.FeedbackLive do
+defmodule PhiaDemoWeb.Demo.Components.FeedbackLive do
   use PhiaDemoWeb, :live_view
 
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
 
   @impl true
   def mount(_params, _session, socket) do
@@ -69,7 +69,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.FeedbackLive do
 
   @commands [
     %{group: "Pages", icon: "layout-dashboard", label: "Dashboard", shortcut: "D"},
-    %{group: "Pages", icon: "puzzle", label: "Showcase", shortcut: "S"},
+    %{group: "Pages", icon: "puzzle", label: "Components", shortcut: "S"},
     %{group: "Pages", icon: "message-circle", label: "Chat", shortcut: "C"},
     %{group: "Actions", icon: "settings", label: "Settings", shortcut: "⌘,"},
     %{group: "Actions", icon: "user", label: "Profile", shortcut: nil},
@@ -83,7 +83,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.FeedbackLive do
     assigns = assign(assigns, commands: @commands)
 
     ~H"""
-    <Layout.layout current_path="/showcase/feedback">
+    <Layout.layout current_path="/components/feedback">
       <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Feedback</h1>
@@ -591,7 +591,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.FeedbackLive do
           <div class="space-y-3">
             <.banner id="demo-banner-info" variant={:info}>
               <:icon><.icon name="info" class="h-4 w-4" /></:icon>
-              New version v0.1.15 is available with 39+ new components.
+              New version v0.1.16 is available with 39+ new components.
             </.banner>
             <.banner id="demo-banner-success" variant={:success}>
               <:icon><.icon name="circle-check" class="h-4 w-4" /></:icon>

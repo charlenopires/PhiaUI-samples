@@ -1,5 +1,5 @@
-defmodule PhiaDemoWeb.Demo.Showcase.Layout do
-  @moduledoc "Showcase shell component with sidebar navigation."
+defmodule PhiaDemoWeb.Demo.Components.Layout do
+  @moduledoc "Components shell with sidebar navigation."
 
   use Phoenix.Component
 
@@ -15,7 +15,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.Layout do
     <.shell>
       <:topbar>
         <.mobile_sidebar_toggle />
-        <.project_topbar current_project={:showcase} dark_mode_id="showcase-dm" />
+        <.project_topbar current_project={:components} dark_mode_id="showcase-dm" />
       </:topbar>
       <:sidebar>
         <.sidebar>
@@ -25,29 +25,29 @@ defmodule PhiaDemoWeb.Demo.Showcase.Layout do
                 <.icon name="puzzle" size={:sm} />
               </div>
               <div>
-                <span class="text-sm font-bold text-foreground leading-none">Showcase</span>
-                <p class="text-[10px] text-muted-foreground leading-none mt-0.5 font-medium">PhiaUI v0.1.15</p>
+                <span class="text-sm font-bold text-foreground leading-none">Components</span>
+                <p class="text-[10px] text-muted-foreground leading-none mt-0.5 font-medium">PhiaUI v0.1.16</p>
               </div>
             </div>
           </:brand>
           <:nav_items>
             <.nav_section label="Core">
-              <.nav_item current_path={@current_path} href="/showcase" icon="layout-grid" label="Overview" />
-              <.nav_item current_path={@current_path} href="/showcase/inputs" icon="keyboard" label="Inputs" />
-              <.nav_item current_path={@current_path} href="/showcase/display" icon="eye" label="Display" />
-              <.nav_item current_path={@current_path} href="/showcase/feedback" icon="bell" label="Feedback" />
-              <.nav_item current_path={@current_path} href="/showcase/charts" icon="chart-bar" label="Data & Charts" />
-              <.nav_item current_path={@current_path} href="/showcase/calendar" icon="calendar" label="Calendar" />
+              <.nav_item current_path={@current_path} href="/components" icon="layout-grid" label="Overview" />
+              <.nav_item current_path={@current_path} href="/components/inputs" icon="keyboard" label="Inputs" />
+              <.nav_item current_path={@current_path} href="/components/display" icon="eye" label="Display" />
+              <.nav_item current_path={@current_path} href="/components/feedback" icon="bell" label="Feedback" />
+              <.nav_item current_path={@current_path} href="/components/charts" icon="chart-bar" label="Data & Charts" />
+              <.nav_item current_path={@current_path} href="/components/calendar" icon="calendar" label="Calendar" />
             </.nav_section>
             <.nav_section label="Extended">
-              <.nav_item current_path={@current_path} href="/showcase/cards" icon="layers" label="Cards" />
-              <.nav_item current_path={@current_path} href="/showcase/navigation" icon="list" label="Navigation" />
-              <.nav_item current_path={@current_path} href="/showcase/tables" icon="list-ordered" label="Tables" />
-              <.nav_item current_path={@current_path} href="/showcase/upload" icon="upload" label="Upload" />
-              <.nav_item current_path={@current_path} href="/showcase/media" icon="image" label="Media" />
-              <.nav_item current_path={@current_path} href="/showcase/animation" icon="sparkles" label="Animation" />
-              <.nav_item current_path={@current_path} href="/showcase/visual" icon="eye" label="Visual Effects" />
-              <.nav_item current_path={@current_path} href="/showcase/layout" icon="layout-grid" label="Layout" />
+              <.nav_item current_path={@current_path} href="/components/cards" icon="layers" label="Cards" />
+              <.nav_item current_path={@current_path} href="/components/navigation" icon="list" label="Navigation" />
+              <.nav_item current_path={@current_path} href="/components/tables" icon="list-ordered" label="Tables" />
+              <.nav_item current_path={@current_path} href="/components/upload" icon="upload" label="Upload" />
+              <.nav_item current_path={@current_path} href="/components/media" icon="image" label="Media" />
+              <.nav_item current_path={@current_path} href="/components/animation" icon="sparkles" label="Animation" />
+              <.nav_item current_path={@current_path} href="/components/visual" icon="eye" label="Visual Effects" />
+              <.nav_item current_path={@current_path} href="/components/layout" icon="layout-grid" label="Layout" />
             </.nav_section>
           </:nav_items>
           <:footer_items>

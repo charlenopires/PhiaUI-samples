@@ -4,8 +4,8 @@ defmodule PhiaDemoWeb.ProjectNav do
 
   Renders a horizontal bar with:
   - PhiaUI logo / home link
-  - 3 primary project tabs (Dashboard, Showcase, Chat)
-  - "More ▾" hover dropdown with remaining 13 demos in 4 categories
+  - 4 primary project tabs (News, Dashboard, Components, Chat)
+  - "More ▾" dropdown with remaining demos in categories
   - Optional right-side action slot
   - Dark mode toggle
 
@@ -24,9 +24,10 @@ defmodule PhiaDemoWeb.ProjectNav do
   import PhiaUi.Components.DarkModeToggle
 
   @projects_visible [
-    %{id: :dashboard, label: "Dashboard", href: "/dashboard", icon: "layout-dashboard"},
-    %{id: :showcase,  label: "Showcase",  href: "/showcase",  icon: "puzzle"},
-    %{id: :chat,      label: "Chat",      href: "/chat",      icon: "message-circle"}
+    %{id: :news,       label: "News",       href: "/news",       icon: "newspaper"},
+    %{id: :dashboard,  label: "Dashboard",  href: "/dashboard",  icon: "layout-dashboard"},
+    %{id: :components, label: "Components", href: "/components", icon: "puzzle"},
+    %{id: :chat,       label: "Chat",       href: "/chat",       icon: "message-circle"}
   ]
 
   @projects_more [
@@ -157,7 +158,7 @@ defmodule PhiaDemoWeb.ProjectNav do
 
         <%!-- "More" dropdown — <details> gives click/tap on mobile;
              group-hover/more keeps it open on desktop hover.             --%>
-        <details class="relative group/more shrink-0 [&[open]>div]:block">
+        <details class="relative group/more shrink-0 [&[open]>div]:block" id="more-menu">
           <%!-- Trigger: <summary> is keyboard + touch accessible --%>
           <summary class={[
             "list-none [&::-webkit-details-marker]:hidden",
@@ -190,27 +191,44 @@ defmodule PhiaDemoWeb.ProjectNav do
             />
           </summary>
 
-          <%!-- Dropdown panel
-               [&[open]>div]:block  — visible when <details> is open (click/tap)
-               group-hover/more:block — visible while hovering the <details> (desktop)
-               pt-2 transparent padding bridges trigger→panel gap on hover.
-          --%>
-          <div class="absolute hidden group-hover/more:block top-full right-0 pt-2 z-[100]">
-            <div class="w-72 sm:w-[440px] max-w-[calc(100vw-1rem)] rounded-xl border border-border bg-popover shadow-xl overflow-hidden">
+          <%!-- Mobile backdrop --%>
+          <div
+            class="fixed inset-0 bg-black/30 z-[99] sm:hidden"
+            onclick="document.getElementById('more-menu').removeAttribute('open')"
+          />
+
+          <%!-- Dropdown panel — bottom sheet on mobile, absolute dropdown on sm+ --%>
+          <div class="fixed inset-x-0 bottom-0 z-[100] sm:absolute sm:inset-x-auto sm:bottom-auto sm:top-full sm:right-0 sm:pt-2 hidden group-hover/more:block">
+            <div class="w-full sm:w-[440px] sm:max-w-[calc(100vw-1rem)] rounded-t-2xl sm:rounded-xl border border-border bg-popover shadow-xl overflow-hidden">
+
+              <%!-- Drag handle (mobile only) --%>
+              <div class="sm:hidden flex justify-center py-2">
+                <div class="h-1 w-10 rounded-full bg-muted-foreground/30" />
+              </div>
 
               <%!-- Panel header --%>
               <div class="px-4 py-2.5 border-b border-border/50 bg-muted/40 flex items-center justify-between">
                 <p class="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">All Demos</p>
-                <a
-                  href="/"
-                  class="text-[11px] text-muted-foreground/70 hover:text-primary transition-colors"
-                >
-                  View all →
-                </a>
+                <div class="flex items-center gap-3">
+                  <a
+                    href="/"
+                    class="text-[11px] text-muted-foreground/70 hover:text-primary transition-colors"
+                  >
+                    View all →
+                  </a>
+                  <%!-- Close button (mobile) --%>
+                  <button
+                    class="sm:hidden flex h-6 w-6 items-center justify-center rounded-md hover:bg-accent transition-colors"
+                    onclick="document.getElementById('more-menu').removeAttribute('open')"
+                    aria-label="Close menu"
+                  >
+                    <.icon name="x" size={:xs} class="text-muted-foreground" />
+                  </button>
+                </div>
               </div>
 
               <%!-- 2-column categories grid --%>
-              <div class="grid grid-cols-1 sm:grid-cols-2 p-3 gap-1">
+              <div class="max-h-[70vh] overflow-y-auto sm:max-h-none sm:overflow-visible grid grid-cols-1 sm:grid-cols-2 p-3 gap-1">
                 <%= for group <- @projects_more do %>
                   <div class="p-1.5">
                     <%!-- Category label --%>

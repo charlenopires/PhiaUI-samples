@@ -1,7 +1,7 @@
-defmodule PhiaDemoWeb.Demo.Showcase.NavigationLive do
+defmodule PhiaDemoWeb.Demo.Components.NavigationLive do
   use PhiaDemoWeb, :live_view
 
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
 
   @impl true
   def mount(_params, _session, socket) do
@@ -24,7 +24,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.NavigationLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layout.layout current_path="/showcase/navigation">
+    <Layout.layout current_path="/components/navigation">
       <div class="p-6 space-y-10 max-w-screen-xl mx-auto phia-animate">
 
         <div>
@@ -43,7 +43,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.NavigationLive do
                 </.breadcrumb_item>
                 <.breadcrumb_separator />
                 <.breadcrumb_item>
-                  <.breadcrumb_link href="/showcase">Showcase</.breadcrumb_link>
+                  <.breadcrumb_link href="/components">Components</.breadcrumb_link>
                 </.breadcrumb_item>
                 <.breadcrumb_separator />
                 <.breadcrumb_item>
@@ -61,13 +61,13 @@ defmodule PhiaDemoWeb.Demo.Showcase.NavigationLive do
                   <.icon name="chevron-right" size={:xs} />
                 </.breadcrumb_separator>
                 <.breadcrumb_item>
-                  <.breadcrumb_link href="/showcase">Components</.breadcrumb_link>
+                  <.breadcrumb_link href="/components">Components</.breadcrumb_link>
                 </.breadcrumb_item>
                 <.breadcrumb_separator>
                   <.icon name="chevron-right" size={:xs} />
                 </.breadcrumb_separator>
                 <.breadcrumb_item>
-                  <.breadcrumb_link href="/showcase/navigation">Navigation</.breadcrumb_link>
+                  <.breadcrumb_link href="/components/navigation">Navigation</.breadcrumb_link>
                 </.breadcrumb_item>
                 <.breadcrumb_separator>
                   <.icon name="chevron-right" size={:xs} />

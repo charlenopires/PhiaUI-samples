@@ -1,7 +1,7 @@
-defmodule PhiaDemoWeb.Demo.Showcase.CardsLive do
+defmodule PhiaDemoWeb.Demo.Components.CardsLive do
   use PhiaDemoWeb, :live_view
 
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
 
   @impl true
   def mount(_params, _session, socket) do
@@ -11,7 +11,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.CardsLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layout.layout current_path="/showcase/cards">
+    <Layout.layout current_path="/components/cards">
       <div class="p-4 md:p-6 space-y-10 max-w-screen-xl mx-auto phia-animate">
 
         <div>

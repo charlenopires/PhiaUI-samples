@@ -5,14 +5,14 @@ defmodule PhiaDemoWeb.Demo.Tasks.IndexLive do
 
   @issues [
     %{id: "PHX-001", title: "DataGrid row selection not working in Firefox", status: :bug, priority: :high, assignee: "AC", project: "Dashboard", created: "Mar 1"},
-    %{id: "PHX-002", title: "Add Kanban board to showcase", status: :feature, priority: :high, assignee: "BL", project: "Showcase", created: "Mar 1"},
+    %{id: "PHX-002", title: "Add Kanban board to showcase", status: :feature, priority: :high, assignee: "BL", project: "Components", created: "Mar 1"},
     %{id: "PHX-003", title: "Dark mode flicker on initial load", status: :bug, priority: :medium, assignee: "CS", project: "PhiaUI Core", created: "Feb 28"},
     %{id: "PHX-004", title: "Implement virtual scrolling for large lists", status: :enhancement, priority: :medium, assignee: "DM", project: "PhiaUI Core", created: "Feb 28"},
     %{id: "PHX-005", title: "Write Accordion component docs", status: :docs, priority: :low, assignee: "ER", project: "PhiaUI Core", created: "Feb 27"},
     %{id: "PHX-006", title: "Add animation presets to Button", status: :enhancement, priority: :low, assignee: "AC", project: "PhiaUI Core", created: "Feb 27"},
-    %{id: "PHX-007", title: "Tooltip positioning broken on scroll", status: :bug, priority: :high, assignee: "BL", project: "Showcase", created: "Feb 26"},
+    %{id: "PHX-007", title: "Tooltip positioning broken on scroll", status: :bug, priority: :high, assignee: "BL", project: "Components", created: "Feb 26"},
     %{id: "PHX-008", title: "Implement Notes app demo", status: :feature, priority: :medium, assignee: "CS", project: "Dashboard", created: "Feb 26"},
-    %{id: "PHX-009", title: "Add command palette to showcase", status: :feature, priority: :medium, assignee: "DM", project: "Showcase", created: "Feb 25"},
+    %{id: "PHX-009", title: "Add command palette to showcase", status: :feature, priority: :medium, assignee: "DM", project: "Components", created: "Feb 25"},
     %{id: "PHX-010", title: "Performance: reduce re-renders in DataGrid", status: :enhancement, priority: :high, assignee: "ER", project: "PhiaUI Core", created: "Feb 25"},
     %{id: "PHX-011", title: "Add Gantt chart component", status: :feature, priority: :low, assignee: "AC", project: "PhiaUI Core", created: "Feb 24"},
     %{id: "PHX-012", title: "Fix Button loading state animation", status: :bug, priority: :medium, assignee: "BL", project: "PhiaUI Core", created: "Feb 24"}

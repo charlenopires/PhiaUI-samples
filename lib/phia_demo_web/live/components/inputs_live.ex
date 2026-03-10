@@ -1,7 +1,7 @@
-defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
+defmodule PhiaDemoWeb.Demo.Components.InputsLive do
   use PhiaDemoWeb, :live_view
 
-  alias PhiaDemoWeb.Demo.Showcase.Layout
+  alias PhiaDemoWeb.Demo.Components.Layout
 
   @fruit_options [
     %{value: "apple", label: "Apple"},
@@ -218,7 +218,7 @@ defmodule PhiaDemoWeb.Demo.Showcase.InputsLive do
       |> assign(multi_options: @multi_options, seg_options: @seg_options)
 
     ~H"""
-    <Layout.layout current_path="/showcase/inputs">
+    <Layout.layout current_path="/components/inputs">
       <div class="p-3 sm:p-4 lg:p-6 space-y-8 max-w-screen-xl mx-auto phia-animate">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight">Inputs</h1>
